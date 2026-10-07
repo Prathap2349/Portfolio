@@ -9,9 +9,10 @@ interface MobileMenuProps {
   onClose: () => void;
   links: { href: string; label: string; disabled: boolean }[];
   activeSection: string;
+  onNavClick: (e: React.MouseEvent<HTMLAnchorElement>, id: string) => void;
 }
 
-export default function MobileMenu({ isOpen, onClose, links, activeSection }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, links, activeSection, onNavClick }: MobileMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,8 +50,12 @@ export default function MobileMenu({ isOpen, onClose, links, activeSection }: Mo
               key={link.label}
               href={link.href}
               onClick={(e) => {
-                if (link.disabled) e.preventDefault();
-                else onClose();
+                if (link.disabled) {
+                  e.preventDefault();
+                } else {
+                  onNavClick(e, link.href.substring(1));
+                  onClose();
+                }
               }}
               className={
                 link.disabled 

@@ -39,9 +39,9 @@ export default function About() {
     <section 
       id="about" 
       ref={containerRef}
-      className="min-h-screen py-32 flex items-center bg-background relative overflow-hidden"
+      className="py-24 md:py-32 scroll-mt-[100px] bg-background relative overflow-hidden"
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-[8vw] z-10 relative">
+      <div className="container mx-auto px-6 md:px-12 lg:px-[8vw] z-10 relative w-full">
         <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-16 uppercase about-reveal flex items-center gap-4">
           <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
           ABOUT ME

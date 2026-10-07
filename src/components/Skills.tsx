@@ -44,9 +44,9 @@ export default function Skills() {
     <section 
       id="skills" 
       ref={containerRef}
-      className="py-20 bg-background relative border-t border-white/5"
+      className="py-24 md:py-32 scroll-mt-[100px] min-h-[70svh] bg-background relative border-t border-white/5"
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-[8vw]">
+      <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw]">
         <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-20 uppercase skill-group">
           SKILLS
         </h2>

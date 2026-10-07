@@ -37,9 +37,9 @@ export default function Building() {
     <section 
       id="building" 
       ref={containerRef}
-      className="py-20 bg-background relative border-t border-white/5"
+      className="py-24 md:py-32 scroll-mt-[100px] bg-background relative border-t border-white/5"
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-[8vw]">
+      <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw]">
         <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-10 uppercase building-item">
           WHAT I'M BUILDING
         </h2>
@@ -47,7 +47,7 @@ export default function Building() {
         <div className="flex flex-col">
           {profile.projects.filter(p => (p as any).isBuilding).map((project, index) => (
             <div 
-              key={project.id} 
+              key={project.slug} 
               className="building-item group relative py-6 border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] hover:border-transparent transition-all duration-300 cursor-pointer -mx-4 px-4 md:mx-0 md:px-4 rounded-md"
             >
               {/* Desktop Layout: 3 Column Grid */}

@@ -38,9 +38,9 @@ export default function Connect() {
     <section 
       id="contact" 
       ref={containerRef}
-      className="py-20 bg-background relative border-t border-white/5"
+      className="py-24 md:py-32 scroll-mt-[100px] min-h-[80svh] bg-background relative border-t border-white/5 flex flex-col justify-between"
     >
-      <div className="container mx-auto px-6 md:px-12 lg:px-[8vw] text-center flex flex-col items-center">
+      <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw] text-center flex flex-col items-center flex-grow justify-center">
         <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tighter text-primary-text mb-16 connect-item leading-none">
           LET'S BUILD <br />
           <span className="text-secondary-text/80 font-light italic">SOMETHING</span> <br />

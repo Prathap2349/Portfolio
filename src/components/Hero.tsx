@@ -101,6 +101,12 @@ export default function Hero() {
           ref={mobilePortraitRef}
           className="lg:hidden absolute top-0 left-0 w-full h-[60svh] cursor-pointer"
           onClick={() => setShowRealMobile(!showRealMobile)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setShowRealMobile(!showRealMobile);
+            }
+          }}
           aria-label={showRealMobile ? "Show illustrated version" : "Show real photo"}
           role="button"
           tabIndex={0}
@@ -140,8 +146,8 @@ export default function Hero() {
             </h1>
             
             <div className="space-y-1 mb-8 text-primary-text/90 text-lg md:text-2xl font-light tracking-wide hero-text-elem drop-shadow-lg">
-              <p>I BUILD THINGS</p>
-              <p>I'M CURIOUS ABOUT.</p>
+              <p>AI & DATA SCIENCE STUDENT.</p>
+              <p>ENGINEERING INTELLIGENT SYSTEMS.</p>
             </div>
             
             <p className="text-xs md:text-sm tracking-[0.15em] font-medium text-secondary-text/80 hero-text-elem uppercase">

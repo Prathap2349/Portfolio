@@ -15,7 +15,11 @@ export default function Home() {
       <TransitionSection />
       <About />
       <Building />
-      <Suspense fallback={<div className="py-32 text-center bg-deep-navy text-secondary-text text-xs tracking-widest">LOADING GITHUB DATA...</div>}>
+      <Suspense fallback={
+        <section className="py-24 md:py-32 scroll-mt-[100px] min-h-[60svh] bg-deep-navy relative flex items-center justify-center">
+          <div className="text-secondary-text text-xs tracking-[0.2em] uppercase font-medium">LOADING GITHUB DATA...</div>
+        </section>
+      }>
         <Github />
       </Suspense>
       <Skills />

@@ -38,50 +38,46 @@ export default function Navigation() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-
-      // Do not update scroll-spy if user just clicked a nav link
-      if (isClickScrolling.current) return;
-
-      const viewportCenter = window.innerHeight / 2;
-      let newActiveSection = currentSectionRef.current;
-
-      // Force contact if at absolute bottom of page
-      if (window.innerHeight + Math.round(window.scrollY) >= document.documentElement.scrollHeight - 50) {
-        newActiveSection = "contact";
-      } else {
-        // Find which section occupies the viewport center
-        for (const link of navLinks) {
-          const id = link.href.substring(1);
-          const el = document.getElementById(id);
-          if (el) {
-            const rect = el.getBoundingClientRect();
-            // A section is active if it spans across the viewport center
-            if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
-              newActiveSection = id;
-              break; // Found it
-            }
-          }
-        }
-      }
-
-      if (newActiveSection !== currentSectionRef.current) {
-        setActiveSection(newActiveSection);
-        if (newActiveSection === "hero") {
-          window.history.replaceState(null, '', window.location.pathname);
-        } else {
-          window.history.replaceState(null, '', `#${newActiveSection}`);
-        }
-      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    
-    // Give DOM time to render, then run once
-    const timeoutId = setTimeout(handleScroll, 100);
+    handleScroll();
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -50% 0px",
+      threshold: 0
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      if (isClickScrolling.current) return;
+
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          if (id && id !== currentSectionRef.current) {
+            setActiveSection(id);
+            if (id === "hero") {
+              window.history.replaceState(null, '', window.location.pathname);
+            } else {
+              window.history.replaceState(null, '', `#${id}`);
+            }
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    navLinks.forEach(link => {
+      const id = link.href.substring(1);
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timeoutId);
+      observer.disconnect();
     };
   }, []);
 
@@ -98,22 +94,39 @@ export default function Navigation() {
       window.history.pushState(null, '', `#${id}`);
     }
 
-    // Smooth scroll manually to respect the offset and Lenis
-    const el = document.getElementById(id);
-    if (el) {
-      const headerOffset = 100; // Match the scroll-padding-top
-      const elementPosition = el.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
+    const headerOffset = 100;
+    
+    // Check if Lenis instance is available globally
+    const lenis = (window as any).lenis;
+    
+    if (lenis) {
+      // Use Lenis for synchronized scrolling
+      lenis.scrollTo(`#${id}`, {
+        offset: -headerOffset,
+        onComplete: () => {
+          isClickScrolling.current = false;
+        }
       });
-    }
+    } else {
+      // Fallback for native smooth scrolling (e.g. reduced motion)
+      const el = document.getElementById(id);
+      if (el) {
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
-    setTimeout(() => {
-      isClickScrolling.current = false;
-    }, 1000); // 1s is usually enough for a smooth scroll to finish
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+        
+        // In fallback, we unfortunately still need a timeout
+        setTimeout(() => {
+          isClickScrolling.current = false;
+        }, 1000);
+      } else {
+        isClickScrolling.current = false;
+      }
+    }
   };
 
   useEffect(() => {
@@ -202,6 +215,7 @@ export default function Navigation() {
         onClose={() => setIsMobileMenuOpen(false)} 
         links={navLinks}
         activeSection={activeSection}
+        onNavClick={handleNavClick}
       />
     </>
   );

@@ -39,20 +39,20 @@ export default function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="py-20 bg-deep-navy relative"
+      className="py-24 md:py-32 scroll-mt-[100px] bg-deep-navy relative"
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,var(--color-background)_0%,transparent_100%)] opacity-70" />
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-[8vw] relative z-10">
+      <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw] relative z-10">
         <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-32 uppercase project-section">
           SELECTED WORK
         </h2>
 
         <div className="flex flex-col gap-24">
-          {profile.projects.map((project) => (
-            <div key={project.id} className="project-section group relative flex flex-col md:flex-row gap-8 md:gap-16 items-start p-8 -mx-8 hover:bg-white/[0.02] rounded-2xl transition-colors duration-500 cursor-pointer">
+          {profile.projects.filter(p => p.featured).slice(0, 6).map((project, index) => (
+            <div key={project.slug} className="project-section group relative flex flex-col md:flex-row gap-8 md:gap-16 items-start p-8 -mx-8 hover:bg-white/[0.02] rounded-2xl transition-colors duration-500 cursor-pointer">
               <div className="text-6xl md:text-8xl font-bold text-white/[0.03] group-hover:text-white/[0.08] group-hover:-translate-y-2 group-hover:-translate-x-2 transition-all duration-500 tracking-tighter shrink-0 select-none -mt-2 md:-mt-6">
-                {project.id}
+                {String(index + 1).padStart(2, "0")}
               </div>
               
               <div className="flex-grow relative z-10">
@@ -72,7 +72,7 @@ export default function Projects() {
                 </div>
 
                 <div className="flex gap-6 items-center">
-                  {(project as any).visibility === "private" ? (
+                  {project.visibility === "private" ? (
                     <span className="text-xs font-medium tracking-widest text-secondary-text/50 uppercase border border-white/10 px-3 py-1.5 rounded-sm">
                       PRIVATE REPOSITORY
                     </span>
@@ -102,6 +102,16 @@ export default function Projects() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-20 flex justify-center project-section">
+          <a 
+            href="/projects"
+            className="flex items-center gap-4 border border-white/10 rounded-full px-8 py-4 hover:border-accent-cyan/50 hover:bg-white/[0.02] transition-colors"
+          >
+            <span className="text-xs tracking-[0.2em] font-semibold text-primary-text uppercase">VIEW ALL PROJECTS</span>
+            <span className="text-accent-cyan">→</span>
+          </a>
         </div>
       </div>
     </section>
