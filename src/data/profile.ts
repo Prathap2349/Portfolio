@@ -1,0 +1,77 @@
+export const profile = {
+  name: "Prathap",
+  role: "AI & Data Science Student",
+  education: "B.Tech Artificial Intelligence & Data Science",
+  intro: "I'm Prathap, an AI & Data Science student who enjoys turning ideas into useful software.",
+  focus: ["Web Development", "AI", "Data", "Software"],
+  location: "India",
+  github: {
+    primary: {
+      username: "Prathap2349",
+      label: "MAIN",
+      url: "https://github.com/Prathap2349",
+    },
+    secondary: {
+      username: "",
+      label: "SECONDARY",
+      url: "",
+    },
+  },
+  skills: {
+    development: ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Next.js"],
+    programming: ["Java", "Python"],
+    ai_data: ["AI", "Machine Learning", "Data Science"],
+    tools: ["Git", "GitHub", "VS Code", "Vercel"],
+  },
+  projects: [
+    {
+      id: "01",
+      name: "MY HUB",
+      description: "A centralized platform for managing projects and resources.",
+      status: "Active",
+      isBuilding: true,
+      visibility: "public",
+      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+      githubUrl: "https://github.com/Prathap2349/my-hub",
+      liveUrl: "",
+    },
+    {
+      id: "02",
+      name: "OLLAMA PET",
+      description: "An AI companion application utilizing local language models.",
+      status: "In Development",
+      isBuilding: true,
+      visibility: "private",
+      technologies: ["Python", "Ollama", "AI"],
+      githubUrl: "",
+      liveUrl: "",
+    },
+    {
+      id: "03",
+      name: "ECHO AI",
+      description: "An intelligent voice and text processing AI assistant.",
+      status: "Active",
+      isBuilding: false,
+      visibility: "private",
+      technologies: ["Machine Learning", "Python", "Data Science"],
+      githubUrl: "",
+      liveUrl: "",
+    },
+    {
+      id: "04",
+      name: "FOCUSVAULT",
+      description: "A productivity tool designed to help developers maintain deep work sessions.",
+      status: "Beta",
+      isBuilding: true,
+      visibility: "private",
+      technologies: ["React", "TypeScript", "Node.js"],
+      githubUrl: "",
+      liveUrl: "",
+    }
+  ],
+  social: {
+    email: "prathapsenthilkumar9@gmail.com",
+    linkedin: "https://www.linkedin.com/in/prathap-s-77a366374",
+    leetcode: "",
+  }
+};
