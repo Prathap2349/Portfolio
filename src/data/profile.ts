@@ -1,89 +1,34 @@
-export const profile = {
+import { Profile } from "@/types";
+import { projects } from "./projects";
+
+export const profile: Profile = {
   name: "Prathap",
   role: "AI & Data Science Student",
   education: "B.Tech Artificial Intelligence & Data Science",
-  intro: "I'm Prathap, an AI & Data Science student who enjoys turning ideas into useful software.",
-  focus: ["Web Development", "AI", "Data", "Software"],
+  intro: "Building data-driven applications, AI tools and practical software.",
+  focus: ["Software Engineering", "Artificial Intelligence", "Real-world Products"],
   location: "India",
+  internshipStatus: "OPEN TO INTERNSHIPS",
   github: {
     primary: {
       username: "Prathap2349",
       label: "MAIN",
       url: "https://github.com/Prathap2349",
-    },
-    secondary: {
-      username: "",
-      label: "SECONDARY",
-      url: "",
-    },
+    }
   },
   skills: {
-    development: ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Next.js"],
-    programming: ["Java", "Python"],
-    ai_data: ["AI", "Machine Learning", "Data Science"],
-    tools: ["Git", "GitHub", "VS Code", "Vercel"],
+    languages: ["Python", "TypeScript", "JavaScript", "Java", "C++"],
+    frontend: ["React", "Next.js", "Tailwind CSS", "HTML/CSS"],
+    backend: ["Node.js"],
+    ai_ml: ["Machine Learning", "Data Science", "Computer Vision", "Ollama", "TensorFlow", "OpenCV"],
+    data: ["Data Analytics"],
+    tools: ["Git", "GitHub", "VS Code", "Vercel", "FFmpeg"],
   },
-  projects: [
-    {
-      slug: "my-hub",
-      name: "MY HUB",
-      description: "A centralized platform for managing projects and resources.",
-      category: "WEB",
-      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
-      status: "Active",
-      visibility: "public",
-      featured: true,
-      isBuilding: true,
-      githubUrl: "https://github.com/Prathap2349/my-hub",
-      liveUrl: "",
-      year: 2024,
-    },
-    {
-      slug: "ollama-pet",
-      name: "OLLAMA PET",
-      description: "An AI companion application utilizing local language models.",
-      category: "AI",
-      technologies: ["Python", "Ollama", "AI"],
-      status: "In Development",
-      visibility: "private",
-      featured: true,
-      isBuilding: true,
-      githubUrl: "",
-      liveUrl: "",
-      year: 2024,
-    },
-    {
-      slug: "echo-ai",
-      name: "ECHO AI",
-      description: "An intelligent voice and text processing AI assistant.",
-      category: "AI",
-      technologies: ["Machine Learning", "Python", "Data Science"],
-      status: "Active",
-      visibility: "private",
-      featured: true,
-      isBuilding: false,
-      githubUrl: "",
-      liveUrl: "",
-      year: 2024,
-    },
-    {
-      slug: "focusvault",
-      name: "FOCUSVAULT",
-      description: "A productivity tool designed to help developers maintain deep work sessions.",
-      category: "TOOLS",
-      technologies: ["React", "TypeScript", "Node.js"],
-      status: "Beta",
-      visibility: "private",
-      featured: true,
-      isBuilding: true,
-      githubUrl: "",
-      liveUrl: "",
-      year: 2024,
-    }
-  ],
   social: {
     email: "prathapsenthilkumar9@gmail.com",
     linkedin: "https://www.linkedin.com/in/prathap-s-77a366374",
-    leetcode: "",
+    github: "https://github.com/Prathap2349",
   }
 };
+
+export { projects };

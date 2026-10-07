@@ -17,7 +17,6 @@
 
 @layer base {
   html {
-    scroll-padding-top: 100px; /* Offset for fixed navigation */
   }
   body {
     background-color: var(--color-background);

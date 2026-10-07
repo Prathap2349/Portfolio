@@ -3,6 +3,7 @@
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import { useState, useEffect, useRef } from "react";
+import { useLenis } from "@/animations/ScrollProvider";
 
 const navLinks = [
   { href: "#hero", label: "HOME", disabled: false },
@@ -18,6 +19,7 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
+  const lenis = useLenis();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,9 +97,6 @@ export default function Navigation() {
     }
 
     const headerOffset = 100;
-    
-    // Check if Lenis instance is available globally
-    const lenis = (window as any).lenis;
     
     if (lenis) {
       // Use Lenis for synchronized scrolling

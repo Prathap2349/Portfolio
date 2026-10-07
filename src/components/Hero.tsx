@@ -134,55 +134,70 @@ export default function Hero() {
           className="relative z-10 w-full lg:w-3/5 flex flex-col justify-center h-full pt-[45svh] lg:pt-0 lg:-mt-10 pointer-events-none"
         >
           {/* Subtle gradient scrim behind text for readability against complex artwork */}
-          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-transparent -ml-6 md:-ml-12 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent -ml-6 md:-ml-12 pointer-events-none" />
 
           <div className="relative z-10">
-            <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-[10px] md:text-xs mb-5 hero-text-elem drop-shadow-[0_0_8px_rgba(111,231,255,0.3)]">
-              {profile.role.toUpperCase()}
-            </h2>
+            <div className="inline-flex items-center gap-3 mb-6 hero-text-elem">
+              <span className="text-accent-cyan font-semibold tracking-[0.25em] text-[10px] md:text-xs drop-shadow-[0_0_8px_rgba(111,231,255,0.3)]">
+                {profile.role.toUpperCase()}
+              </span>
+              <span className="px-3 py-1 rounded-full border border-accent-cyan/30 bg-accent-cyan/10 text-accent-cyan text-[10px] tracking-widest uppercase flex items-center gap-2 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse"></span>
+                {profile.internshipStatus}
+              </span>
+            </div>
             
-            <h1 className="text-6xl md:text-7xl lg:text-[7vw] leading-[0.9] font-bold tracking-tight text-primary-text mb-8 hero-text-elem drop-shadow-2xl" style={{ letterSpacing: "-0.02em" }}>
+            <h1 className="text-5xl md:text-7xl lg:text-[7vw] leading-[0.9] font-bold tracking-tight text-primary-text mb-6 hero-text-elem drop-shadow-2xl" style={{ letterSpacing: "-0.02em" }}>
               {profile.name.toUpperCase()}
             </h1>
             
-            <div className="space-y-1 mb-8 text-primary-text/90 text-lg md:text-2xl font-light tracking-wide hero-text-elem drop-shadow-lg">
-              <p>AI & DATA SCIENCE STUDENT.</p>
-              <p>ENGINEERING INTELLIGENT SYSTEMS.</p>
+            <div className="mb-8 text-primary-text/90 text-lg md:text-xl lg:text-2xl font-light tracking-wide hero-text-elem drop-shadow-lg max-w-lg leading-relaxed">
+              <p>{profile.intro}</p>
             </div>
             
-            <p className="text-xs md:text-sm tracking-[0.15em] font-medium text-secondary-text/80 hero-text-elem uppercase">
-              {profile.focus.join(" • ")}
-            </p>
+            <div className="flex flex-wrap items-center gap-4 hero-text-elem mt-10 pointer-events-auto">
+              <a 
+                href="#projects"
+                className="bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
+              >
+                VIEW SELECTED WORK
+              </a>
+              <a 
+                href={profile.social.resume || "#"}
+                target={profile.social.resume ? "_blank" : "_self"}
+                className="bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
+              >
+                DOWNLOAD RESUME
+              </a>
+              <a 
+                href="#contact"
+                className="text-secondary-text hover:text-accent-cyan px-4 py-3 text-xs font-semibold tracking-widest uppercase transition-all duration-300"
+              >
+                CONTACT
+              </a>
+            </div>
           </div>
         </div>
 
         {/* Desktop Portrait - Blended naturally with interactive reveal */}
         <div 
           ref={portraitRef} 
-          className="hidden lg:block absolute inset-0 w-full h-full z-0"
+          className="hidden lg:block absolute inset-0 w-full h-full z-0 pointer-events-none"
           aria-hidden="true"
         >
-          <InteractiveImageReveal />
+          <div className="pointer-events-auto w-full h-full">
+            <InteractiveImageReveal />
+          </div>
         </div>
       </div>
 
       {/* Scroll Indicator (Left) */}
-      <div className="absolute bottom-12 left-[8vw] z-20 flex items-center gap-4 rotate-90 origin-left">
+      <div className="absolute bottom-12 left-[8vw] z-20 flex items-center gap-4 rotate-90 origin-left hidden md:flex">
         <span className="text-[10px] tracking-[0.3em] font-medium text-secondary-text">SCROLL</span>
         <div className="w-16 h-[2px] bg-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 h-full w-1/3 bg-accent-cyan scroll-line-horizontal" />
         </div>
       </div>
-
-      {/* Explore Button (Right) */}
-      <a 
-        href="#projects"
-        className="absolute bottom-12 right-[8vw] z-20 flex items-center gap-4 border border-white/10 rounded-full px-6 py-3 hover:border-accent-cyan/50 hover:bg-white/[0.02] transition-colors"
-      >
-        <div className="w-2 h-2 rounded-full bg-accent-cyan" />
-        <span className="text-[10px] tracking-[0.2em] font-semibold text-primary-text">EXPLORE MY WORK</span>
-        <span className="text-secondary-text ml-2">→</span>
-      </a>
     </section>
   );
 }

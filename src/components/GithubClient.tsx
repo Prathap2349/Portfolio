@@ -47,7 +47,7 @@ export default function GithubClient({ data }: GithubClientProps) {
     <section 
       id="github" 
       ref={containerRef}
-      className="py-24 md:py-32 scroll-mt-[100px] min-h-[60svh] bg-deep-navy relative"
+      className="py-24 md:py-32 min-h-[60svh] bg-deep-navy relative"
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--color-background)_0%,transparent_100%)] opacity-50" />
       

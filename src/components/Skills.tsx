@@ -14,17 +14,18 @@ export default function Skills() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ".skill-group",
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          stagger: 0.15,
+          stagger: 0.1,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 75%",
-            toggleActions: "play none none reverse",
+            toggleActions: "play none none none",
+            once: true
           },
         }
       );
@@ -34,34 +35,37 @@ export default function Skills() {
   }, []);
 
   const categories = [
-    { title: "DEVELOPMENT", items: profile.skills.development },
-    { title: "PROGRAMMING", items: profile.skills.programming },
-    { title: "AI / DATA", items: profile.skills.ai_data },
-    { title: "TOOLS", items: profile.skills.tools },
+    { title: "LANGUAGES", items: profile.skills.languages },
+    { title: "FRONTEND", items: profile.skills.frontend },
+    { title: "BACKEND", items: profile.skills.backend },
+    { title: "AI / ML", items: profile.skills.ai_ml },
+    { title: "DATA", items: profile.skills.data },
+    { title: "TOOLS / PLATFORMS", items: profile.skills.tools },
   ];
 
   return (
     <section 
       id="skills" 
       ref={containerRef}
-      className="py-24 md:py-32 scroll-mt-[100px] min-h-[70svh] bg-background relative border-t border-white/5"
+      className="py-24 md:py-32 min-h-[70svh] bg-background relative border-t border-white/5"
     >
       <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw]">
-        <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-20 uppercase skill-group">
-          SKILLS
+        <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-16 uppercase skill-group flex items-center gap-4">
+          <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
+          SKILLS & TECHNOLOGIES
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
           {categories.map((category) => (
-            <div key={category.title} className="skill-group">
-              <h3 className="text-secondary-text/50 font-light tracking-[0.2em] text-xs mb-8 uppercase">
+            <div key={category.title} className="skill-group flex flex-col">
+              <h3 className="text-secondary-text font-semibold tracking-widest text-xs mb-6 uppercase border-b border-white/5 pb-4">
                 {category.title}
               </h3>
               <div className="flex flex-wrap gap-3">
                 {category.items.map((skill) => (
                   <span 
                     key={skill} 
-                    className="px-4 py-2 border border-white/10 text-primary-text/90 text-sm tracking-wide bg-white/[0.02]"
+                    className="px-4 py-2 border border-white/10 text-primary-text/90 text-sm tracking-wide bg-white/[0.02] hover:border-accent-cyan/30 hover:text-accent-cyan transition-colors rounded-sm"
                   >
                     {skill}
                   </span>

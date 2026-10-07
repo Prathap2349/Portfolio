@@ -1,11 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, createContext, useContext, useState } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+const LenisContext = createContext<Lenis | null>(null);
+
+export function useLenis() {
+  return useContext(LenisContext);
+}
+
 export default function ScrollProvider({ children }: { children: React.ReactNode }) {
+  const [lenisInstance, setLenisInstance] = useState<Lenis | null>(null);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     
@@ -31,18 +39,17 @@ export default function ScrollProvider({ children }: { children: React.ReactNode
     gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
     
-    // Expose lenis instance globally for navigation
-    // This allows Navigation components to use lenis.scrollTo() safely
-    (window as any).lenis = lenis;
+    setLenisInstance(lenis);
 
     return () => {
       lenis.destroy();
       gsap.ticker.remove(updateLenis);
-      if ((window as any).lenis === lenis) {
-        delete (window as any).lenis;
-      }
     };
   }, []);
 
-  return <>{children}</>;
+  return (
+    <LenisContext.Provider value={lenisInstance}>
+      {children}
+    </LenisContext.Provider>
+  );
 }

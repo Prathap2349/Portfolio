@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "@/data/profile";
+import { projects } from "@/data/projects";
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -16,7 +17,7 @@ export default function About() {
       // Very subtle reveal for the about section
       gsap.fromTo(
         ".about-reveal",
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
@@ -26,7 +27,8 @@ export default function About() {
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 70%",
-            toggleActions: "play none none reverse",
+            toggleActions: "play none none none",
+            once: true
           },
         }
       );
@@ -39,28 +41,39 @@ export default function About() {
     <section 
       id="about" 
       ref={containerRef}
-      className="py-24 md:py-32 scroll-mt-[100px] bg-background relative overflow-hidden"
+      className="py-24 md:py-32 bg-background relative overflow-hidden border-t border-white/5"
     >
       <div className="container mx-auto px-6 md:px-12 lg:px-[8vw] z-10 relative w-full">
-        <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-16 uppercase about-reveal flex items-center gap-4">
-          <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
-          ABOUT ME
-        </h2>
-
-        <div ref={textRef} className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
           <div className="lg:w-2/3">
-            <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-primary-text leading-tight about-reveal" style={{ letterSpacing: "-0.02em" }}>
-              AI & Data Science student building software, exploring AI, web development and automation.
+            <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-10 uppercase about-reveal flex items-center gap-4">
+              <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
+              ABOUT ME
+            </h2>
+            <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-primary-text leading-tight about-reveal mb-8" style={{ letterSpacing: "-0.02em" }}>
+              {profile.intro}
             </h3>
             
-            <p className="mt-12 text-secondary-text text-xl leading-relaxed max-w-2xl about-reveal font-light">
-              My focus lies at the intersection of modern software development and artificial intelligence. I enjoy exploring how data and AI can be integrated into functional, well-designed web applications.
-            </p>
+            <div className="space-y-6 text-secondary-text text-lg leading-relaxed max-w-2xl about-reveal font-light">
+              <p>
+                I'm Prathap, an AI & Data Science student with a passion for software engineering. I enjoy taking complex problems and building robust, well-designed solutions that work in the real world.
+              </p>
+              <p>
+                Currently, I am heavily focused on developing applications that leverage artificial intelligence, computer vision, and modern web architectures. My goal is to secure an internship where I can contribute to impactful projects and learn from experienced engineers.
+              </p>
+            </div>
+            
+            <div className="mt-12 about-reveal inline-block">
+               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent-cyan/30 bg-accent-cyan/10 text-accent-cyan text-xs font-semibold tracking-widest uppercase">
+                  <span className="w-2 h-2 rounded-full bg-accent-cyan animate-pulse"></span>
+                  {profile.internshipStatus}
+               </span>
+            </div>
           </div>
 
-          <div className="lg:w-1/3 flex flex-col gap-10 about-reveal pt-4 border-t border-white/5 lg:border-t-0 lg:border-l lg:pl-12 lg:pt-0">
+          <div className="lg:w-1/3 w-full flex flex-col gap-10 about-reveal pt-4 border-t border-white/5 lg:border-t-0 lg:border-l lg:pl-12 lg:pt-0">
             <div>
-              <h4 className="text-[10px] tracking-[0.2em] text-secondary-text/50 mb-3 uppercase">STUDYING</h4>
+              <h4 className="text-[10px] tracking-[0.2em] text-secondary-text/50 mb-3 uppercase">EDUCATION</h4>
               <p className="text-primary-text tracking-wide text-sm font-medium">{profile.education}</p>
             </div>
             
@@ -72,8 +85,15 @@ export default function About() {
             </div>
             
             <div>
-              <h4 className="text-[10px] tracking-[0.2em] text-secondary-text/50 mb-3 uppercase">CURRENTLY</h4>
-              <p className="text-primary-text tracking-wide text-sm font-medium">BUILDING & LEARNING</p>
+              <h4 className="text-[10px] tracking-[0.2em] text-secondary-text/50 mb-3 uppercase">ACTIVITY</h4>
+              <p className="text-primary-text tracking-wide text-sm font-medium">
+                Building {projects.length} verified projects
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-[10px] tracking-[0.2em] text-secondary-text/50 mb-3 uppercase">LOCATION</h4>
+              <p className="text-primary-text tracking-wide text-sm font-medium">{profile.location}</p>
             </div>
           </div>
         </div>
