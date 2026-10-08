@@ -3,6 +3,7 @@ import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import ScrollProvider from "@/animations/ScrollProvider";
+import Cursor from "@/components/Cursor";
 
 
 const inter = Inter({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col bg-background text-primary-text selection:bg-amber-500/30 font-sans">
         
         <ScrollProvider>
+        <Cursor />
           {/* Scroll Progress Bar */}
           <div id="global-scroll-progress" className="fixed top-0 left-0 h-[2px] bg-amber-500 z-[100] origin-left scale-x-0" />
           

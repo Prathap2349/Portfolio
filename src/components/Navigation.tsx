@@ -123,6 +123,25 @@ export default function Navigation() {
     }
   }, [isMobileMenuOpen]);
 
+  const activeIndicatorRef = useRef<HTMLSpanElement>(null);
+  const navContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Magic line transition for desktop navigation
+    if (!isMobileMenuOpen && navContainerRef.current && activeIndicatorRef.current) {
+      const activeLink = navContainerRef.current.querySelector(`[data-id="${activeSection}"]`) as HTMLElement;
+      if (activeLink) {
+        gsap.to(activeIndicatorRef.current, {
+          x: activeLink.offsetLeft,
+          width: activeLink.offsetWidth,
+          duration: 0.4,
+          ease: "power3.out"
+        });
+        gsap.set(activeIndicatorRef.current, { opacity: 1 });
+      }
+    }
+  }, [activeSection, isMobileMenuOpen]);
+
   return (
     <>
       <nav 
@@ -137,14 +156,19 @@ export default function Navigation() {
           PRATHAP
         </Link>
         
-        <div className="hidden md:flex gap-10 items-center z-10 text-[10px] tracking-[0.2em] font-semibold">
+        <div ref={navContainerRef} className="hidden md:flex gap-10 items-center z-10 text-[10px] tracking-[0.2em] font-semibold relative">
+          <span 
+            ref={activeIndicatorRef} 
+            className="absolute top-0 left-0 h-[2px] bg-accent-cyan pointer-events-none opacity-0" 
+          />
           {navLinks.map((link) => {
             const id = link.href.split("#")[1];
             const isActive = activeSection === id;
             return (
               <Link 
                 key={link.label} 
-                href={link.href} 
+                href={link.href}
+                data-id={id}
                 className={`transition-colors relative group py-2
                   ${link.disabled ? 'text-secondary-text/40 cursor-not-allowed' : 
                     isActive ? 'text-accent-cyan' : 'text-primary-text/70 hover:text-primary-text'}
@@ -160,9 +184,6 @@ export default function Navigation() {
                 }}
               >
                 {link.label}
-                {isActive && (
-                  <span className="absolute top-0 left-0 w-full h-[2px] bg-accent-cyan" />
-                )}
               </Link>
             );
           })}
