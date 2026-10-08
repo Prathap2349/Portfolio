@@ -10,11 +10,11 @@ export const profile = {
   internshipStatus: "OPEN TO INTERNSHIPS",
   currentlyLearning: ["Native macOS development (Swift)", "Next.js", "Local LLMs"],
   timeline: [
-    { year: "2022", title: "Started B.Tech AI & Data Science", description: "Began my formal education in Artificial Intelligence and Data Science. Wrote my first lines of code." },
-    { year: "2023", title: "Exploring Machine Learning", description: "Dived deeper into Python, data engineering, and machine learning models." },
-    { year: "2024", title: "Full-Stack & Automations", description: "Built projects like SpendWise and MangaUltra to solve my own daily problems." },
-    { year: "2025", title: "Building Native & AI", description: "Focusing on offline-first desktop apps like USBBridge and Ollama Pet." },
-    { year: "2026", title: "Graduation (Expected)", description: "Completing my B.Tech degree and ready to build scalable production systems." }
+    { year: "2025", title: "Started B.Tech AI & Data Science", description: "Began my formal education in Artificial Intelligence and Data Science. Wrote my first lines of code." },
+    { year: "2026", title: "2nd Year - Building Native & AI", description: "Focusing on offline-first desktop apps like USBBridge and Ollama Pet while deepening my ML knowledge." },
+    { year: "2027", title: "Full-Stack & Automations", description: "Planning to build scalable applications and automated tools to solve complex daily problems." },
+    { year: "2028", title: "Advanced AI Projects", description: "Diving deeper into advanced local LLMs, computer vision, and complex data engineering." },
+    { year: "2029", title: "Graduation (Expected)", description: "Completing my B.Tech degree and ready to join the industry." }
   ],
   github: {
     primary: {
