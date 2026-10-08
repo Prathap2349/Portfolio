@@ -94,14 +94,21 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
     if (sections.length === 0) return;
 
     const ctx = gsap.context(() => {
+      const getScrollAmount = () => {
+        if (!trackRef.current) return 0;
+        const trackWidth = trackRef.current.scrollWidth;
+        return -(trackWidth - window.innerWidth);
+      };
+
       // Horizontal Scroll Timeline
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           pin: true,
           scrub: 1, 
-          end: () => `+=${trackRef.current?.offsetWidth || 0}`,
+          end: () => `+=${trackRef.current ? trackRef.current.scrollWidth - window.innerWidth : 0}`,
           invalidateOnRefresh: true, // Fix for layout shifts
+          anticipatePin: 1,
           onUpdate: (self) => {
              // Update counter manually based on progress
              const counter = containerRef.current?.querySelector(".project-counter");
@@ -119,8 +126,8 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
       // Hold at start
       tl.to({}, { duration: 0.05 });
       // Slide all sections
-      tl.to(sections, {
-        xPercent: -100 * (sections.length - 1),
+      tl.to(trackRef.current, {
+        x: getScrollAmount,
         ease: "none",
         duration: 1
       });
@@ -128,11 +135,10 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
       tl.to({}, { duration: 0.05 });
 
       // Parallax effect using containerAnimation
-      sections.forEach((section, i) => {
+      sections.forEach((section) => {
         const image = section.querySelector(".parallax-image");
-        const content = section.querySelector(".parallax-content");
         
-        if (image && content) {
+        if (image) {
           gsap.fromTo(image, 
             { x: -50 }, 
             {
@@ -170,10 +176,10 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
           <span className="project-counter">01</span> / <span className="text-white/50">{totalStr}</span>
         </div>
 
-        <div className="h-full w-full flex" ref={trackRef} style={{ width: `${projects.length * 100}vw` }}>
-          {projects.map((project, i) => {
+        <div className="h-full flex flex-nowrap w-max" ref={trackRef}>
+          {projects.map((project) => {
             const currentStageIndex = getStageIndex(project.status);
-            const numStr = (i + 1).toString().padStart(2, '0');
+             
             const glow = getGlowColor(project.category);
 
             return (
@@ -276,26 +282,21 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
         </div>
       </div>
 
-      {/* Mobile/Reduced Motion Swipeable Carousel */}
-      <div className="lg:hidden w-full overflow-hidden bg-background py-16 relative">
-        <h2 className="text-[10px] text-accent-cyan font-semibold tracking-[0.4em] uppercase mb-8 px-6 flex items-center gap-4">
+      {/* Mobile/Reduced Motion Vertical List */}
+      <div className="lg:hidden w-full bg-background py-16 px-6 relative">
+        <h2 className="text-xs text-amber-500 font-semibold tracking-widest uppercase mb-12 flex items-center gap-4">
           03 / PROJECTS
-          <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
+          <span className="w-8 h-[1px] bg-amber-500/50 inline-block"></span>
         </h2>
 
-        {/* Snap Carousel Container */}
-        <div className="w-full overflow-x-auto snap-x snap-mandatory flex gap-6 px-6 pb-12 pt-4 scrollbar-hide" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
+        <div className="w-full flex flex-col gap-12">
           {projects.map((project, i) => {
-            const glow = getGlowColor(project.category);
-            const numStr = (i + 1).toString().padStart(2, '0');
+             
             
             return (
-              <div key={project.slug} className="snap-center shrink-0 w-[85vw] max-w-sm flex flex-col gap-6 relative">
-                {/* Mobile glow */}
-                <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[50%] ${glow} rounded-full blur-[80px] mix-blend-screen opacity-40 pointer-events-none z-0`} />
-
-                <div className="relative z-10 w-full aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 bg-black shadow-xl group">
-                  {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
+              <div key={project.slug} className="w-full flex flex-col gap-4 relative group">
+                <div className="relative z-10 w-full aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-black shadow-xl">
+                  {project.problem ? (
                     <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-20">
                       <span className="sr-only">View {project.name}</span>
                     </Link>
@@ -305,37 +306,35 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                     </a>
                   ) : null}
 
-                  {/* Media */}
                   {project.videoUrl ? (
-                    <video src={project.videoUrl} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
+                    <video src={project.videoUrl} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                  ) : project.mockupUrl ? (
+                    <Image src={project.mockupUrl} alt={project.name} fill sizes="90vw" className="object-cover" />
                   ) : project.images && project.images.length > 0 ? (
-                    <Image src={project.images[0]} alt={project.name} fill sizes="85vw" className="object-cover" />
+                    <Image src={project.images[0]} alt={project.name} fill sizes="90vw" className="object-cover" />
                   ) : (
                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-black to-white/5 p-6 text-center">
-                        <span className="text-white/40 font-bold text-3xl uppercase tracking-widest drop-shadow-md">{project.name}</span>
+                        <span className="text-white/40 font-bold text-2xl uppercase tracking-widest drop-shadow-md">{project.name}</span>
                         <span className="text-white/20 font-light text-xs uppercase tracking-[0.3em] mt-3">PREVIEW</span>
                      </div>
                   )}
 
-                  {/* Gradient overlay for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none z-10" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm pointer-events-none z-10">
+                    <span className="px-6 py-3 rounded border border-white/20 bg-white/10 text-white text-xs tracking-widest uppercase font-semibold">
+                       {project.problem ? "Read Case Study" : project.liveUrl ? "View Live" : "Source Code"}
+                    </span>
+                  </div>
+                </div>
 
-                  {/* Content overlay */}
-                  <div className="absolute bottom-0 left-0 w-full p-6 z-10 flex flex-col justify-end">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-[9px] tracking-widest text-white uppercase px-2 py-1 rounded border border-white/20 bg-white/10 backdrop-blur-md">
-                        {project.category}
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{project.name}</h3>
-                    <p className="text-white/70 text-xs font-light line-clamp-2">{project.description}</p>
+                <div className="flex flex-col gap-2 relative z-10">
+                  <div className="text-white/40 text-[10px] font-mono tracking-widest">{(i + 1).toString().padStart(2, '0')} / {totalStr} — {project.year}</div>
+                  <h3 className="text-xl font-bold text-white tracking-wide">{project.name}</h3>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {project.technologies.slice(0, 3).map(tech => (
+                      <span key={tech} className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-secondary-text uppercase tracking-wider">{tech}</span>
+                    ))}
                   </div>
-                  
-                  {/* Counter */}
-                  <div className="absolute top-4 right-4 z-10 text-white/50 text-[10px] font-bold tracking-widest px-2 py-1 bg-black/40 backdrop-blur-md rounded border border-white/10">
-                    {numStr} / {totalStr}
-                  </div>
+                  <p className="text-secondary-text text-sm leading-relaxed mt-2">{project.description}</p>
                 </div>
               </div>
             );

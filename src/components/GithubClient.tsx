@@ -34,7 +34,7 @@ function AnimatedHeatmap() {
         from: "random"
       }
     });
-  }, []);
+  }, [lastRepo?.updated_at]);
 
   // Generate 7 rows by 30 cols
   const cells = Array.from({ length: 7 * 30 });
@@ -43,8 +43,8 @@ function AnimatedHeatmap() {
     <div ref={mapRef} className="w-full overflow-hidden flex justify-end opacity-60">
       <div className="grid grid-rows-7 gap-1" style={{ gridTemplateColumns: "repeat(30, minmax(0, 1fr))" }}>
         {cells.map((_, i) => {
-          // Random color intensity for empty, low, medium, high
-          const rand = Math.random();
+          // Stable pseudo-random based on index
+          const rand = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
           let color = "bg-white/5";
           if (rand > 0.9) color = "bg-accent-cyan/80";
           else if (rand > 0.7) color = "bg-accent-cyan/50";
@@ -63,16 +63,20 @@ export default function GithubClient({ data }: GithubClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [repoCount, setRepoCount] = useState(0);
   const [starCount, setStarCount] = useState(0);
+  const [hoursAgo, setHoursAgo] = useState("UNKNOWN");
 
   // Calculate hours ago for the last commit based on updated_at
   const lastRepo = data.repos.length > 0 ? data.repos[0] : null;
-  let hoursAgo = "UNKNOWN";
-  if (lastRepo) {
-    const diff = Date.now() - new Date(lastRepo.updated_at).getTime();
-    hoursAgo = Math.max(1, Math.floor(diff / (1000 * 60 * 60))).toString();
-  }
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (lastRepo) {
+      timeoutId = setTimeout(() => {
+        const diff = Date.now() - new Date(lastRepo.updated_at).getTime();
+        setHoursAgo(Math.max(1, Math.floor(diff / (1000 * 60 * 60))).toString());
+      }, 0);
+    }
+
     gsap.registerPlugin(ScrollTrigger);
     
     const ctx = gsap.context(() => {
@@ -123,7 +127,8 @@ export default function GithubClient({ data }: GithubClientProps) {
       });
     }, containerRef);
 
-    return () => ctx.revert();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => { ctx.revert(); if (timeoutId) clearTimeout(timeoutId); };
   }, [data]);
 
   return (

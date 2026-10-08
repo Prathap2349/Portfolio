@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "@/data/profile";
 
 // Card with spotlight and 3D tilt
-function TiltCard({ children, title, desc, icon }: { children?: React.ReactNode, title: string, desc: string, icon: React.ReactNode }) {
+function TiltCard({ title, desc, icon }: { title: string, desc: string, icon: React.ReactNode }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function About() {
       );
 
       // Timeline items fade up sequentially based on scroll
-      gsap.utils.toArray(".timeline-item").forEach((item: any) => {
+      gsap.utils.toArray(".timeline-item").forEach((item: Element) => {
         gsap.fromTo(item,
           { opacity: 0, x: -20 },
           {

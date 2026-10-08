@@ -4,17 +4,17 @@ export const profile = {
   name: "Prathap",
   role: "AI & Data Science Student",
   education: "B.Tech Artificial Intelligence & Data Science",
-  intro: "Building data-driven applications, AI tools and practical software.",
-  focus: ["Software Engineering", "Artificial Intelligence", "Real-world Products"],
-  location: "India",
+  intro: "I'm a student who likes building apps that solve real problems. I've built everything from offline file transfer tools to local AI assistants.",
+  focus: ["Software Engineering", "Artificial Intelligence", "Native Apps"],
+  location: "Tamil Nadu, India",
   internshipStatus: "OPEN TO INTERNSHIPS",
-  currentlyLearning: ["Agentic AI Workflows", "WebGL & GSAP Advanced", "Next.js Server Actions", "PostgreSQL"],
+  currentlyLearning: ["Native macOS development (Swift)", "Next.js", "Local LLMs"],
   timeline: [
-    { year: "2026", title: "Future: Real-World Impact", description: "Continuously learning and striving to ship impactful, large-scale products." },
-    { year: "2025", title: "Scaling Up & Internships", description: "Gaining professional experience and focusing on complex system design." },
-    { year: "2024", title: "Exploring Agentic AI & Modern Web", description: "Deep diving into LLM tooling, Next.js App Router, and complex full-stack architectures." },
-    { year: "2023", title: "B.Tech AI & Data Science", description: "Began formal education focusing on foundational Machine Learning, Data Analytics, and Software Engineering." },
-    { year: "2022", title: "First Code Written", description: "Started programming journey with Python and web basics." }
+    { year: "2026", title: "TODO(prathap): 2026 goals", description: "Add a realistic goal for graduation or projects here." },
+    { year: "2025", title: "Building Native & AI", description: "Focusing on offline-first desktop apps like USBBridge and Ollama Pet." },
+    { year: "2024", title: "Full-Stack & Automations", description: "Built projects like SpendWise and MangaUltra to solve my own daily problems." },
+    { year: "2023", title: "B.Tech AI & Data Science", description: "Started my formal education in machine learning and data engineering." },
+    { year: "2022", title: "First Lines of Code", description: "Started learning Python and web basics on my own." }
   ],
   github: {
     primary: {
