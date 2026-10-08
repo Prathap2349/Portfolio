@@ -153,7 +153,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
               
               <div className="w-full max-w-6xl grid grid-cols-2 gap-16 items-center">
                 {/* Content */}
-                <div className="flex flex-col opacity-0 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
+                <div className="flex flex-col" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
                   <div className="flex flex-wrap items-center gap-4 mb-6">
                     <span className="text-[10px] tracking-widest text-secondary-text uppercase px-3 py-1 rounded-full border border-white/10 bg-white/5">
                       {project.category}
