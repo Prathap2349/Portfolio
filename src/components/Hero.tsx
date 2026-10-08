@@ -67,8 +67,8 @@ export default function Hero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=150%", // Pins the hero for 1.5x the screen height
-          scrub: 1, 
+          end: "+=100%", // Pins the hero for just 1x screen height for a fast, responsive transition
+          scrub: 0.5, // slightly smooth the scrub so it feels realistic and fluid
           pin: true, // LOCK the hero in place!
           anticipatePin: 1,
         }
@@ -97,13 +97,8 @@ export default function Hero() {
         ease: "none"
       }, 0);
 
-      // Text subtle parallax fade out
-      tl.to(textRef.current, {
-        y: -150,
-        opacity: 0,
-        ease: "power1.in"
-      }, 0);
-
+      // The text now STAYS perfectly visible and locked while the cinematic image transition happens behind it!
+      // (Removed the code that made the text fade out early).
 
       return () => window.removeEventListener("mousemove", handleMouseMove);
     }, containerRef);
