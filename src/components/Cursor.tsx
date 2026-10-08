@@ -22,15 +22,22 @@ export default function Cursor() {
     const spotlight = spotlightRef.current;
     if (!cursor || !spotlight) return;
 
-    gsap.set(cursor, { xPercent: -50, yPercent: -50 });
-    gsap.set(spotlight, { xPercent: -50, yPercent: -50 });
+    gsap.set(cursor, { xPercent: -50, yPercent: -50, opacity: 0 });
+    gsap.set(spotlight, { xPercent: -50, yPercent: -50, opacity: 0 });
 
     const xToCursor = gsap.quickTo(cursor, "x", { duration: 0.15, ease: "power3" });
     const yToCursor = gsap.quickTo(cursor, "y", { duration: 0.15, ease: "power3" });
     const xToSpotlight = gsap.quickTo(spotlight, "x", { duration: 0.4, ease: "power3" });
     const yToSpotlight = gsap.quickTo(spotlight, "y", { duration: 0.4, ease: "power3" });
 
+    let hasMoved = false;
+
     const moveCursor = (e: MouseEvent) => {
+      if (!hasMoved) {
+        gsap.to(cursor, { opacity: 1, duration: 0.3 });
+        gsap.to(spotlight, { opacity: 1, duration: 0.3 });
+        hasMoved = true;
+      }
       xToCursor(e.clientX);
       yToCursor(e.clientY);
       xToSpotlight(e.clientX);
