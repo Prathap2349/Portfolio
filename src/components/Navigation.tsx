@@ -9,7 +9,6 @@ const navLinks = [
   { href: "/#hero", label: "HOME", disabled: false },
   { href: "/#about", label: "ABOUT", disabled: false },
   { href: "/#projects", label: "PROJECTS", disabled: false },
-  { href: "/#building", label: "BUILDING", disabled: false },
   { href: "/#skills", label: "SKILLS", disabled: false },
   { href: "/#github", label: "GITHUB", disabled: false },
   { href: "/#contact", label: "CONTACT", disabled: false },

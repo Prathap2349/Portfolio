@@ -159,7 +159,7 @@ export default function Hero() {
                 <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
               <a 
-                href="/resume.pdf"
+                href="https://resume-gamma-bice.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors"

@@ -6,6 +6,7 @@ export interface GithubRepo {
   stargazers_count: number;
   updated_at: string;
   html_url: string;
+  topics?: string[];
 }
 
 export interface GithubProfile {
@@ -15,7 +16,9 @@ export interface GithubProfile {
 
 export async function fetchGithubData(username: string) {
   try {
-    const headers: HeadersInit = {};
+    const headers: HeadersInit = {
+      "Accept": "application/vnd.github.mercy-preview+json" // For topics
+    };
     if (process.env.GITHUB_TOKEN) {
       headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
     }
@@ -28,22 +31,23 @@ export async function fetchGithubData(username: string) {
     if (!profileRes.ok) throw new Error("Failed to fetch profile");
     const profile: GithubProfile = await profileRes.json();
 
-    const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
+    // Fetch up to 100 to catch everything
+    const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`, {
       headers,
       next: { revalidate: 3600 }
     });
 
     if (!reposRes.ok) throw new Error("Failed to fetch repos");
-    const repos: GithubRepo[] = await reposRes.json();
+    const allRepos: GithubRepo[] = await reposRes.json();
 
-    const stars = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
+    const stars = allRepos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
 
-    return { profile, repos, stars, error: null };
+    return { profile, allRepos, stars, error: null };
   } catch (error) {
     console.error("GitHub API Error:", error);
     return { 
       profile: null, 
-      repos: [], 
+      allRepos: [], 
       stars: 0, 
       error: "Unable to load live GitHub data right now. Try again later." 
     };

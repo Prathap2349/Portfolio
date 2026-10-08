@@ -33,7 +33,7 @@ export const profile = {
     email: "prathapsenthilkumar9@gmail.com",
     linkedin: "https://www.linkedin.com/in/prathap-s-77a366374",
     github: "https://github.com/Prathap2349",
-    resume: "/resume.pdf"
+    resume: "https://resume-gamma-bice.vercel.app/"
   }
 };
 

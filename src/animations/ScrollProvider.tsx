@@ -40,7 +40,7 @@ export default function ScrollProvider({ children }: { children: React.ReactNode
     gsap.ticker.lagSmoothing(0);
     
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLenisInstance(lenis); (window as any).lenis = lenis;
+    setLenisInstance(lenis); (window as unknown as { lenis: Lenis }).lenis = lenis;
 
     return () => {
       lenis.destroy();
