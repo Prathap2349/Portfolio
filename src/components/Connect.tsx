@@ -150,7 +150,7 @@ export default function Connect() {
     <section 
       id="contact" 
       ref={containerRef}
-      className="py-32 md:py-48 bg-background relative overflow-hidden"
+      className="py-16 md:py-24 bg-background relative overflow-hidden"
     >
       {/* Warm Ambient Glow for the finale */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,184,107,0.05)_0%,transparent_70%)] pointer-events-none" />
@@ -179,6 +179,8 @@ export default function Connect() {
           <a 
             ref={emailBtnRef}
             href={mailtoLink}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 bg-[#FFB86B]/10 hover:bg-[#FFB86B]/20 border border-[#FFB86B]/30 text-[#FFB86B] px-8 py-4 rounded-full text-sm font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#FFB86B] shadow-[0_0_20px_rgba(255,184,107,0.15)] hover:shadow-[0_0_30px_rgba(255,184,107,0.3)]"
           >
             <Mail size={16} className="opacity-80" />

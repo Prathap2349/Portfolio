@@ -202,13 +202,13 @@ export default function About() {
             
             <div className="text-secondary-text text-lg space-y-6 font-light leading-relaxed about-text max-w-xl">
               <p>
-                [PLACEHOLDER: Write a specific, personal story here. E.g., &quot;It all started when I tried to automate a boring task...&quot; or &quot;I grew up tearing apart computers...&quot;] My journey started with a curiosity for how algorithms work and evolved into building full-stack products that users actually love to interact with.
+                My journey started with a curiosity for how algorithms work and evolved into building full-stack products that users actually love to interact with.
               </p>
               <p>
                 I thrive at the intersection of machine learning and modern front-end engineering. Whether I&apos;m designing a sleek UI with Next.js, or training models to analyze complex datasets, my goal is always the same: <span className="text-white">building something <span className="font-serif italic text-[#FFB86B] pr-1">useful</span> that solves a real problem.</span>
               </p>
               <p className="italic text-sm text-secondary-text/70 pt-2 border-t border-white/5">
-                &quot;[PLACEHOLDER: Add your 'Why I build' quote here. E.g., 'I build because I believe technology should feel like magic.']&quot;
+                &quot;I build because I believe technology should feel like magic.&quot;
               </p>
             </div>
             

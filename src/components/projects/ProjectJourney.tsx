@@ -18,8 +18,40 @@ export interface JourneyProject {
   videoUrl?: string;
   mockupUrl?: string;
   status: string;
+  problem?: string;
   category: string;
 }
+
+const MediaContent = ({ project }: { project: JourneyProject }) => (
+  <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+    {project.videoUrl ? (
+      <video 
+        src={project.videoUrl} 
+        autoPlay 
+        muted 
+        loop 
+        playsInline 
+        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+    ) : project.images && project.images.length > 0 ? (
+      <Image
+        src={project.images[0]}
+        alt={`${project.name} preview`}
+        fill
+        sizes="(max-width: 768px) 100vw, 60vw"
+        className="object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+    ) : (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-black to-white/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
+        <span className="text-white/20 font-bold text-4xl lg:text-6xl mb-4 uppercase tracking-widest text-center px-4 mix-blend-overlay">{project.name}</span>
+      </div>
+    )}
+    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+      <View className="text-white w-12 h-12" />
+    </div>
+  </div>
+);
 
 export default function ProjectJourney({ projects }: { projects: JourneyProject[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,14 +100,8 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
         scrollTrigger: {
           trigger: containerRef.current,
           pin: true,
-          scrub: 0.5,
-          snap: {
-            snapTo: 1 / (sections.length - 1),
-            duration: { min: 0.2, max: 0.6 },
-            delay: 0.1,
-            ease: "power1.inOut"
-          },
-          end: () => `+=${trackRef.current?.offsetWidth || 0}`
+          scrub: 1, // Smoother scrub
+          end: () => `+=${(trackRef.current?.offsetWidth || 0) * 1.5}` // Increase scroll distance to slow down the sliding speed
         }
       });
 
@@ -175,50 +201,51 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                       </div>
 
                       <div className="flex items-center gap-6">
-                        <Link 
-                          href={`/projects/${project.slug}`}
-                          className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan backdrop-blur-md"
-                        >
-                          EXPLORE <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
-                        </Link>
+                        {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
+                          <Link 
+                            href={`/projects/${project.slug}`}
+                            className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan backdrop-blur-md"
+                          >
+                            EXPLORE <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
+                          </Link>
+                        ) : project.githubUrl ? (
+                          <a 
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
+                          >
+                            SOURCE CODE <span className="inline-block transform transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                          </a>
+                        ) : project.liveUrl ? (
+                          <a 
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
+                          >
+                            VIEW LIVE <span className="inline-block transform transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                          </a>
+                        ) : null}
                       </div>
                     </div>
                   </div>
 
                   {/* Right: Media */}
                   <div className="col-span-7 h-[60vh] relative parallax-image">
-                    <Link href={`/projects/${project.slug}`} className="block w-full h-full group">
-                      <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
-                        {project.videoUrl ? (
-                          <video 
-                            src={project.videoUrl} 
-                            autoPlay 
-                            muted 
-                            loop 
-                            playsInline 
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                        ) : project.images && project.images.length > 0 ? (
-                          <Image
-                            src={project.images[0]}
-                            alt={`${project.name} preview`}
-                            fill
-                            sizes="60vw"
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-black to-white/5 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
-                            <span className="text-white/20 font-bold text-6xl mb-4 uppercase tracking-widest text-center px-4 mix-blend-overlay">{project.name}</span>
-                          </div>
-                        )}
-
-                        {/* Manga-style speed lines / overlay effect on hover */}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
-                           <View className="text-white w-12 h-12" />
-                        </div>
+                    {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
+                      <Link href={`/projects/${project.slug}`} className="block w-full h-full group">
+                        <MediaContent project={project} />
+                      </Link>
+                    ) : project.githubUrl || project.liveUrl ? (
+                      <a href={project.liveUrl || project.githubUrl} target="_blank" rel="noopener noreferrer" className="block w-full h-full group">
+                        <MediaContent project={project} />
+                      </a>
+                    ) : (
+                      <div className="block w-full h-full group">
+                        <MediaContent project={project} />
                       </div>
-                    </Link>
+                    )}
                   </div>
                 </div>
 
@@ -247,9 +274,15 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                 <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[50%] ${glow} rounded-full blur-[80px] mix-blend-screen opacity-40 pointer-events-none z-0`} />
 
                 <div className="relative z-10 w-full aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 bg-black shadow-xl group">
-                  <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-20">
-                    <span className="sr-only">View {project.name}</span>
-                  </Link>
+                  {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
+                    <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-20">
+                      <span className="sr-only">View {project.name}</span>
+                    </Link>
+                  ) : project.githubUrl || project.liveUrl ? (
+                    <a href={project.liveUrl || project.githubUrl} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-20">
+                      <span className="sr-only">View {project.name}</span>
+                    </a>
+                  ) : null}
 
                   {/* Media */}
                   {project.videoUrl ? (
