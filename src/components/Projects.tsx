@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "@/data/projects";
 import Link from "next/link";
-import { ExternalLink, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Projects() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,9 +60,9 @@ export default function Projects() {
               
               <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center w-full bg-white/[0.01] hover:bg-white/[0.03] border border-white/5 hover:border-accent-cyan/30 rounded-3xl p-6 lg:p-12 transition-all duration-500">
                 
-                {/* Text Content (Left) */}
+                {/* Text Content */}
                 <div className="flex-1 w-full flex flex-col justify-center">
-                  <div className="flex items-center gap-4 mb-6">
+                  <div className="flex flex-wrap items-center gap-4 mb-6">
                     <div className="text-accent-cyan/50 font-bold text-xl lg:text-2xl w-8 shrink-0">
                       {String(index + 1).padStart(2, "0")}
                     </div>
@@ -90,22 +90,22 @@ export default function Projects() {
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-6">
                     <span className="inline-flex items-center gap-2 text-primary-text group-hover:text-accent-cyan transition-colors text-xs font-semibold tracking-widest uppercase relative z-20 pointer-events-none">
-                      View Case Study
-                      <ArrowRight size={16} className="transform transition-transform duration-300 group-hover:translate-x-1" />
+                      VIEW CASE STUDY
+                      <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
                     </span>
                     
-                    {/* External Links (z-20 so they can be clicked over the main link) */}
-                    <div className="flex items-center gap-4 ml-auto relative z-20">
+                    <div className="flex items-center gap-4 relative z-20">
                       {project.githubUrl && (
                         <a 
                           href={project.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
+                          className="group/link text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase flex items-center gap-1"
+                          aria-label={`Open ${project.name} source code on GitHub`}
                         >
-                          Source
+                          SOURCE <span className="inline-block transform transition-transform duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5">↗</span>
                         </a>
                       )}
                       {project.liveUrl && (
@@ -113,28 +113,32 @@ export default function Projects() {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
+                          className="group/link flex items-center gap-1 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
+                          aria-label={`Open ${project.name} live demo`}
                         >
-                          Live <ExternalLink size={12} />
+                          LIVE <span className="inline-block transform transition-transform duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5">↗</span>
                         </a>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Image Preview (Right) */}
-                <div className="flex-1 w-full lg:w-auto relative aspect-video rounded-2xl overflow-hidden border border-white/10 group-hover:border-accent-cyan/20 transition-colors duration-500">
+                {/* Image Preview */}
+                <div className="flex-1 w-full lg:w-auto relative aspect-video rounded-2xl overflow-hidden border border-white/10 group-hover:border-accent-cyan/20 transition-colors duration-500 bg-background">
                   <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none" />
-                  {project.image ? (
-                    <img 
-                      src={project.image} 
-                      alt={project.name} 
-                      className="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-105" 
+                  {project.images && project.images.length > 0 ? (
+                    <Image
+                      src={project.images[0]}
+                      alt={`${project.name} preview`}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-cover transform transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full bg-white/5 flex items-center justify-center transform transition-transform duration-700 ease-out group-hover:scale-105">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:10px_10px]" />
-                      <span className="text-secondary-text/50 text-sm tracking-widest font-light uppercase">No Image</span>
+                    <div className="w-full h-full flex flex-col items-center justify-center transform transition-transform duration-700 ease-out group-hover:scale-105 bg-gradient-to-br from-background to-white/5 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(111,231,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
+                      <span className="text-secondary-text/30 font-bold text-4xl mb-4 uppercase tracking-widest opacity-20">{project.name}</span>
+                      <span className="text-accent-cyan/50 text-[10px] tracking-widest uppercase px-3 py-1 border border-accent-cyan/20 rounded-full backdrop-blur-sm z-10">TECHNICAL PREVIEW</span>
                     </div>
                   )}
                 </div>
@@ -146,10 +150,10 @@ export default function Projects() {
         <div className="mt-20 flex justify-center project-section">
           <Link 
             href="/projects"
-            className="flex items-center gap-4 border border-white/10 rounded-full px-8 py-4 hover:border-accent-cyan/50 hover:bg-accent-cyan/5 text-primary-text hover:text-accent-cyan transition-all duration-300"
+            className="group flex items-center gap-4 border border-white/10 rounded-full px-8 py-4 hover:border-accent-cyan/50 hover:bg-accent-cyan/5 text-primary-text hover:text-accent-cyan transition-all duration-300"
           >
             <span className="text-xs tracking-[0.2em] font-semibold uppercase">VIEW ALL PROJECTS</span>
-            <ArrowRight size={16} />
+            <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
           </Link>
         </div>
       </div>

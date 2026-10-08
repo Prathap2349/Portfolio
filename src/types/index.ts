@@ -14,8 +14,7 @@ export interface Project {
   githubUrl?: string;
   liveUrl?: string;
   demoUrl?: string;
-  image?: string;
-  screenshots?: string[];
+  images?: string[];
   problem?: string;
   solution?: string;
   result?: string;

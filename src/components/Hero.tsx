@@ -4,87 +4,37 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { profile } from "@/data/profile";
-import InteractiveImageReveal from "./InteractiveImageReveal";
 import { scrollToSection } from "@/utils/scroll";
 import NetworkBackground from "./NetworkBackground";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const portraitRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const mobilePortraitRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLAnchorElement>(null);
-  const arrowRef = useRef<HTMLSpanElement>(null);
-  const [showRealMobile, setShowRealMobile] = useState(false);
+  const [showReal, setShowReal] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Entrance Animation
-      const tl = gsap.timeline();
+      gsap.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.inOut" });
 
-      gsap.set(bgRef.current, { opacity: 0 });
-      gsap.set(portraitRef.current, { opacity: 0, x: 20, scale: 1.02 });
-      gsap.set(mobilePortraitRef.current, { opacity: 0, y: 20, scale: 1.02 });
-      
-      // Setup word-by-word reveal for title
-      const titleWords = gsap.utils.toArray(".hero-title-word");
-      gsap.set(titleWords, { yPercent: 100, opacity: 0 });
-      gsap.set(".hero-text-elem", { opacity: 0, y: 15 });
-      gsap.set(".hero-scroll-indicator", { opacity: 0 });
+      gsap.fromTo(
+        ".hero-title-word",
+        { yPercent: 100 },
+        { yPercent: 0, duration: 1.2, stagger: 0.1, ease: "power4.out", delay: 0.2 }
+      );
 
-      tl.to(bgRef.current, { opacity: 1, duration: 1.2, ease: "power2.inOut" })
-        .to(titleWords, { yPercent: 0, opacity: 1, duration: 0.8, stagger: 0.05, ease: "power3.out" }, "-=0.6")
-        .to(".hero-text-elem", { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power3.out" }, "-=0.6")
-        .to([portraitRef.current, mobilePortraitRef.current], { opacity: 1, x: 0, y: 0, scale: 1, duration: 1.4, ease: "power3.out" }, "-=0.8")
-        .to(".hero-scroll-indicator", { opacity: 1, duration: 1, ease: "power2.out" }, "-=0.4");
+      gsap.fromTo(
+        ".hero-text-elem",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: "power2.out", delay: 0.8 }
+      );
 
-      // Magnetic Button Effect
-      if (buttonRef.current && window.matchMedia("(hover: hover)").matches) {
-        const xTo = gsap.quickTo(buttonRef.current, "x", { duration: 0.4, ease: "power3" });
-        const yTo = gsap.quickTo(buttonRef.current, "y", { duration: 0.4, ease: "power3" });
-        
-        buttonRef.current.addEventListener("mousemove", (e) => {
-          const rect = buttonRef.current!.getBoundingClientRect();
-          const relX = e.clientX - (rect.left + rect.width / 2);
-          const relY = e.clientY - (rect.top + rect.height / 2);
-          xTo(relX * 0.2);
-          yTo(relY * 0.2);
-        });
+      gsap.fromTo(
+        ".hero-scroll-indicator",
+        { opacity: 0 },
+        { opacity: 1, duration: 1, delay: 2, ease: "power2.out" }
+      );
 
-        buttonRef.current.addEventListener("mouseleave", () => {
-          xTo(0);
-          yTo(0);
-        });
-      }
-
-      // Idle nudge for the arrow
-      if (arrowRef.current) {
-        gsap.to(arrowRef.current, {
-          x: 4,
-          duration: 0.3,
-          repeat: -1,
-          repeatDelay: 4,
-          yoyo: true,
-          ease: "power2.out"
-        });
-      }
-
-      // Floating Orbs
-      gsap.to(".floating-orb", {
-        y: "random(-20, 20)",
-        x: "random(-20, 20)",
-        duration: "random(3, 5)",
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        stagger: {
-          each: 0.5,
-          from: "random"
-        }
-      });
-
-      // Scroll Indicator animation
       gsap.to(".scroll-line-horizontal", {
         x: 40,
         opacity: 0.5,
@@ -94,18 +44,13 @@ export default function Hero() {
         ease: "sine.inOut"
       });
 
-      // Cinematic Parallax
-      const textXTo = gsap.quickTo(textRef.current, "x", { duration: 1.2, ease: "power3" });
-      const textYTo = gsap.quickTo(textRef.current, "y", { duration: 1.2, ease: "power3" });
-
       const handleMouseMove = (e: MouseEvent) => {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         if (window.innerWidth < 1024) return;
         const { clientX, clientY } = e;
         const xPos = (clientX / window.innerWidth - 0.5) * 2;
         const yPos = (clientY / window.innerHeight - 0.5) * 2;
-        textXTo(xPos * 4);
-        textYTo(yPos * 4);
+        gsap.to(textRef.current, { x: xPos * 4, y: yPos * 4, duration: 1.2, ease: "power3" });
       };
 
       window.addEventListener("mousemove", handleMouseMove);
@@ -115,60 +60,74 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  const handleExploreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    scrollToSection("#projects", -50);
-  };
-
   return (
     <section 
       id="hero"
       ref={containerRef} 
       className="relative min-h-[100svh] w-full flex items-center justify-center overflow-hidden bg-background"
     >
-      {/* Cinematic Background Lighting Layers */}
+      {/* Background Layer */}
       <div ref={bgRef} className="absolute inset-0 opacity-0" aria-hidden="true">
         <div className="absolute inset-0 bg-background" />
         <NetworkBackground />
-        <div className="floating-orb absolute top-1/4 right-1/4 w-[40vw] h-[40vw] bg-accent-cyan/5 rounded-full blur-[120px] mix-blend-screen" />
-        <div className="floating-orb absolute bottom-0 right-1/3 w-[30vw] h-[30vw] bg-accent-warm/5 rounded-full blur-[100px] mix-blend-screen" />
-        <div className="floating-orb absolute top-1/2 left-1/4 w-[20vw] h-[20vw] bg-purple-500/5 rounded-full blur-[100px] mix-blend-screen" />
+        <div className="absolute top-1/4 right-1/4 w-[40vw] h-[40vw] bg-accent-cyan/5 rounded-full blur-[120px] mix-blend-screen" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,var(--color-background)_100%)] z-0" />
       </div>
 
-      <div className="container mx-auto px-6 lg:px-[8vw] relative z-10 w-full h-[100svh] flex flex-col justify-center">
-        
-        {/* Mobile Portrait */}
+      {/* Image Layer */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
+        {/* Anime Image */}
         <div 
-          ref={mobilePortraitRef}
-          className="lg:hidden absolute top-0 left-0 w-full h-[60svh] cursor-pointer"
-          onClick={() => setShowRealMobile(!showRealMobile)}
-          aria-label={showRealMobile ? "Show illustrated version" : "Show real photo"}
-          role="button"
-          tabIndex={0}
+          className="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out"
+          style={{ 
+            opacity: showReal ? 0 : 1,
+            transform: showReal ? "scale(1.05) translateX(-2%)" : "scale(1) translateX(0)",
+            filter: showReal ? "blur(10px)" : "blur(0px)"
+          }}
         >
-          <div className="relative w-full h-full opacity-90 transition-all duration-500">
-            <Image
-              src={showRealMobile ? "/images/original.png" : "/images/hero-anime.jpg"}
-              alt="Portrait of Prathap"
-              fill
-              priority
-              sizes="100vw"
-              className="object-contain object-top pt-20 transition-opacity duration-300"
-              style={{ maskImage: "linear-gradient(to bottom, black 50%, transparent 95%)", WebkitMaskImage: "linear-gradient(to bottom, black 50%, transparent 95%)" }}
-            />
-            <div className="absolute top-4 right-4 bg-black/50 backdrop-blur text-[9px] tracking-widest px-2 py-1 rounded border border-white/10 text-white/70">
-              TAP TO REVEAL
-            </div>
-          </div>
+          <Image
+            src="/images/hero-anime.jpg"
+            alt="Cinematic developer anime scene"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-right md:object-right"
+          />
+          <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-background via-background/80 to-transparent w-full md:w-3/5" />
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-transparent to-transparent h-1/3" />
         </div>
 
+        {/* Real Image */}
+        <div 
+          className="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out"
+          style={{ 
+            opacity: showReal ? 1 : 0,
+            transform: showReal ? "scale(1) translateX(0)" : "scale(1.05) translateX(2%)",
+            filter: showReal ? "blur(0px)" : "blur(10px)",
+            pointerEvents: showReal ? "auto" : "none"
+          }}
+        >
+          <Image
+            src="/images/original.png"
+            alt="Portrait of Prathap"
+            fill
+            priority={false}
+            sizes="100vw"
+            className="object-cover object-right md:object-right saturate-[1.1] contrast-[1.05]"
+          />
+          <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-background via-background/80 to-transparent w-full md:w-3/5" />
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-transparent to-transparent h-1/3" />
+        </div>
+      </div>
+
+      {/* Content Container */}
+      <div className="container mx-auto px-6 lg:px-[8vw] relative z-10 w-full h-[100svh] flex flex-col justify-center">
+        
         {/* Text Content */}
         <div ref={textRef} className="relative z-10 w-full lg:w-3/5 flex flex-col justify-center h-full pt-[45svh] lg:pt-0 lg:-mt-10 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent -ml-6 md:-ml-12 pointer-events-none" />
-
+          
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-3 mb-6 hero-text-elem">
+            <div className="inline-flex flex-wrap items-center gap-3 mb-6 hero-text-elem">
               <span className="text-accent-cyan font-semibold tracking-[0.25em] text-[10px] md:text-xs drop-shadow-[0_0_8px_rgba(111,231,255,0.3)]">
                 AI &amp; DATA SCIENCE STUDENT / WEB DEVELOPER
               </span>
@@ -186,52 +145,49 @@ export default function Hero() {
               ))}
             </h1>
             
-            <div className="mb-8 text-primary-text/90 text-lg md:text-xl lg:text-2xl font-light tracking-wide hero-text-elem drop-shadow-lg max-w-lg leading-relaxed">
+            <div className="mb-10 text-primary-text/90 text-lg md:text-xl font-light tracking-wide hero-text-elem drop-shadow-lg max-w-lg leading-relaxed">
               <p>{profile.intro}</p>
             </div>
             
-            <div className="flex flex-wrap items-center gap-4 hero-text-elem mt-10 pointer-events-auto">
+            <div className="flex flex-wrap items-center gap-4 hero-text-elem pointer-events-auto">
               <a 
-                ref={buttonRef}
                 href="#projects"
-                onClick={handleExploreClick}
-                data-cursor-text="EXPLORE"
-                className="group relative overflow-hidden bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300 flex items-center gap-2"
+                onClick={(e) => { e.preventDefault(); scrollToSection("#projects", -50); }}
+                className="group bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors flex items-center gap-2"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  EXPLORE MY WORK
-                  <span ref={arrowRef} className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </span>
-                <div className="absolute inset-0 w-0 bg-accent-cyan/20 transition-[width] duration-500 ease-out group-hover:w-full z-0"></div>
+                EXPLORE MY WORK
+                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
               <a 
-                href={profile.social.resume || "https://resume-gamma-bice.vercel.app/"}
+                href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
+                className="bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors"
               >
                 DOWNLOAD RESUME
               </a>
               <a 
                 href="#contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("#contact");
-                }}
-                className="text-secondary-text hover:text-accent-cyan px-4 py-3 text-xs font-semibold tracking-widest uppercase transition-all duration-300"
+                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
+                className="text-secondary-text hover:text-accent-cyan px-4 py-3 text-xs font-semibold tracking-widest uppercase transition-colors"
               >
                 LET&apos;S TALK
               </a>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Desktop Portrait */}
-        <div ref={portraitRef} className="hidden lg:block absolute inset-0 w-full h-full z-0 pointer-events-none" aria-hidden="true">
-          <div className="pointer-events-auto w-full h-full">
-            <InteractiveImageReveal />
-          </div>
-        </div>
+      {/* Floating Toggle Button */}
+      <div className="absolute bottom-6 right-6 lg:bottom-12 lg:right-12 z-20 hero-scroll-indicator">
+        <button
+          onClick={() => setShowReal(!showReal)}
+          className="flex items-center gap-2 bg-background/80 hover:bg-background border border-white/10 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-semibold tracking-widest text-primary-text uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
+          aria-label={showReal ? "Switch to anime view" : "Switch to real photo view"}
+        >
+          <span className="w-2 h-2 rounded-full bg-accent-cyan"></span>
+          {showReal ? "ANIME VIEW" : "REAL ME"}
+        </button>
       </div>
 
       <div className="hero-scroll-indicator absolute bottom-12 left-[8vw] z-20 flex items-center gap-4 rotate-90 origin-left hidden md:flex">
