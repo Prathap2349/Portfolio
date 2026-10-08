@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -8,22 +8,86 @@ import { profile } from "@/data/profile";
 import { scrollToSection } from "@/utils/scroll";
 import NetworkBackground from "./NetworkBackground";
 
+// A simple scramble text effect component
+function ScrambleText({ text, play }: { text: string; play: boolean }) {
+  const [displayText, setDisplayText] = useState("");
+  const chars = "!<>-_\\\\/[]{}—=+*^?#________";
+
+  useEffect(() => {
+    if (!play) return;
+    let iteration = 0;
+    let animationFrame: number;
+    
+    const animate = () => {
+      setDisplayText((current) => 
+        text.split("").map((letter, index) => {
+          if (index < iteration) {
+            return text[index];
+          }
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join("")
+      );
+
+      if (iteration >= text.length) {
+        cancelAnimationFrame(animationFrame);
+        return;
+      }
+
+      iteration += 1 / 3;
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(animationFrame);
+  }, [text, play]);
+
+  return <span>{play ? displayText : ""}</span>;
+}
+
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [bootText, setBootText] = useState<string[]>([]);
+
+  // Preloader Logic
+  useEffect(() => {
+    const sequence = [
+      "INIT SYSTEM...",
+      "LOADING NEURAL WEIGHTS [████████--] 80%",
+      "CONNECTING TO GITHUB API...",
+      "RESOLVING DEPENDENCIES...",
+      "SYSTEM READY."
+    ];
+    
+    let i = 0;
+    const interval = setInterval(() => {
+      setBootText(prev => [...prev, sequence[i]]);
+      i++;
+      if (i === sequence.length) {
+        clearInterval(interval);
+        setTimeout(() => setIsLoaded(true), 600);
+      }
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
+    if (!isLoaded) return;
+    
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
       // Intro animations
       gsap.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.inOut" });
 
+      // Stagger letters instead of words for a cooler effect
       gsap.fromTo(
-        ".hero-title-word",
-        { yPercent: 100 },
-        { yPercent: 0, duration: 1.2, stagger: 0.1, ease: "power4.out", delay: 0.2 }
+        ".hero-title-letter",
+        { yPercent: 100, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 1, stagger: 0.05, ease: "back.out(1.7)", delay: 0.2 }
       );
 
       gsap.fromTo(
@@ -47,7 +111,6 @@ export default function Hero() {
         ease: "sine.inOut"
       });
 
-      // Mouse parallax
       const handleMouseMove = (e: MouseEvent) => {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         if (window.innerWidth < 1024) return;
@@ -59,22 +122,19 @@ export default function Hero() {
 
       window.addEventListener("mousemove", handleMouseMove);
 
-      // --- SCROLL ANIMATION (Anime to Real) ---
-      // We use pin: true so the hero stays completely locked in place 
-      // while the transition happens. Once the animation finishes, it unpins 
-      // and allows the user to scroll down to the next section.
+      // SCROLL ANIMATION (Anime to Real)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=100%", // Pins the hero for just 1x screen height for a fast, responsive transition
-          scrub: 0.5, // slightly smooth the scrub so it feels realistic and fluid
-          pin: true, // LOCK the hero in place!
+          end: "+=100%", 
+          scrub: 0.5, 
+          pin: true, 
           anticipatePin: 1,
         }
       });
 
-      // Anime image fades out, scales up, and blurs
+      // Images transition
       tl.to(".hero-anime-img", {
         opacity: 0,
         scale: 1.05,
@@ -83,7 +143,6 @@ export default function Hero() {
         ease: "none"
       }, 0);
 
-      // Real image fades in, scales down to normal, and unblurs
       tl.fromTo(".hero-real-img", {
         opacity: 0,
         scale: 1.05,
@@ -97,14 +156,29 @@ export default function Hero() {
         ease: "none"
       }, 0);
 
-      // The text now STAYS perfectly visible and locked while the cinematic image transition happens behind it!
-      // (Removed the code that made the text fade out early).
+      // Text Transition: "IMAGINED." -> "BUILT."
+      tl.to(".text-imagined", { opacity: 0, y: -20, ease: "power1.inOut" }, 0);
+      tl.fromTo(".text-built", { opacity: 0, y: 20 }, { opacity: 1, y: 0, ease: "power1.inOut" }, 0.2);
 
       return () => window.removeEventListener("mousemove", handleMouseMove);
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isLoaded]);
+
+  // Preloader Overlay
+  if (!isLoaded) {
+    return (
+      <div className="fixed inset-0 bg-background z-[200] flex flex-col justify-end p-8 md:p-16 font-mono text-[10px] md:text-xs text-accent-cyan/80 uppercase tracking-widest leading-relaxed">
+        <div className="max-w-xl flex flex-col gap-2">
+          {bootText.map((text, i) => (
+             <div key={i} className="animate-fade-in">{text}</div>
+          ))}
+          <div className="w-3 h-4 bg-accent-cyan animate-pulse mt-2" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section 
@@ -126,7 +200,7 @@ export default function Hero() {
         {/* Anime Image */}
         <div className="hero-anime-img absolute inset-0 w-full h-full transform-gpu">
           <Image
-            src="/images/hero-anime.jpg"
+            src="/images/hero-anime.webp"
             alt="Cinematic developer anime scene"
             fill
             priority
@@ -140,10 +214,10 @@ export default function Hero() {
         {/* Real Image */}
         <div className="hero-real-img absolute inset-0 w-full h-full transform-gpu">
           <Image
-            src="/images/original.png"
+            src="/images/original.webp"
             alt="Portrait of Prathap"
             fill
-            priority={false}
+            priority
             sizes="100vw"
             className="object-cover object-right md:object-right saturate-[1.1] contrast-[1.05]"
           />
@@ -161,21 +235,31 @@ export default function Hero() {
           <div className="relative z-10">
             <div className="inline-flex flex-wrap items-center gap-3 mb-6 hero-text-elem">
               <span className="text-accent-cyan font-semibold tracking-[0.25em] text-[10px] md:text-xs drop-shadow-[0_0_8px_rgba(111,231,255,0.3)]">
-                AI &amp; DATA SCIENCE STUDENT / WEB DEVELOPER
+                <ScrambleText text="AI & DATA SCIENCE STUDENT / WEB DEVELOPER" play={isLoaded} />
               </span>
-              <span className="px-3 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-[10px] tracking-widest uppercase flex items-center gap-2 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+              <span className="px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 text-[10px] tracking-widest uppercase flex items-center gap-2 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
                 AVAILABLE FOR INTERNSHIPS
               </span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl lg:text-[7vw] leading-[0.9] font-bold tracking-tight text-primary-text mb-6 flex flex-wrap gap-x-4 overflow-hidden drop-shadow-2xl" style={{ letterSpacing: "-0.02em" }}>
-              {profile.name.toUpperCase().split(" ").map((word, i) => (
-                <div key={i} className="overflow-hidden">
-                  <span className="hero-title-word inline-block">{word}</span>
+            <h1 className="text-5xl md:text-7xl lg:text-[7vw] leading-[0.9] font-bold tracking-tight text-primary-text mb-4 flex flex-wrap overflow-hidden drop-shadow-2xl" style={{ letterSpacing: "-0.02em" }}>
+              {profile.name.toUpperCase().split("").map((char, i) => (
+                <div key={i} className="overflow-hidden inline-block">
+                  <span className="hero-title-letter inline-block">{char === " " ? "\u00A0" : char}</span>
                 </div>
               ))}
             </h1>
+
+            {/* Scroll-synced transition text */}
+            <div className="h-10 md:h-14 relative mb-6 hero-text-elem overflow-hidden">
+               <div className="text-imagined absolute top-0 left-0 text-2xl md:text-4xl font-light tracking-widest text-secondary-text/80 uppercase">
+                 IMAGINED IN CODE.
+               </div>
+               <div className="text-built absolute top-0 left-0 text-2xl md:text-4xl font-semibold tracking-widest text-white uppercase opacity-0">
+                 BUILT FOR REALITY.
+               </div>
+            </div>
             
             <div className="mb-10 text-primary-text/90 text-lg md:text-xl font-light tracking-wide hero-text-elem drop-shadow-lg max-w-lg leading-relaxed">
               <p>{profile.intro}</p>
