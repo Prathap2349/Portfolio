@@ -13,6 +13,8 @@
   
   --color-border-glass: rgba(255,255,255,0.10);
   --color-bg-glass: rgba(255,255,255,0.05);
+
+  --nav-h: 100px;
 }
 
 @layer base {

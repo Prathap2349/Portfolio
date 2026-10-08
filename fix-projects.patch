@@ -1,0 +1,36 @@
+--- src/components/Projects.tsx
++++ src/components/Projects.tsx
+@@ -14,7 +14,6 @@
+ function ProjectCard({ project }: { project: Project }) {
+   const cardRef = useRef<HTMLDivElement>(null);
+   const glowRef = useRef<HTMLDivElement>(null);
+-  const imageRef = useRef<HTMLDivElement>(null);
+ 
+   useEffect(() => {
+     const card = cardRef.current;
+@@ -33,26 +32,10 @@
+       const centerY = rect.height / 2;
+       const rotateX = ((y - centerY) / centerY) * -5;
+       const rotateY = ((x - centerX) / centerX) * 5;
+-
+-      gsap.to(imageRef.current, {
+-        rotateX,
+-        rotateY,
+-        scale: 1.05,
+-        duration: 0.5,
+-        ease: "power2.out"
+-      });
+     };
+ 
+     const handleMouseLeave = () => {
+       if (glowRef.current) glowRef.current.style.background = 'transparent';
+-      gsap.to(imageRef.current, {
+-        rotateX: 0,
+-        rotateY: 0,
+-        scale: 1,
+-        duration: 0.5,
+-        ease: "power2.out"
+-      });
+     };
+ 
+     card.addEventListener("mousemove", handleMouseMove);

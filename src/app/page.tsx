@@ -1,5 +1,4 @@
 import Hero from "@/components/Hero";
-import TransitionSection from "@/components/TransitionSection";
 import About from "@/components/About";
 import Building from "@/components/Building";
 import Github from "@/components/Github";

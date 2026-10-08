@@ -14,6 +14,7 @@ export default function Cursor() {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsVisible(true);
 
     const cursor = cursorRef.current;
@@ -95,7 +96,7 @@ export default function Cursor() {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 w-6 h-6 border border-accent-cyan/50 rounded-full pointer-events-none z-[100] flex items-center justify-center hidden md:flex transition-colors"
+      className="fixed top-0 left-0 w-6 h-6 border border-accent-cyan/80 rounded-full pointer-events-none z-[100] flex items-center justify-center hidden md:flex transition-colors shadow-[0_0_15px_rgba(111,231,255,0.8)] backdrop-blur-sm bg-accent-cyan/10"
       style={{ transform: "translate(-50%, -50%)" }}
     >
       {cursorText && (

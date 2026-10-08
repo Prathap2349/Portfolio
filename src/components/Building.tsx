@@ -46,7 +46,7 @@ export default function Building() {
       className="py-24 md:py-32 bg-background relative border-t border-white/5"
     >
       <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw]">
-        <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-12 uppercase building-item flex items-center gap-4">
+        <h2 data-scroll-anchor className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-12 uppercase building-item flex items-center gap-4">
           <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
           BUILDING NOW
         </h2>

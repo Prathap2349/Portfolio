@@ -34,10 +34,15 @@ export default function GithubClient({ data }: GithubClientProps) {
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 70%",
-            toggleActions: "play none none reverse",
+            toggleActions: "play none none none",
+            once: true
           },
         }
       );
+      
+      // Refresh ScrollTrigger since this component is lazy loaded via Suspense
+      // and changes the document height
+      setTimeout(() => ScrollTrigger.refresh(), 100);
     }, containerRef);
 
     return () => ctx.revert();
@@ -52,7 +57,8 @@ export default function GithubClient({ data }: GithubClientProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--color-background)_0%,transparent_100%)] opacity-50" />
       
       <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw] relative z-10">
-        <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-16 uppercase github-item">
+        <h2 data-scroll-anchor className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-16 uppercase github-item flex items-center gap-4">
+          <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
           GITHUB
         </h2>
 

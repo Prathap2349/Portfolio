@@ -1,7 +1,6 @@
-import { Profile } from "@/types";
 import { projects } from "./projects";
 
-export const profile: Profile = {
+export const profile = {
   name: "Prathap",
   role: "AI & Data Science Student",
   education: "B.Tech Artificial Intelligence & Data Science",
@@ -9,6 +8,17 @@ export const profile: Profile = {
   focus: ["Software Engineering", "Artificial Intelligence", "Real-world Products"],
   location: "India",
   internshipStatus: "OPEN TO INTERNSHIPS",
+  stats: {
+    projects: 15, // Update this later
+    technologies: 20, // Update this later
+    commits: 500 // Update this later
+  },
+  currentlyLearning: ["Agentic AI Workflows", "WebGL & GSAP Advanced", "Next.js Server Actions", "PostgreSQL"],
+  timeline: [
+    { year: "2024", title: "Exploring Agentic AI & Modern Web", description: "Deep diving into LLM tooling, Next.js App Router, and complex full-stack architectures." },
+    { year: "2023", title: "B.Tech AI & Data Science", description: "Began formal education focusing on foundational Machine Learning, Data Analytics, and Software Engineering." },
+    { year: "2022", title: "First Code Written", description: "Started programming journey with Python and web basics." }
+  ],
   github: {
     primary: {
       username: "Prathap2349",
@@ -28,6 +38,7 @@ export const profile: Profile = {
     email: "prathapsenthilkumar9@gmail.com",
     linkedin: "https://www.linkedin.com/in/prathap-s-77a366374",
     github: "https://github.com/Prathap2349",
+    resume: "https://resume-gamma-bice.vercel.app/"
   }
 };
 

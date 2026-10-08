@@ -8,10 +8,10 @@ import { useLenis } from "@/animations/ScrollProvider";
 const navLinks = [
   { href: "#hero", label: "HOME", disabled: false },
   { href: "#about", label: "ABOUT", disabled: false },
-  { href: "#building", label: "BUILDING", disabled: false },
-  { href: "#github", label: "GITHUB", disabled: false },
-  { href: "#skills", label: "SKILLS", disabled: false },
   { href: "#projects", label: "PROJECTS", disabled: false },
+  { href: "#building", label: "BUILDING", disabled: false },
+  { href: "#skills", label: "SKILLS", disabled: false },
+  { href: "#github", label: "GITHUB", disabled: false },
   { href: "#contact", label: "CONTACT", disabled: false },
 ];
 
@@ -20,19 +20,9 @@ export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const lenis = useLenis();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const isClickScrolling = useRef(false);
   const currentSectionRef = useRef(activeSection);
   
-  // Keep ref in sync
   useEffect(() => {
     currentSectionRef.current = activeSection;
   }, [activeSection]);
@@ -89,42 +79,50 @@ export default function Navigation() {
     isClickScrolling.current = true;
     setActiveSection(id);
     
-    // Update URL immediately for responsive feel
     if (id === "hero") {
       window.history.pushState(null, '', window.location.pathname);
     } else {
       window.history.pushState(null, '', `#${id}`);
     }
 
-    const headerOffset = 100;
+    // Scroll to the data-scroll-anchor inside the section, not the section boundary itself.
+    // This avoids landing on the top padding of the section.
+    const sectionEl = document.getElementById(id);
+    const targetEl = sectionEl?.querySelector('[data-scroll-anchor]') || sectionEl;
     
-    if (lenis) {
-      // Use Lenis for synchronized scrolling
-      lenis.scrollTo(`#${id}`, {
+    // ~100px navbar + ~28px visual gap = 128px total offset from the exact anchor
+    const headerOffset = 20;
+    
+    if (lenis && targetEl) {
+      lenis.scrollTo(targetEl as HTMLElement, {
         offset: -headerOffset,
+        duration: 1.2,
         onComplete: () => {
-          isClickScrolling.current = false;
+          // Re-measure and scroll again to correct any drift from lazy loaded images/components
+          lenis.scrollTo(targetEl as HTMLElement, {
+            offset: -headerOffset,
+            immediate: true,
+            onComplete: () => {
+              // Add a slight delay before unlocking the observer to prevent accidental triggers
+              setTimeout(() => {
+                isClickScrolling.current = false;
+              }, 100);
+            }
+          });
         }
       });
-    } else {
-      // Fallback for native smooth scrolling (e.g. reduced motion)
-      const el = document.getElementById(id);
-      if (el) {
-        const elementPosition = el.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+    } else if (targetEl) {
+      const elementPosition = targetEl.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
-        
-        // In fallback, we unfortunately still need a timeout
-        setTimeout(() => {
-          isClickScrolling.current = false;
-        }, 1000);
-      } else {
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+      
+      setTimeout(() => {
         isClickScrolling.current = false;
-      }
+      }, 1000);
     }
   };
 
@@ -139,16 +137,13 @@ export default function Navigation() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isMobileMenuOpen]);
 
-  // Lock scroll when menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
-      const lenisStopped = document.documentElement.classList;
-      lenisStopped.add("lenis-stopped");
+      document.documentElement.classList.add("lenis-stopped");
     } else {
       document.body.style.overflow = '';
-      const lenisStopped = document.documentElement.classList;
-      lenisStopped.remove("lenis-stopped");
+      document.documentElement.classList.remove("lenis-stopped");
     }
   }, [isMobileMenuOpen]);
 
@@ -159,7 +154,6 @@ export default function Navigation() {
           ${scrolled ? 'bg-background/20 backdrop-blur-md border-b border-white/5 py-4' : 'bg-transparent'}
         `}
       >
-
         <Link 
           href="/" 
           className="text-xl font-bold tracking-[0.2em] text-primary-text drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] z-10 hover:text-accent-cyan transition-colors"
@@ -167,7 +161,6 @@ export default function Navigation() {
           PRATHAP
         </Link>
         
-        {/* Desktop Nav */}
         <div className="hidden md:flex gap-10 items-center z-10 text-[10px] tracking-[0.2em] font-semibold">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1);
@@ -198,7 +191,6 @@ export default function Navigation() {
           })}
         </div>
 
-        {/* Mobile Nav Button */}
         <button 
           className="md:hidden z-[60] relative focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none text-xs tracking-widest font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

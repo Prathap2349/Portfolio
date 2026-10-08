@@ -17,12 +17,43 @@ const geistMono = Geist_Mono({
 import Cursor from "@/components/Cursor";
 
 export const metadata: Metadata = {
-  title: "Prathap — AI & Data Science Student | Developer",
-  description: "Personal portfolio of Prathap, an AI & Data Science student building projects in web development, AI, data and software.",
+  title: {
+    default: "Prathap | AI & Data Science Student & Developer",
+    template: "%s | Prathap"
+  },
+  description: "Portfolio of Prathap, a creative front-end engineer and AI & Data Science student. Exploring web development, AI, and building intuitive digital experiences.",
+  keywords: ["Prathap", "AI Student", "Data Science", "Web Developer", "React", "Next.js", "Portfolio"],
+  authors: [{ name: "Prathap" }],
+  creator: "Prathap",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://prathap.dev", // UPDATE THIS LATER
+    title: "Prathap | Creative Developer & AI Student",
+    description: "Portfolio of Prathap, a creative front-end engineer and AI & Data Science student.",
+    siteName: "Prathap Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Prathap | Developer Portfolio",
+    description: "Portfolio of Prathap, a creative front-end engineer and AI & Data Science student.",
+    creator: "@prathap", // UPDATE THIS LATER
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export const viewport = {
-  themeColor: "#050A15",
+  themeColor: "#05070D",
   width: "device-width",
   initialScale: 1,
 };

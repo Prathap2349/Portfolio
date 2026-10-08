@@ -32,6 +32,7 @@ export default function InteractiveImageReveal({ className }: { className?: stri
   useEffect(() => {
     // Disable on touch devices
     if (window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsDesktop(false);
       return;
     }
@@ -68,8 +69,6 @@ export default function InteractiveImageReveal({ className }: { className?: stri
         imgOffsetX = containerRect.width - renderedImgWidth; // object-position right horizontal
       }
 
-      const faceCenterX = imgOffsetX + (renderedImgWidth * REVEAL_CONFIG.faceRegionX);
-      const faceCenterY = imgOffsetY + (renderedImgHeight * REVEAL_CONFIG.faceRegionY);
       
       // We activate the reveal whenever hovering the container so the user doesn't lose their cursor
       // without any visual feedback. We can constrain the mask's maximum travel distance if needed, 
