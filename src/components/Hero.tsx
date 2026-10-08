@@ -151,7 +151,7 @@ export default function Hero() {
             
             <div className="flex flex-wrap items-center gap-4 hero-text-elem pointer-events-auto">
               <a 
-                href="#projects"
+                href="#projects" data-cursor-text="EXPLORE"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#projects", -50); }}
                 className="group bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors flex items-center gap-2"
               >

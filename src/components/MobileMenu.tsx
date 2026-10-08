@@ -60,7 +60,7 @@ export default function MobileMenu({ isOpen, onClose, links, activeSection, onNa
     >
       <div className="flex flex-col gap-8 text-2xl font-bold tracking-widest">
         {links.map((link) => {
-          const isActive = activeSection === link.href.substring(1);
+          const isActive = activeSection === link.href.split("#")[1];
           return (
             <Link 
               key={link.label}
@@ -70,7 +70,7 @@ export default function MobileMenu({ isOpen, onClose, links, activeSection, onNa
                 if (link.disabled) {
                   e.preventDefault();
                 } else {
-                  onNavClick(e, link.href.substring(1));
+                  onNavClick(e, link.href);
                   onClose();
                 }
               }}

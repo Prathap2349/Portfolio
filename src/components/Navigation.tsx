@@ -3,7 +3,7 @@
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import { useState, useEffect, useRef } from "react";
-import { useLenis } from "@/animations/ScrollProvider";
+import { scrollToSection } from "@/utils/scroll";
 
 const navLinks = [
   { href: "/#hero", label: "HOME", disabled: false },
@@ -19,7 +19,6 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
-  const lenis = useLenis();
   const isClickScrolling = useRef(false);
   const currentSectionRef = useRef(activeSection);
   
@@ -62,7 +61,7 @@ export default function Navigation() {
     const observer = new IntersectionObserver(observerCallback, observerOptions);
 
     navLinks.forEach(link => {
-      const id = link.href.substring(1);
+      const id = link.href.split("#")[1];
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -73,7 +72,7 @@ export default function Navigation() {
     };
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, rawHref: string) => {
     const isHomePage = window.location.pathname === "/";
     
     if (!isHomePage) {
@@ -82,6 +81,8 @@ export default function Navigation() {
     }
 
     e.preventDefault();
+    
+    const id = rawHref.split("#")[1]; // gets "hero", "projects", etc.
     
     isClickScrolling.current = true;
     setActiveSection(id);
@@ -92,45 +93,12 @@ export default function Navigation() {
       window.history.pushState(null, '', `#${id}`);
     }
 
-    // Scroll to the data-scroll-anchor inside the section, not the section boundary itself.
-    // This avoids landing on the top padding of the section.
-    const sectionEl = document.getElementById(id);
-    const targetEl = sectionEl?.querySelector('[data-scroll-anchor]') || sectionEl;
+    // Scroll using the centralized utility with an offset for the header
+    scrollToSection(`#${id}`, -20);
     
-    // ~100px navbar + ~28px visual gap = 128px total offset from the exact anchor
-    const headerOffset = 20;
-    
-    if (lenis && targetEl) {
-      lenis.scrollTo(targetEl as HTMLElement, {
-        offset: -headerOffset,
-        duration: 1.2,
-        onComplete: () => {
-          // Re-measure and scroll again to correct any drift from lazy loaded images/components
-          lenis.scrollTo(targetEl as HTMLElement, {
-            offset: -headerOffset,
-            immediate: true,
-            onComplete: () => {
-              // Add a slight delay before unlocking the observer to prevent accidental triggers
-              setTimeout(() => {
-                isClickScrolling.current = false;
-              }, 100);
-            }
-          });
-        }
-      });
-    } else if (targetEl) {
-      const elementPosition = targetEl.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-      
-      setTimeout(() => {
-        isClickScrolling.current = false;
-      }, 1000);
-    }
+    setTimeout(() => {
+      isClickScrolling.current = false;
+    }, 1200);
   };
 
   useEffect(() => {
@@ -170,7 +138,8 @@ export default function Navigation() {
         
         <div className="hidden md:flex gap-10 items-center z-10 text-[10px] tracking-[0.2em] font-semibold">
           {navLinks.map((link) => {
-            const isActive = activeSection === link.href.substring(1);
+            const id = link.href.split("#")[1];
+            const isActive = activeSection === id;
             return (
               <Link 
                 key={link.label} 
@@ -185,7 +154,7 @@ export default function Navigation() {
                   if (link.disabled) {
                     e.preventDefault();
                   } else {
-                    handleNavClick(e, link.href.substring(1));
+                    handleNavClick(e, link.href);
                   }
                 }}
               >
