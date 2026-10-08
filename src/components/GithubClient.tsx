@@ -5,6 +5,25 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GithubRepo, GithubProfile } from "@/lib/github";
 import { profile as profileData } from "@/data/profile";
+import { Lock } from "lucide-react";
+
+const privateProjects = [
+  {
+    name: "Echo AI",
+    description: "A local-first AI voice assistant designed to interact with the Mac using AI, voice commands and automation.",
+    tech: "NEXT.JS · FASTAPI · OLLAMA · AI"
+  },
+  {
+    name: "Ollama Pet",
+    description: "A native macOS AI companion with local AI, voice interaction and desktop-focused features.",
+    tech: "SWIFT · SWIFTUI · OLLAMA · APPKIT"
+  },
+  {
+    name: "FocusVault",
+    description: "An Android focus and protection application designed to help users protect their attention.",
+    tech: "KOTLIN · ANDROID SDK"
+  }
+];
 
 interface GithubClientProps {
   data: {
@@ -142,7 +161,7 @@ export default function GithubClient({ data }: GithubClientProps) {
       <div className="container mx-auto max-w-5xl px-6 md:px-12 lg:px-[8vw] relative z-10">
         
         <div className="mb-16 github-item flex items-center gap-4">
-          <h2 className="text-[10px] font-semibold tracking-[0.4em] text-accent-cyan uppercase">05 / Open Source</h2>
+          <h2 className="text-[10px] font-semibold tracking-[0.4em] text-accent-cyan uppercase">05 / Projects I built</h2>
           <div className="h-[1px] bg-gradient-to-r from-accent-cyan/50 to-transparent flex-grow max-w-[200px]" />
         </div>
 
@@ -190,14 +209,68 @@ export default function GithubClient({ data }: GithubClientProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 perspective-1000">
+            
+            {/* Private Projects */}
+            {privateProjects.map((p, i) => (
+              <div 
+                key={`private-${i}`} 
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  const centerX = rect.width / 2;
+                  const centerY = rect.height / 2;
+                  const rotateX = ((y - centerY) / centerY) * -2;
+                  const rotateY = ((x - centerX) / centerX) * 2;
+                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000 });
+                }}
+                onMouseLeave={(e) => {
+                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+                }}
+                className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 transition-all duration-300 rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(245,158,11,0.1)] relative overflow-hidden cursor-default group hover:border-[#FFB86B]/30"
+              >
+                <div className="relative z-10">
+                  <div className="text-[9px] font-bold text-[#FFB86B] tracking-widest uppercase mb-3 flex items-center gap-1.5">
+                    <Lock size={10} /> PRIVATE PROJECT
+                  </div>
+                  <h4 className="text-lg font-semibold text-white mb-2 transition-colors line-clamp-1 group-hover:text-[#FFB86B]">
+                    {p.name}
+                  </h4>
+                  <p className="text-secondary-text text-xs font-light line-clamp-3 h-12 leading-relaxed">
+                    {p.description}
+                  </p>
+                </div>
+                <div className="mt-6 flex flex-col gap-3 relative z-10">
+                  <div className="text-[10px] font-semibold text-secondary-text tracking-[0.2em]">{p.tech}</div>
+                  <div className="text-[9px] font-bold text-white/40 tracking-widest uppercase flex items-center gap-1.5 pt-3 border-t border-white/5">
+                    PRIVATE REPOSITORY <Lock size={10} />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Public Repositories */}
             {data.repos.slice(0, 6).map((repo) => (
               <a 
                 key={repo.id} 
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="github-item flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 hover:border-accent-cyan/30 hover:bg-white/[0.04] transition-all duration-300 group rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(111,231,255,0.1)] relative overflow-hidden"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  const centerX = rect.width / 2;
+                  const centerY = rect.height / 2;
+                  const rotateX = ((y - centerY) / centerY) * -2;
+                  const rotateY = ((x - centerX) / centerX) * 2;
+                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000 });
+                }}
+                onMouseLeave={(e) => {
+                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+                }}
+                className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 hover:border-accent-cyan/30 hover:bg-white/[0.04] transition-all duration-300 group rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(111,231,255,0.1)] relative overflow-hidden"
               >
                 {/* Hover Glow */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-accent-cyan/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -228,7 +301,7 @@ export default function GithubClient({ data }: GithubClientProps) {
         
         <div className="mt-12 flex justify-center github-item">
           <a 
-            href={profileData.github.primary.url}
+            href="https://github.com/Prathap2349?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center gap-3 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-accent-cyan uppercase transition-colors"
