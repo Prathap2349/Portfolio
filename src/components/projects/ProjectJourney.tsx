@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
-
+import { View } from "lucide-react";
 
 export interface JourneyProject {
   slug: string;
@@ -15,6 +15,8 @@ export interface JourneyProject {
   githubUrl?: string;
   liveUrl?: string;
   images?: string[];
+  videoUrl?: string;
+  mockupUrl?: string;
   status: string;
   category: string;
 }
@@ -25,291 +27,264 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
   
   const journeyStages = ["IDEA", "BUILD", "ENGINEER", "TEST", "SHIP"];
 
+  // Helper to map project status to a stage index
+  const getStageIndex = (status: string) => {
+    const s = status.toLowerCase();
+    if (s.includes("idea") || s.includes("concept")) return 0;
+    if (s.includes("development") || s.includes("building")) return 1;
+    if (s.includes("engineer") || s.includes("alpha")) return 2;
+    if (s.includes("beta") || s.includes("test")) return 3;
+    return 4; // SHIP / Active / Completed
+  };
+
+  // Helper to get glow color by category
+  const getGlowColor = (category: string) => {
+    const c = category.toUpperCase();
+    if (c === "AI" || c === "MACHINE LEARNING") return "bg-purple-500/20";
+    if (c === "WEB" || c === "FRONTEND" || c === "BACKEND") return "bg-blue-500/20";
+    if (c === "TOOLS" || c === "CLI") return "bg-green-500/20";
+    return "bg-accent-cyan/20";
+  };
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     
-    // Check for mobile or reduced motion
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isMobile = window.innerWidth < 1024;
     
     if (prefersReducedMotion || isMobile) {
-      // Simplified mobile/accessible version animations
-      gsap.utils.toArray<HTMLElement>(".mobile-project-card").forEach((card) => {
-        gsap.fromTo(card, 
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1, 
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 80%",
-              toggleActions: "play none none none",
-            }
-          }
-        );
-      });
+      // For mobile snap carousel, we don't need GSAP scroll pinning
       return;
     }
 
+    const sections = gsap.utils.toArray<HTMLElement>(".journey-panel");
+    if (sections.length === 0) return;
+
     const ctx = gsap.context(() => {
-      const panels = gsap.utils.toArray<HTMLElement>(".journey-panel");
-      if (panels.length === 0) return;
-
-      const track = trackRef.current;
-      if (!track) return;
-
-      const totalScroll = panels.length * 100; // 100vw per panel approx
-
-      const tl = gsap.timeline({
+      // Pin and horizontal scroll
+      const tl = gsap.to(sections, {
+        xPercent: -100 * (sections.length - 1),
+        ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
-          start: "top top",
-          end: `+=${totalScroll}%`,
-          scrub: 1,
           pin: true,
-          anticipatePin: 1,
+          scrub: 0.5,
+          snap: {
+            snapTo: 1 / (sections.length - 1),
+            duration: { min: 0.2, max: 0.6 },
+            delay: 0.1,
+            ease: "power1.inOut"
+          },
+          end: () => `+=${trackRef.current?.offsetWidth || 0}`
         }
       });
 
-      // Horizontal scroll
-      tl.to(panels, {
-        xPercent: -100 * (panels.length - 1),
-        ease: "none",
-      }, 0);
-
-      // Node highlighting sync
-      const nodes = gsap.utils.toArray<HTMLElement>(".journey-node");
-      
-      panels.forEach((_, i) => {
-        // approximate stage index based on panel
-        const stageIndex = Math.min(Math.floor((i / panels.length) * journeyStages.length), journeyStages.length - 1);
+      // Parallax effect inside panels
+      sections.forEach((section, i) => {
+        const image = section.querySelector(".parallax-image");
+        const content = section.querySelector(".parallax-content");
         
-        // Progress bar fill
-        tl.to(".journey-progress-fill", {
-          height: `${((stageIndex + 1) / journeyStages.length) * 100}%`,
-          ease: "none",
-          duration: 1 / panels.length
-        }, i / panels.length);
-
-        // Active node styling
-        nodes.forEach((node, nodeIdx) => {
-          if (nodeIdx === stageIndex) {
-            tl.to(node, {
-              backgroundColor: "rgba(111,231,255,1)",
-              boxShadow: "0 0 15px rgba(111,231,255,0.8)",
-              scale: 1.2,
-              duration: 0.1
-            }, i / panels.length);
-          } else if (nodeIdx < stageIndex) {
-            tl.to(node, {
-              backgroundColor: "rgba(111,231,255,0.4)",
-              boxShadow: "none",
-              scale: 1,
-              duration: 0.1
-            }, i / panels.length);
-          }
-        });
+        if (image && content) {
+          // As we scroll horizontally, move elements at different speeds
+          gsap.fromTo(image, 
+            { x: -50 }, 
+            {
+              x: 50,
+              ease: "none",
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: () => `top top-=${i * window.innerWidth}`,
+                end: () => `top top-=${(i + 1) * window.innerWidth}`,
+                scrub: true,
+              }
+            }
+          );
+        }
       });
 
     }, containerRef);
 
     return () => ctx.revert();
-  }, [projects.length, journeyStages.length]);
+  }, [projects]);
+
+  const totalStr = projects.length.toString().padStart(2, '0');
 
   return (
     <>
-      {/* Desktop/Tablet Horizontal Scroll Journey */}
-      <div className="hidden lg:block h-screen relative" ref={containerRef}>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,var(--color-background)_0%,transparent_100%)] opacity-70 z-0 pointer-events-none" />
-        
-        <div className="absolute top-12 left-12 z-20">
-          <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs uppercase flex items-center gap-4">
-            <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
-            PROJECT JOURNEY
-          </h2>
+      {/* Desktop Horizontal Scroll Layout */}
+      <div className="hidden lg:block h-screen w-full relative bg-background" ref={containerRef}>
+        <div className="absolute top-12 left-12 z-50 flex items-center gap-4 mix-blend-difference text-white">
+          <span className="text-[10px] font-semibold tracking-[0.4em] uppercase">03 / PROJECTS</span>
+          <span className="w-8 h-[1px] bg-white/50"></span>
         </div>
 
-        {/* Vertical Journey Tracker */}
-        <div className="absolute left-12 top-1/2 -translate-y-1/2 h-1/2 w-8 z-20 flex flex-col items-center justify-between pointer-events-none">
-          <div className="absolute top-0 bottom-0 w-[1px] bg-white/10 left-1/2 -translate-x-1/2 z-0" />
-          <div className="absolute top-0 w-[2px] bg-accent-cyan left-1/2 -translate-x-1/2 z-10 journey-progress-fill transition-all" style={{ height: "0%" }} />
-          
-          {journeyStages.map((stage) => (
-            <div key={stage} className="relative z-20 flex items-center group">
-              <div className="w-2 h-2 rounded-full bg-white/20 border border-background journey-node" />
-              <span className="absolute left-6 text-[9px] tracking-[0.3em] font-bold text-secondary-text opacity-50 group-hover:opacity-100 transition-opacity">
-                {stage}
-              </span>
-            </div>
-          ))}
-        </div>
+        <div className="h-full w-full flex" ref={trackRef} style={{ width: `${projects.length * 100}vw` }}>
+          {projects.map((project, i) => {
+            const currentStageIndex = getStageIndex(project.status);
+            const numStr = (i + 1).toString().padStart(2, '0');
+            const glow = getGlowColor(project.category);
 
-        {/* Horizontal Track */}
-        <div className="flex h-full w-[100vw] flex-nowrap" ref={trackRef}>
-          {projects.map((project) => (
-            <div key={project.slug} className="journey-panel w-[100vw] h-full flex-shrink-0 flex items-center justify-center relative pl-32 pr-12">
-              
-              <div className="w-full max-w-6xl grid grid-cols-2 gap-16 items-center">
-                {/* Content */}
-                <div className="flex flex-col" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
-                  <div className="flex flex-wrap items-center gap-4 mb-6">
-                    <span className="text-[10px] tracking-widest text-secondary-text uppercase px-3 py-1 rounded-full border border-white/10 bg-white/5">
-                      {project.category}
-                    </span>
-                    <span className={`text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border ${project.status === 'Building' ? 'border-accent-cyan/30 text-accent-cyan bg-accent-cyan/10' : 'border-white/10 text-secondary-text'}`}>
-                      {project.status}
-                    </span>
-                  </div>
+            return (
+              <div key={project.slug} className="journey-panel h-screen w-screen relative flex-shrink-0 flex items-center overflow-hidden px-[8vw]">
+                {/* Ambient Category Glow */}
+                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] ${glow} rounded-full blur-[150px] mix-blend-screen opacity-50 pointer-events-none`} />
+                
+                {/* Panel Counter */}
+                <div className="absolute bottom-12 right-12 z-50 mix-blend-difference text-white text-lg font-light tracking-widest">
+                  {numStr} / <span className="text-white/50">{totalStr}</span>
+                </div>
 
-                  <h3 className="text-5xl xl:text-6xl font-bold text-primary-text mb-6 tracking-tight drop-shadow-lg">
-                    {project.name}
-                  </h3>
+                {/* Main Content Grid */}
+                <div className="w-full grid grid-cols-12 gap-12 items-center relative z-10">
                   
-                  <p className="text-secondary-text text-lg font-light mb-8 leading-relaxed max-w-xl">
-                    {project.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-12 max-w-xl">
-                    {project.technologies.slice(0, 6).map((tech, i) => (
-                      <span key={i} className="text-[10px] font-medium tracking-wider text-primary-text uppercase border border-white/10 bg-white/5 px-3 py-1.5 rounded-sm">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-6">
-                    <Link 
-                      href={`/projects/${project.slug}`}
-                      className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-                    >
-                      VIEW PROJECT <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
-                    </Link>
+                  {/* Left: Tracker & Text */}
+                  <div className="col-span-5 flex flex-col gap-12 parallax-content relative z-20">
                     
-                    <div className="flex items-center gap-4">
-                      {project.githubUrl && (
-                        <a 
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group/link text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase flex items-center gap-1"
-                        >
-                          SOURCE <span className="inline-block transform transition-transform duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5">↗</span>
-                        </a>
-                      )}
-                      {project.liveUrl && (
-                        <a 
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group/link flex items-center gap-1 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
-                        >
-                          LIVE <span className="inline-block transform transition-transform duration-300 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5">↗</span>
-                        </a>
-                      )}
+                    {/* Stage Tracker */}
+                    <div className="flex flex-col gap-6 relative">
+                      <div className="absolute left-[5px] top-2 bottom-2 w-[1px] bg-white/10 z-0"></div>
+                      
+                      {journeyStages.map((stage, sIdx) => {
+                        const isActive = sIdx === currentStageIndex;
+                        const isPast = sIdx < currentStageIndex;
+                        return (
+                          <div key={stage} className={`flex items-center gap-6 relative z-10 ${isActive ? "opacity-100" : isPast ? "opacity-40" : "opacity-20"}`}>
+                            <div className={`w-3 h-3 rounded-full border-[1px] ${isActive ? "bg-accent-cyan border-accent-cyan shadow-[0_0_10px_rgba(111,231,255,0.8)]" : isPast ? "bg-white border-white" : "bg-background border-white"}`}></div>
+                            <span className={`text-[10px] tracking-[0.2em] font-semibold uppercase ${isActive ? "text-accent-cyan" : "text-white"}`}>{stage}</span>
+                          </div>
+                        );
+                      })}
                     </div>
+
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3 mb-4">
+                        <span className="text-[10px] tracking-widest text-secondary-text uppercase px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
+                          {project.category}
+                        </span>
+                      </div>
+                      
+                      <h3 className="text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight drop-shadow-xl">{project.name}</h3>
+                      <p className="text-white/80 text-lg font-light mb-8 max-w-md leading-relaxed drop-shadow-md">{project.description}</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-10">
+                        {project.technologies.slice(0, 4).map((tech, i) => (
+                          <span key={i} className="text-[10px] font-medium tracking-wider text-white uppercase border border-white/20 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-sm">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center gap-6">
+                        <Link 
+                          href={`/projects/${project.slug}`}
+                          className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan backdrop-blur-md"
+                        >
+                          EXPLORE <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Media */}
+                  <div className="col-span-7 h-[60vh] relative parallax-image">
+                    <Link href={`/projects/${project.slug}`} className="block w-full h-full group">
+                      <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+                        {project.videoUrl ? (
+                          <video 
+                            src={project.videoUrl} 
+                            autoPlay 
+                            muted 
+                            loop 
+                            playsInline 
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                        ) : project.images && project.images.length > 0 ? (
+                          <Image
+                            src={project.images[0]}
+                            alt={`${project.name} preview`}
+                            fill
+                            sizes="60vw"
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-black to-white/5 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
+                            <span className="text-white/20 font-bold text-6xl mb-4 uppercase tracking-widest text-center px-4 mix-blend-overlay">{project.name}</span>
+                          </div>
+                        )}
+
+                        {/* Manga-style speed lines / overlay effect on hover */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+                           <View className="text-white w-12 h-12" />
+                        </div>
+                      </div>
+                    </Link>
                   </div>
                 </div>
 
-                {/* Media */}
-                <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-white/10 bg-background shadow-2xl">
-                  {project.images && project.images.length > 0 ? (
-                    <Image
-                      src={project.images[0]}
-                      alt={`${project.name} preview`}
-                      fill
-                      sizes="50vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-background to-white/5 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(111,231,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
-                      <span className="text-secondary-text/30 font-bold text-5xl mb-4 uppercase tracking-widest opacity-20 text-center px-4">{project.name}</span>
-                      <span className="text-accent-cyan/50 text-[10px] tracking-widest uppercase px-3 py-1 border border-accent-cyan/20 rounded-full backdrop-blur-sm z-10">TECHNICAL PREVIEW</span>
-                    </div>
-                  )}
-                </div>
               </div>
-
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      {/* Mobile/Reduced Motion Vertical Layout */}
-      <div className="lg:hidden py-24 px-6 md:px-12">
-        <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs uppercase mb-16 flex items-center gap-4">
+      {/* Mobile/Reduced Motion Swipeable Carousel */}
+      <div className="lg:hidden w-full overflow-hidden bg-background py-16 relative">
+        <h2 className="text-[10px] text-accent-cyan font-semibold tracking-[0.4em] uppercase mb-8 px-6 flex items-center gap-4">
+          03 / PROJECTS
           <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
-          PROJECTS
         </h2>
 
-        <div className="flex flex-col gap-16">
-          {projects.map((project) => (
-            <div key={project.slug} className="mobile-project-card flex flex-col gap-6">
-              <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-background">
-                {project.images && project.images.length > 0 ? (
-                  <Image
-                    src={project.images[0]}
-                    alt={`${project.name} preview`}
-                    fill
-                    sizes="100vw"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-background to-white/5 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(111,231,255,0.05)_1px,transparent_1px)] bg-[size:12px_12px]" />
-                    <span className="text-secondary-text/30 font-bold text-2xl mb-2 uppercase tracking-widest opacity-20 text-center px-4">{project.name}</span>
-                    <span className="text-accent-cyan/50 text-[8px] tracking-widest uppercase px-2 py-0.5 border border-accent-cyan/20 rounded-full backdrop-blur-sm z-10">TECHNICAL PREVIEW</span>
-                  </div>
-                )}
-              </div>
+        {/* Snap Carousel Container */}
+        <div className="w-full overflow-x-auto snap-x snap-mandatory flex gap-6 px-6 pb-12 pt-4 scrollbar-hide" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
+          {projects.map((project, i) => {
+            const glow = getGlowColor(project.category);
+            const numStr = (i + 1).toString().padStart(2, '0');
+            
+            return (
+              <div key={project.slug} className="snap-center shrink-0 w-[85vw] max-w-sm flex flex-col gap-6 relative">
+                {/* Mobile glow */}
+                <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[50%] ${glow} rounded-full blur-[80px] mix-blend-screen opacity-40 pointer-events-none z-0`} />
 
-              <div>
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <span className="text-[9px] tracking-widest text-secondary-text uppercase px-2 py-1 rounded-full border border-white/10 bg-white/5">
-                    {project.category}
-                  </span>
-                  <span className={`text-[9px] tracking-widest uppercase px-2 py-1 rounded-full border ${project.status === 'Building' ? 'border-accent-cyan/30 text-accent-cyan bg-accent-cyan/10' : 'border-white/10 text-secondary-text'}`}>
-                    {project.status}
-                  </span>
-                </div>
-                
-                <h3 className="text-3xl font-bold text-primary-text mb-3 tracking-tight">{project.name}</h3>
-                <p className="text-secondary-text text-sm font-light mb-6">{project.description}</p>
-                
-                <div className="flex items-center gap-4 flex-wrap">
-                  <Link 
-                    href={`/projects/${project.slug}`}
-                    className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-5 py-2.5 rounded-full text-[10px] font-semibold tracking-widest uppercase transition-colors"
-                  >
-                    VIEW PROJECT <span className="inline-block transform transition-transform group-hover:translate-x-1">→</span>
+                <div className="relative z-10 w-full aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 bg-black shadow-xl group">
+                  <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-20">
+                    <span className="sr-only">View {project.name}</span>
                   </Link>
+
+                  {/* Media */}
+                  {project.videoUrl ? (
+                    <video src={project.videoUrl} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
+                  ) : project.images && project.images.length > 0 ? (
+                    <Image src={project.images[0]} alt={project.name} fill sizes="85vw" className="object-cover" />
+                  ) : (
+                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black to-white/5">
+                        <span className="text-white/20 font-bold text-3xl uppercase tracking-widest text-center px-4 mix-blend-overlay">{project.name}</span>
+                     </div>
+                  )}
+
+                  {/* Gradient overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none z-10" />
+
+                  {/* Content overlay */}
+                  <div className="absolute bottom-0 left-0 w-full p-6 z-10 flex flex-col justify-end">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-[9px] tracking-widest text-white uppercase px-2 py-1 rounded border border-white/20 bg-white/10 backdrop-blur-md">
+                        {project.category}
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{project.name}</h3>
+                    <p className="text-white/70 text-xs font-light line-clamp-2">{project.description}</p>
+                  </div>
                   
-                  {project.githubUrl && (
-                    <a 
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
-                    >
-                      SOURCE ↗
-                    </a>
-                  )}
-                  {project.liveUrl && (
-                    <a 
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
-                    >
-                      LIVE ↗
-                    </a>
-                  )}
+                  {/* Counter */}
+                  <div className="absolute top-4 right-4 z-10 text-white/50 text-[10px] font-bold tracking-widest px-2 py-1 bg-black/40 backdrop-blur-md rounded border border-white/10">
+                    {numStr} / {totalStr}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </>

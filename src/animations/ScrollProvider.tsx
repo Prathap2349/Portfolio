@@ -39,10 +39,24 @@ export default function ScrollProvider({ children }: { children: React.ReactNode
     gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
     
+    // Global Scroll Progress Bar
+    const progressTrigger = ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (self) => {
+        gsap.to("#global-scroll-progress", {
+          scaleX: self.progress,
+          duration: 0.1,
+          ease: "none",
+        });
+      }
+    });
+    
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenisInstance(lenis); (window as unknown as { lenis: Lenis }).lenis = lenis;
 
     return () => {
+      progressTrigger.kill();
       lenis.destroy();
       gsap.ticker.remove(updateLenis);
     };

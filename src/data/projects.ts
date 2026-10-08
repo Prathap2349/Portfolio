@@ -12,7 +12,10 @@ export const projects: Project[] = [
     featured: true,
     isBuilding: false,
     githubUrl: "https://github.com/Prathap2349/my-hub",
-    year: 2024,
+    year: 2026,
+    problem: "[PLACEHOLDER: Describe the problem MY HUB solves]",
+    solution: "[PLACEHOLDER: Describe how you built the solution]",
+    result: "[PLACEHOLDER: Describe the final outcome]",
   },
   {
     slug: "ollama-pet",
@@ -24,7 +27,10 @@ export const projects: Project[] = [
     visibility: "private",
     featured: false,
     isBuilding: true,
-    year: 2024,
+    year: 2025,
+    problem: "[PLACEHOLDER: Describe the problem]",
+    solution: "[PLACEHOLDER: Describe the solution]",
+    result: "[PLACEHOLDER: Describe the result]",
   },
   {
     slug: "echo-ai",
@@ -36,7 +42,10 @@ export const projects: Project[] = [
     visibility: "private",
     featured: true,
     isBuilding: false,
-    year: 2024,
+    year: 2025,
+    problem: "[PLACEHOLDER: Describe the problem]",
+    solution: "[PLACEHOLDER: Describe the solution]",
+    result: "[PLACEHOLDER: Describe the result]",
   },
   {
     slug: "focusvault",
@@ -84,7 +93,7 @@ export const projects: Project[] = [
     visibility: "private",
     featured: false,
     isBuilding: false,
-    year: 2024,
+    year: 2025,
   },
   {
     slug: "nest",
@@ -96,7 +105,7 @@ export const projects: Project[] = [
     visibility: "private",
     featured: false,
     isBuilding: false,
-    year: 2024,
+    year: 2025,
   },
   {
     slug: "smart-vision-sentry",
@@ -132,6 +141,6 @@ export const projects: Project[] = [
     visibility: "private",
     featured: false,
     isBuilding: true,
-    year: 2024,
+    year: 2026,
   }
 ];

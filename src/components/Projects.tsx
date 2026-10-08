@@ -11,11 +11,9 @@ export default async function Projects() {
   let mappedProjects: JourneyProject[] = [];
 
   if (!error && allRepos && allRepos.length > 0) {
-    // Filter repos with "portfolio" topic
     const portfolioRepos = allRepos.filter(repo => repo.topics?.includes("portfolio"));
 
     if (portfolioRepos.length > 0) {
-      // Sort: featured first, then updated_at
       portfolioRepos.sort((a, b) => {
         const aFeatured = a.topics?.includes("featured") ? 1 : 0;
         const bFeatured = b.topics?.includes("featured") ? 1 : 0;
@@ -24,14 +22,12 @@ export default async function Projects() {
       });
 
       mappedProjects = portfolioRepos.map(repo => {
-        // Try to match against local project data by slug (repo name) or githubUrl
         const localData = fallbackProjects.find(
           p => p.slug === repo.name ||
                p.slug === repo.name.toLowerCase() ||
                p.githubUrl === repo.html_url
         );
 
-        // Build the slug: prefer local slug so detail pages work, else use repo name
         const slug = localData?.slug || repo.name.toLowerCase().replace(/\s+/g, "-");
 
         return {
@@ -43,6 +39,8 @@ export default async function Projects() {
           githubUrl: repo.html_url,
           liveUrl: localData?.liveUrl,
           images: localData?.images || [],
+          videoUrl: localData?.videoUrl,
+          mockupUrl: localData?.mockupUrl,
           status: repo.topics?.includes("building") ? "Building" : localData?.status || "Completed",
           category: localData?.category || "Open Source"
         };
@@ -50,7 +48,6 @@ export default async function Projects() {
     }
   }
 
-  // Fallback: if GitHub has no portfolio-tagged repos, use featured/building from local data
   if (mappedProjects.length === 0) {
     mappedProjects = fallbackProjects
       .filter(p => p.featured || p.isBuilding)
@@ -62,6 +59,8 @@ export default async function Projects() {
         githubUrl: p.githubUrl,
         liveUrl: p.liveUrl,
         images: p.images || [],
+        videoUrl: p.videoUrl,
+        mockupUrl: p.mockupUrl,
         status: p.status,
         category: p.category
       }));
@@ -72,7 +71,7 @@ export default async function Projects() {
       <Suspense fallback={
         <div className="h-screen flex items-center justify-center text-xs tracking-widest text-accent-cyan uppercase gap-4">
           <span className="w-4 h-4 rounded-full border-2 border-accent-cyan/30 border-t-accent-cyan animate-spin" />
-          Loading Journey...
+          Preparing Project Journey...
         </div>
       }>
         <ProjectJourney projects={mappedProjects} />

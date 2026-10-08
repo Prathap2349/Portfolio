@@ -22,6 +22,8 @@ interface DetailProject {
   githubUrl?: string;
   liveUrl?: string;
   images?: string[];
+  videoUrl?: string;
+  mockupUrl?: string;
   problem?: string;
   solution?: string;
   result?: string;
@@ -86,7 +88,7 @@ export default async function ProjectPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-24 px-6 md:px-12 lg:px-[8vw]">
+    <div className="min-h-screen bg-background pt-32 pb-24 px-6 md:px-12 lg:px-[8vw] animate-page-enter">
       {/* Navigation */}
       <div className="mb-12">
         <Link 
@@ -117,12 +119,16 @@ export default async function ProjectPage({ params }: Props) {
         </p>
       </header>
 
-      {/* Carousel */}
-      {project.images && project.images.length > 0 && (
+      {/* Media (Video or Carousel) */}
+      {project.videoUrl ? (
+        <div className="mb-24 relative aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+           <video src={project.videoUrl} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+        </div>
+      ) : project.images && project.images.length > 0 ? (
         <div className="mb-24">
           <ProjectCarousel images={project.images} title={project.name} />
         </div>
-      )}
+      ) : null}
 
       {/* Details Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">

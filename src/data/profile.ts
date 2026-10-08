@@ -10,6 +10,8 @@ export const profile = {
   internshipStatus: "OPEN TO INTERNSHIPS",
   currentlyLearning: ["Agentic AI Workflows", "WebGL & GSAP Advanced", "Next.js Server Actions", "PostgreSQL"],
   timeline: [
+    { year: "2026", title: "Future: Real-World Impact", description: "[PLACEHOLDER: Write about your goals for shipping products or finishing studies.]" },
+    { year: "2025", title: "Scaling Up & Internships", description: "[PLACEHOLDER: Write about gaining professional experience and complex system design.]" },
     { year: "2024", title: "Exploring Agentic AI & Modern Web", description: "Deep diving into LLM tooling, Next.js App Router, and complex full-stack architectures." },
     { year: "2023", title: "B.Tech AI & Data Science", description: "Began formal education focusing on foundational Machine Learning, Data Analytics, and Software Engineering." },
     { year: "2022", title: "First Code Written", description: "Started programming journey with Python and web basics." }

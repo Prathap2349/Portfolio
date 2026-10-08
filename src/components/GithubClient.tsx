@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GithubRepo, GithubProfile } from "@/lib/github";
@@ -15,8 +15,62 @@ interface GithubClientProps {
   };
 }
 
+// A stylized contribution heatmap using CSS grid and GSAP
+function AnimatedHeatmap() {
+  const mapRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    
+    // Animate squares randomly to simulate live data flow
+    gsap.to(".heatmap-cell", {
+      opacity: () => 0.2 + Math.random() * 0.8,
+      duration: () => 1 + Math.random() * 2,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      stagger: {
+        each: 0.05,
+        from: "random"
+      }
+    });
+  }, []);
+
+  // Generate 7 rows by 30 cols
+  const cells = Array.from({ length: 7 * 30 });
+  
+  return (
+    <div ref={mapRef} className="w-full overflow-hidden flex justify-end opacity-60">
+      <div className="grid grid-rows-7 gap-1" style={{ gridTemplateColumns: "repeat(30, minmax(0, 1fr))" }}>
+        {cells.map((_, i) => {
+          // Random color intensity for empty, low, medium, high
+          const rand = Math.random();
+          let color = "bg-white/5";
+          if (rand > 0.9) color = "bg-accent-cyan/80";
+          else if (rand > 0.7) color = "bg-accent-cyan/50";
+          else if (rand > 0.5) color = "bg-accent-cyan/30";
+
+          return (
+            <div key={i} className={`heatmap-cell w-2 h-2 rounded-[1px] ${color}`} />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function GithubClient({ data }: GithubClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [repoCount, setRepoCount] = useState(0);
+  const [starCount, setStarCount] = useState(0);
+
+  // Calculate hours ago for the last commit based on updated_at
+  const lastRepo = data.repos.length > 0 ? data.repos[0] : null;
+  let hoursAgo = "UNKNOWN";
+  if (lastRepo) {
+    const diff = Date.now() - new Date(lastRepo.updated_at).getTime();
+    hoursAgo = Math.max(1, Math.floor(diff / (1000 * 60 * 60))).toString();
+  }
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -34,48 +88,93 @@ export default function GithubClient({ data }: GithubClientProps) {
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 75%",
-            toggleActions: "play none none none",
             once: true
           },
         }
       );
+
+      // Count up numbers
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top 75%",
+        once: true,
+        onEnter: () => {
+          const targetRepos = data.profile?.public_repos || 0;
+          const targetStars = data.stars || 0;
+          
+          gsap.to({ val: 0 }, {
+            val: targetRepos,
+            duration: 2,
+            ease: "power3.out",
+            onUpdate: function() {
+              setRepoCount(Math.ceil(this.targets()[0].val));
+            }
+          });
+
+          gsap.to({ val: 0 }, {
+            val: targetStars,
+            duration: 2.5,
+            ease: "power3.out",
+            onUpdate: function() {
+              setStarCount(Math.ceil(this.targets()[0].val));
+            }
+          });
+        }
+      });
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [data]);
 
   return (
     <section 
       id="github" 
       ref={containerRef}
-      className="py-24 md:py-32 bg-deep-navy relative border-t border-white/5"
+      className="py-32 bg-background relative border-t border-white/5 overflow-hidden"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--color-background)_0%,transparent_100%)] opacity-30 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-accent-cyan/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="container mx-auto max-w-5xl px-6 md:px-12 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 github-item">
-          <div>
-            <h2 data-scroll-anchor className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-4 uppercase flex items-center gap-4">
-              <span className="w-4 h-[1px] bg-accent-cyan/50 inline-block"></span>
-              GITHUB
-            </h2>
-            <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-primary-text hover:text-accent-cyan transition-colors mb-4">
+      <div className="container mx-auto max-w-5xl px-6 md:px-12 lg:px-[8vw] relative z-10">
+        
+        <div className="mb-16 github-item flex items-center gap-4">
+          <h2 className="text-[10px] font-semibold tracking-[0.4em] text-accent-cyan uppercase">05 / Open Source</h2>
+          <div className="h-[1px] bg-gradient-to-r from-accent-cyan/50 to-transparent flex-grow max-w-[200px]" />
+        </div>
+
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-16 github-item">
+          
+          <div className="flex-1">
+            <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white hover:text-accent-cyan transition-colors mb-4 leading-none">
               <a href={profileData.github.primary.url} target="_blank" rel="noopener noreferrer">
                 @{profileData.github.primary.username}
               </a>
             </h3>
-            <p className="text-secondary-text font-light text-lg">A live window into what I&apos;m building.</p>
+            <p className="text-secondary-text font-light text-lg mb-8">A live window into what I&apos;m building and contributing.</p>
+            
+            {/* Stats Row */}
+            <div className="flex flex-wrap gap-8 md:gap-16">
+               <div className="flex flex-col">
+                  <span className="text-3xl md:text-4xl font-bold text-accent-cyan">{repoCount}</span>
+                  <span className="text-[10px] font-semibold tracking-widest text-secondary-text uppercase">Repositories</span>
+               </div>
+               <div className="flex flex-col">
+                  <span className="text-3xl md:text-4xl font-bold text-[#FFB86B]">{starCount}</span>
+                  <span className="text-[10px] font-semibold tracking-widest text-secondary-text uppercase">Total Stars</span>
+               </div>
+               {lastRepo && (
+                 <div className="flex flex-col justify-end pb-1">
+                    <span className="flex items-center gap-2 text-[10px] font-semibold tracking-widest text-white uppercase bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+                       <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                       Last commit {hoursAgo}h ago
+                    </span>
+                 </div>
+               )}
+            </div>
           </div>
           
-          <div className="mt-8 md:mt-0">
-            <a 
-              href={profileData.github.primary.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
-            >
-              OPEN GITHUB <span className="inline-block transform transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
-            </a>
+          {/* Animated Heatmap */}
+          <div className="w-full lg:w-1/2 flex justify-end">
+             <AnimatedHeatmap />
           </div>
         </div>
 
@@ -86,31 +185,52 @@ export default function GithubClient({ data }: GithubClientProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {data.repos.map((repo) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {data.repos.slice(0, 6).map((repo) => (
               <a 
                 key={repo.id} 
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="github-item flex flex-col justify-between p-6 bg-white/[0.01] border border-white/5 hover:border-accent-cyan/30 hover:bg-white/[0.03] transition-all duration-300 group rounded-xl"
+                className="github-item flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 hover:border-accent-cyan/30 hover:bg-white/[0.04] transition-all duration-300 group rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(111,231,255,0.1)] relative overflow-hidden"
               >
-                <div>
-                  <h4 className="text-lg font-medium text-primary-text mb-2 group-hover:text-accent-cyan transition-colors line-clamp-1">
+                {/* Hover Glow */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-accent-cyan/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                
+                <div className="relative z-10">
+                  <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-cyan transition-colors line-clamp-1">
                     {repo.name}
                   </h4>
-                  <p className="text-secondary-text text-xs font-light line-clamp-2 h-8">
-                    {repo.description || "No description."}
+                  <p className="text-secondary-text text-xs font-light line-clamp-2 h-8 leading-relaxed">
+                    {repo.description || "No description provided."}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 mt-4 text-[10px] font-medium text-secondary-text/60 uppercase tracking-wider">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan/60" />
-                  {repo.language || "Unknown"}
+                <div className="flex items-center justify-between mt-6 relative z-10">
+                  <div className="flex items-center gap-2 text-[10px] font-medium text-secondary-text uppercase tracking-widest">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan/60" />
+                    {repo.language || "Unknown"}
+                  </div>
+                  {repo.stargazers_count > 0 && (
+                     <div className="flex items-center gap-1 text-[10px] font-medium text-[#FFB86B]">
+                        ★ {repo.stargazers_count}
+                     </div>
+                  )}
                 </div>
               </a>
             ))}
           </div>
         )}
+        
+        <div className="mt-12 flex justify-center github-item">
+          <a 
+            href={profileData.github.primary.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-accent-cyan uppercase transition-colors"
+          >
+            VIEW ALL REPOSITORIES <span className="transform transition-transform group-hover:translate-x-1">→</span>
+          </a>
+        </div>
       </div>
     </section>
   );
