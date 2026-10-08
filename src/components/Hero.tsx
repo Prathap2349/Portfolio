@@ -60,12 +60,17 @@ export default function Hero() {
       window.addEventListener("mousemove", handleMouseMove);
 
       // --- SCROLL ANIMATION (Anime to Real) ---
+      // We use pin: true so the hero stays completely locked in place 
+      // while the transition happens. Once the animation finishes, it unpins 
+      // and allows the user to scroll down to the next section.
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "bottom top", // Animates as you scroll past the hero
-          scrub: 1, // Smoothly links to scroll position
+          end: "+=150%", // Pins the hero for 1.5x the screen height
+          scrub: 1, 
+          pin: true, // LOCK the hero in place!
+          anticipatePin: 1,
         }
       });
 
@@ -92,11 +97,11 @@ export default function Hero() {
         ease: "none"
       }, 0);
 
-      // Text subtle parallax
+      // Text subtle parallax fade out
       tl.to(textRef.current, {
-        y: -100,
+        y: -150,
         opacity: 0,
-        ease: "none"
+        ease: "power1.in"
       }, 0);
 
 
