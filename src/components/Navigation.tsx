@@ -4,6 +4,8 @@ import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import { useState, useEffect, useRef } from "react";
 import { scrollToSection } from "@/utils/scroll";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const navLinks = [
   { href: "/#hero", label: "HOME", disabled: false },
@@ -26,6 +28,7 @@ export default function Navigation() {
   }, [activeSection]);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
@@ -33,41 +36,40 @@ export default function Navigation() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
-    const observerOptions = {
-      root: null,
-      rootMargin: "-20% 0px -50% 0px",
-      threshold: 0
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      if (isClickScrolling.current) return;
-
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          if (id && id !== currentSectionRef.current) {
-            setActiveSection(id);
-            if (id === "hero") {
-              window.history.replaceState(null, '', window.location.pathname);
-            } else {
-              window.history.replaceState(null, '', `#${id}`);
-            }
-          }
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
     navLinks.forEach(link => {
       const id = link.href.split("#")[1];
       const el = document.getElementById(id);
-      if (el) observer.observe(el);
+      if (el) {
+        // Use ScrollTrigger instead of IntersectionObserver to handle pinned sections correctly
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top 50%",
+          end: "bottom 50%",
+          onToggle: (self) => {
+             if (self.isActive && !isClickScrolling.current) {
+                if (id !== currentSectionRef.current) {
+                   setActiveSection(id);
+                   if (id === "hero") {
+                     window.history.replaceState(null, '', window.location.pathname);
+                   } else {
+                     window.history.replaceState(null, '', `#${id}`);
+                   }
+                }
+             }
+          }
+        });
+      }
     });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      observer.disconnect();
+      // ScrollTriggers are automatically cleaned up if we killed them, but we let them persist or we could kill them all
+      ScrollTrigger.getAll().forEach(st => {
+         const trigger = st.vars.trigger;
+         if (trigger && typeof trigger !== 'string' && 'id' in trigger && navLinks.some(l => l.href.includes(trigger.id as string))) {
+            st.kill();
+         }
+      });
     };
   }, []);
 

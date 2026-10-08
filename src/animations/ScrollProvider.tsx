@@ -55,7 +55,18 @@ export default function ScrollProvider({ children }: { children: React.ReactNode
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenisInstance(lenis); (window as unknown as { lenis: Lenis }).lenis = lenis;
 
+    // Wait for fonts to load before refreshing ScrollTrigger to prevent pin jumps
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    });
+
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener("resize", handleResize);
+
     return () => {
+      window.removeEventListener("resize", handleResize);
       progressTrigger.kill();
       lenis.destroy();
       gsap.ticker.remove(updateLenis);

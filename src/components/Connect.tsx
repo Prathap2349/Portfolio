@@ -144,7 +144,9 @@ export default function Connect() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const mailtoLink = `mailto:${profile.social.email}?subject=Portfolio Inquiry — Prathap&body=Hi Prathap,%0D%0A%0D%0AI found your portfolio and would like to get in touch regarding...%0D%0A%0D%0AThanks,`;
+  const subject = encodeURIComponent("Portfolio Inquiry — Prathap");
+  const body = encodeURIComponent("Hi Prathap,\n\nI found your portfolio and would like to get in touch regarding...\n\nThanks,");
+  const mailtoLink = `mailto:${profile.social.email}?subject=${subject}&body=${body}`;
 
   return (
     <section 
@@ -179,8 +181,16 @@ export default function Connect() {
           <a 
             ref={emailBtnRef}
             href={mailtoLink}
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={(e) => {
+              // Fallback to copy if no default mail app handles it
+              setTimeout(() => {
+                if (document.hasFocus()) {
+                  navigator.clipboard.writeText(profile.social.email);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }
+              }, 500);
+            }}
             className="group inline-flex items-center gap-2 bg-[#FFB86B]/10 hover:bg-[#FFB86B]/20 border border-[#FFB86B]/30 text-[#FFB86B] px-8 py-4 rounded-full text-sm font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#FFB86B] shadow-[0_0_20px_rgba(255,184,107,0.15)] hover:shadow-[0_0_30px_rgba(255,184,107,0.3)]"
           >
             <Mail size={16} className="opacity-80" />

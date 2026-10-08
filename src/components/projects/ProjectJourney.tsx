@@ -44,7 +44,8 @@ const MediaContent = ({ project }: { project: JourneyProject }) => (
     ) : (
       <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-black to-white/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
-        <span className="text-white/20 font-bold text-4xl lg:text-6xl mb-4 uppercase tracking-widest text-center px-4 mix-blend-overlay">{project.name}</span>
+        <span className="text-white/40 font-bold text-4xl lg:text-5xl mb-4 uppercase tracking-widest text-center px-8 z-10 drop-shadow-lg">{project.name}</span>
+        <span className="text-white/20 font-light text-sm uppercase tracking-[0.3em] z-10 mt-4">PROJECT PREVIEW</span>
       </div>
     )}
     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
@@ -93,34 +94,55 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
     if (sections.length === 0) return;
 
     const ctx = gsap.context(() => {
-      // Pin and horizontal scroll
-      const tl = gsap.to(sections, {
-        xPercent: -100 * (sections.length - 1),
-        ease: "none",
+      // Horizontal Scroll Timeline
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           pin: true,
-          scrub: 1, // Smoother scrub
-          end: () => `+=${(trackRef.current?.offsetWidth || 0) * 1.5}` // Increase scroll distance to slow down the sliding speed
+          scrub: 1, 
+          end: () => `+=${trackRef.current?.offsetWidth || 0}`,
+          invalidateOnRefresh: true, // Fix for layout shifts
+          onUpdate: (self) => {
+             // Update counter manually based on progress
+             const counter = containerRef.current?.querySelector(".project-counter");
+             if (counter) {
+                const activeIndex = Math.min(
+                   Math.floor(self.progress * projects.length),
+                   projects.length - 1
+                );
+                counter.textContent = (activeIndex + 1).toString().padStart(2, '0');
+             }
+          }
         }
       });
 
-      // Parallax effect inside panels
+      // Hold at start
+      tl.to({}, { duration: 0.05 });
+      // Slide all sections
+      tl.to(sections, {
+        xPercent: -100 * (sections.length - 1),
+        ease: "none",
+        duration: 1
+      });
+      // Hold at end
+      tl.to({}, { duration: 0.05 });
+
+      // Parallax effect using containerAnimation
       sections.forEach((section, i) => {
         const image = section.querySelector(".parallax-image");
         const content = section.querySelector(".parallax-content");
         
         if (image && content) {
-          // As we scroll horizontally, move elements at different speeds
           gsap.fromTo(image, 
             { x: -50 }, 
             {
               x: 50,
               ease: "none",
               scrollTrigger: {
-                trigger: containerRef.current,
-                start: () => `top top-=${i * window.innerWidth}`,
-                end: () => `top top-=${(i + 1) * window.innerWidth}`,
+                trigger: section,
+                containerAnimation: tl,
+                start: "left right",
+                end: "right left",
                 scrub: true,
               }
             }
@@ -138,10 +160,14 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
   return (
     <>
       {/* Desktop Horizontal Scroll Layout */}
-      <div className="hidden lg:block h-screen w-full relative bg-background" ref={containerRef}>
+      <div className="hidden lg:block h-screen w-full relative z-20 bg-background" ref={containerRef}>
         <div className="absolute top-12 left-12 z-50 flex items-center gap-4 mix-blend-difference text-white">
           <span className="text-[10px] font-semibold tracking-[0.4em] uppercase">03 / PROJECTS</span>
           <span className="w-8 h-[1px] bg-white/50"></span>
+        </div>
+        
+        <div className="absolute bottom-12 right-12 z-50 mix-blend-difference text-white text-lg font-light tracking-widest">
+          <span className="project-counter">01</span> / <span className="text-white/50">{totalStr}</span>
         </div>
 
         <div className="h-full w-full flex" ref={trackRef} style={{ width: `${projects.length * 100}vw` }}>
@@ -154,11 +180,6 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
               <div key={project.slug} className="journey-panel h-screen w-screen relative flex-shrink-0 flex items-center overflow-hidden px-[8vw]">
                 {/* Ambient Category Glow */}
                 <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] ${glow} rounded-full blur-[150px] mix-blend-screen opacity-50 pointer-events-none`} />
-                
-                {/* Panel Counter */}
-                <div className="absolute bottom-12 right-12 z-50 mix-blend-difference text-white text-lg font-light tracking-widest">
-                  {numStr} / <span className="text-white/50">{totalStr}</span>
-                </div>
 
                 {/* Main Content Grid */}
                 <div className="w-full grid grid-cols-12 gap-12 items-center relative z-10">
@@ -290,8 +311,9 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                   ) : project.images && project.images.length > 0 ? (
                     <Image src={project.images[0]} alt={project.name} fill sizes="85vw" className="object-cover" />
                   ) : (
-                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black to-white/5">
-                        <span className="text-white/20 font-bold text-3xl uppercase tracking-widest text-center px-4 mix-blend-overlay">{project.name}</span>
+                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-black to-white/5 p-6 text-center">
+                        <span className="text-white/40 font-bold text-3xl uppercase tracking-widest drop-shadow-md">{project.name}</span>
+                        <span className="text-white/20 font-light text-xs uppercase tracking-[0.3em] mt-3">PREVIEW</span>
                      </div>
                   )}
 
