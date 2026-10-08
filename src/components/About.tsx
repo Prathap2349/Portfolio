@@ -5,80 +5,35 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "@/data/profile";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const StatCard = ({ title, value, suffix = "" }: { title: string, value: number, suffix?: string }) => {
-  const numRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    const el = numRef.current;
-    if (!el) return;
-    
-    ScrollTrigger.create({
-      trigger: el,
-      start: "top 85%",
-      onEnter: () => {
-        gsap.fromTo(el, { innerHTML: 0 }, {
-          innerHTML: value,
-          duration: 2,
-          ease: "power2.out",
-          snap: { innerHTML: 1 },
-          onUpdate: function() {
-            if (el) el.innerHTML = Math.round(Number(this.targets()[0].innerHTML)) + suffix;
-          }
-        });
-      },
-      once: true
-    });
-  }, [value, suffix]);
-
-  return (
-    <div className="flex flex-col border border-white/5 bg-white/5 p-6 rounded-2xl">
-      <div ref={numRef} className="text-4xl md:text-5xl font-bold text-accent-cyan mb-2">0</div>
-      <div className="text-xs tracking-widest text-secondary-text uppercase">{title}</div>
-    </div>
-  );
-};
-
 export default function About() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
     const ctx = gsap.context(() => {
       // Fade in text elements
-      gsap.fromTo(".about-text", 
-        { y: 30, opacity: 0 },
-        { 
-          y: 0, opacity: 1, 
-          duration: 0.8, 
-          stagger: 0.15, 
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: textRef.current,
-            start: "top 80%",
-          }
-        }
-      );
-
-      // Timeline line draw
-      gsap.fromTo(".timeline-line", 
-        { height: "0%" },
+      gsap.fromTo(
+        ".about-text",
+        { opacity: 0, y: 30 },
         {
-          height: "100%",
-          ease: "none",
+          opacity: 1, y: 0,
+          duration: 0.9,
+          stagger: 0.12,
+          ease: "power2.out",
           scrollTrigger: {
-            trigger: ".timeline-container",
-            start: "top 80%",
-            end: "bottom 80%",
-            scrub: true,
+            trigger: sectionRef.current,
+            start: "top 75%",
+            once: true,
           }
         }
       );
 
-      // Timeline items fade
-      gsap.fromTo(".timeline-item",
+      // Timeline items
+      gsap.fromTo(
+        ".timeline-item",
         { opacity: 0, x: -20 },
         {
           opacity: 1, x: 0,
@@ -88,6 +43,23 @@ export default function About() {
           scrollTrigger: {
             trigger: ".timeline-container",
             start: "top 75%",
+            once: true,
+          }
+        }
+      );
+
+      // Timeline line draw
+      gsap.fromTo(
+        ".timeline-line",
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          duration: 1.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".timeline-container",
+            start: "top 80%",
+            once: true,
           }
         }
       );
@@ -103,6 +75,7 @@ export default function About() {
           scrollTrigger: {
             trigger: ".what-i-do-container",
             start: "top 80%",
+            once: true,
           }
         }
       );
@@ -153,7 +126,7 @@ export default function About() {
                 href={profile.social.resume} 
                 target="_blank" 
                 rel="noreferrer"
-                className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 text-primary-text border border-white/10 px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300 group"
+                className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 text-primary-text border border-white/10 px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300 group focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
               >
                 Download Resume
                 <span className="transform transition-transform group-hover:translate-y-1">↓</span>
@@ -161,9 +134,8 @@ export default function About() {
             </div>
           </div>
 
-          {/* Right Column: Stats & Timeline */}
+          {/* Right Column: Timeline */}
           <div className="space-y-16">
-            
             <div className="timeline-container relative pl-6 border-l border-white/5">
               <div className="absolute top-0 left-[-1px] w-[2px] bg-accent-cyan timeline-line origin-top" />
               
@@ -178,7 +150,6 @@ export default function About() {
                 ))}
               </div>
             </div>
-
           </div>
         </div>
 
@@ -202,7 +173,7 @@ export default function About() {
               <div className="w-12 h-12 bg-accent-warm/10 rounded-xl flex items-center justify-center text-accent-warm mb-6">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
               </div>
-              <h3 className="text-xl font-bold text-primary-text mb-3">AI & ML</h3>
+              <h3 className="text-xl font-bold text-primary-text mb-3">AI &amp; ML</h3>
               <p className="text-secondary-text text-sm font-light leading-relaxed">Training models, utilizing APIs, and integrating intelligent agentic workflows into modern web applications.</p>
             </div>
             

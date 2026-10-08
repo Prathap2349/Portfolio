@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
+import { fetchGithubData } from "@/lib/github";
+import { profile } from "@/data/profile";
 import Link from "next/link";
-import { ExternalLink, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import ProjectCarousel from "@/components/projects/ProjectCarousel";
 import type { Metadata } from "next";
 
@@ -9,12 +11,60 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+// Unified project type for this page
+interface DetailProject {
+  slug: string;
+  name: string;
+  description: string;
+  category: string;
+  technologies: string[];
+  status: string;
+  githubUrl?: string;
+  liveUrl?: string;
+  images?: string[];
+  problem?: string;
+  solution?: string;
+  result?: string;
+  role?: string;
+}
+
+async function getProject(slug: string): Promise<DetailProject | null> {
+  // First check local data (exact match)
+  const local = projects.find(p => p.slug === slug);
+  if (local) return local;
+
+  // If not in local data, check GitHub portfolio repos
+  try {
+    const { allRepos } = await fetchGithubData(profile.github.primary.username);
+    const portfolioRepos = allRepos.filter(r => r.topics?.includes("portfolio"));
+    const repo = portfolioRepos.find(r =>
+      r.name.toLowerCase().replace(/\s+/g, "-") === slug ||
+      r.name === slug
+    );
+
+    if (repo) {
+      return {
+        slug,
+        name: repo.name.replace(/-/g, " ").toUpperCase(),
+        description: repo.description || "No description provided.",
+        category: repo.topics?.find(t => !["portfolio", "featured", "building"].includes(t))?.toUpperCase() || "OPEN SOURCE",
+        technologies: repo.topics?.filter(t => !["portfolio", "featured", "building"].includes(t)) || [],
+        status: repo.topics?.includes("building") ? "Building" : "Active",
+        githubUrl: repo.html_url,
+        images: []
+      };
+    }
+  } catch {
+    // GitHub failed — just 404
+  }
+
+  return null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const project = projects.find((p) => p.slug === resolvedParams.slug);
-
+  const project = await getProject(resolvedParams.slug);
   if (!project) return { title: "Project Not Found" };
-
   return {
     title: `${project.name} | Prathap`,
     description: project.description,
@@ -29,7 +79,7 @@ export function generateStaticParams() {
 
 export default async function ProjectPage({ params }: Props) {
   const resolvedParams = await params;
-  const project = projects.find((p) => p.slug === resolvedParams.slug);
+  const project = await getProject(resolvedParams.slug);
 
   if (!project) {
     notFound();
@@ -43,7 +93,7 @@ export default async function ProjectPage({ params }: Props) {
           href="/#projects" 
           className="inline-flex items-center gap-2 text-secondary-text hover:text-accent-cyan transition-colors text-xs font-semibold tracking-widest uppercase focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none rounded-sm"
         >
-          <ArrowLeft size={14} /> BACK TO HOME
+          <ArrowLeft size={14} /> BACK TO PROJECTS
         </Link>
       </div>
 
@@ -68,9 +118,11 @@ export default async function ProjectPage({ params }: Props) {
       </header>
 
       {/* Carousel */}
-      <div className="mb-24">
-        <ProjectCarousel images={project.images || []} title={project.name} />
-      </div>
+      {project.images && project.images.length > 0 && (
+        <div className="mb-24">
+          <ProjectCarousel images={project.images} title={project.name} />
+        </div>
+      )}
 
       {/* Details Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -112,6 +164,15 @@ export default async function ProjectPage({ params }: Props) {
               </div>
             </section>
           )}
+
+          {/* Fallback message for GitHub-only projects */}
+          {!project.problem && !project.solution && !project.result && (
+            <div className="border border-white/5 rounded-2xl p-8 bg-white/[0.01] text-center">
+              <p className="text-secondary-text text-sm font-light">
+                Full case study coming soon. Check the source code for details.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Sidebar */}
@@ -123,16 +184,18 @@ export default async function ProjectPage({ params }: Props) {
             </div>
           )}
 
-          <div>
-            <h3 className="text-[10px] font-semibold tracking-widest text-secondary-text uppercase mb-4">TECH STACK</h3>
-            <div className="flex flex-wrap gap-2">
-              {project.technologies.map(tech => (
-                <span key={tech} className="text-[10px] tracking-wider text-primary-text uppercase bg-white/5 border border-white/10 px-3 py-1.5 rounded-sm">
-                  {tech}
-                </span>
-              ))}
+          {project.technologies.length > 0 && (
+            <div>
+              <h3 className="text-[10px] font-semibold tracking-widest text-secondary-text uppercase mb-4">TECH STACK</h3>
+              <div className="flex flex-wrap gap-2">
+                {project.technologies.map(tech => (
+                  <span key={tech} className="text-[10px] tracking-wider text-primary-text uppercase bg-white/5 border border-white/10 px-3 py-1.5 rounded-sm">
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="pt-8 border-t border-white/10 flex flex-col gap-4">
             {project.liveUrl && (
@@ -142,7 +205,7 @@ export default async function ProjectPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="group w-full flex items-center justify-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-4 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
               >
-                LIVE DEMO <ExternalLink size={14} className="transform transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                LIVE DEMO <span className="inline-block transform transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
               </a>
             )}
             

@@ -153,7 +153,7 @@ export default function Hero() {
               <a 
                 href="#projects" data-cursor-text="EXPLORE"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#projects", -50); }}
-                className="group bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors flex items-center gap-2"
+                className="group bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
               >
                 EXPLORE MY WORK
                 <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -162,14 +162,14 @@ export default function Hero() {
                 href="https://resume-gamma-bice.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors"
+                className="bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
               >
                 DOWNLOAD RESUME
               </a>
               <a 
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="text-secondary-text hover:text-accent-cyan px-4 py-3 text-xs font-semibold tracking-widest uppercase transition-colors"
+                className="text-secondary-text hover:text-accent-cyan px-4 py-3 text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none rounded-full"
               >
                 LET&apos;S TALK
               </a>
@@ -190,7 +190,7 @@ export default function Hero() {
         </button>
       </div>
 
-      <div className="hero-scroll-indicator absolute bottom-12 left-[8vw] z-20 flex items-center gap-4 rotate-90 origin-left hidden md:flex">
+      <div className="hero-scroll-indicator absolute bottom-12 left-[8vw] z-20 hidden md:flex items-center gap-4 rotate-90 origin-left">
         <span className="text-[10px] tracking-[0.3em] font-medium text-secondary-text">SCROLL</span>
         <div className="w-16 h-[2px] bg-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 h-full w-1/3 bg-accent-cyan scroll-line-horizontal" />
