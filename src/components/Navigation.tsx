@@ -6,13 +6,13 @@ import { useState, useEffect, useRef } from "react";
 import { useLenis } from "@/animations/ScrollProvider";
 
 const navLinks = [
-  { href: "#hero", label: "HOME", disabled: false },
-  { href: "#about", label: "ABOUT", disabled: false },
-  { href: "#projects", label: "PROJECTS", disabled: false },
-  { href: "#building", label: "BUILDING", disabled: false },
-  { href: "#skills", label: "SKILLS", disabled: false },
-  { href: "#github", label: "GITHUB", disabled: false },
-  { href: "#contact", label: "CONTACT", disabled: false },
+  { href: "/#hero", label: "HOME", disabled: false },
+  { href: "/#about", label: "ABOUT", disabled: false },
+  { href: "/#projects", label: "PROJECTS", disabled: false },
+  { href: "/#building", label: "BUILDING", disabled: false },
+  { href: "/#skills", label: "SKILLS", disabled: false },
+  { href: "/#github", label: "GITHUB", disabled: false },
+  { href: "/#contact", label: "CONTACT", disabled: false },
 ];
 
 export default function Navigation() {
@@ -74,6 +74,13 @@ export default function Navigation() {
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    const isHomePage = window.location.pathname === "/";
+    
+    if (!isHomePage) {
+      // Let standard Next.js Link handle the navigation to the home page route
+      return;
+    }
+
     e.preventDefault();
     
     isClickScrolling.current = true;

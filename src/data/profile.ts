@@ -8,11 +8,6 @@ export const profile = {
   focus: ["Software Engineering", "Artificial Intelligence", "Real-world Products"],
   location: "India",
   internshipStatus: "OPEN TO INTERNSHIPS",
-  stats: {
-    projects: 15, // Update this later
-    technologies: 20, // Update this later
-    commits: 500 // Update this later
-  },
   currentlyLearning: ["Agentic AI Workflows", "WebGL & GSAP Advanced", "Next.js Server Actions", "PostgreSQL"],
   timeline: [
     { year: "2024", title: "Exploring Agentic AI & Modern Web", description: "Deep diving into LLM tooling, Next.js App Router, and complex full-stack architectures." },
@@ -38,7 +33,7 @@ export const profile = {
     email: "prathapsenthilkumar9@gmail.com",
     linkedin: "https://www.linkedin.com/in/prathap-s-77a366374",
     github: "https://github.com/Prathap2349",
-    resume: "https://resume-gamma-bice.vercel.app/"
+    resume: "/resume.pdf"
   }
 };
 

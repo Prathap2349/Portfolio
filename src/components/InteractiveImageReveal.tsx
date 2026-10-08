@@ -122,11 +122,11 @@ export default function InteractiveImageReveal({ className }: { className?: stri
       {/* Base Anime Image */}
       <div className="absolute inset-0 w-full h-full opacity-100">
         <Image
-          src="/images/anime.png"
+          src="/images/hero-anime.jpg"
           alt="Anime portrait of Prathap"
           fill
           priority
-          sizes="100vw"
+          sizes="(min-width: 1024px) 60vw, 100vw"
           className="object-cover object-right"
           style={{ 
             maskImage: "linear-gradient(to right, black 80%, transparent 100%), linear-gradient(to bottom, black 80%, transparent 100%)",
@@ -159,7 +159,7 @@ export default function InteractiveImageReveal({ className }: { className?: stri
                 alt="Original portrait of Prathap"
                 fill
                 priority
-                sizes="100vw"
+                sizes="(min-width: 1024px) 60vw, 100vw"
                 className="object-cover object-right saturate-[1.1] contrast-[1.05]"
               />
             </div>

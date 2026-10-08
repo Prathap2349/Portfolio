@@ -2,6 +2,25 @@ import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, GitBranch } from "lucide-react";
+import type { Metadata, ResolvingMetadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const project = projects.find(p => p.slug === resolvedParams.slug);
+
+  if (!project) {
+    return { title: "Project Not Found" };
+  }
+
+  return {
+    title: `${project.name} | Prathap`,
+    description: project.description,
+    openGraph: {
+      title: `${project.name} | Prathap`,
+      description: project.description,
+    },
+  };
+}
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
@@ -10,7 +29,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   if (!project) return notFound();
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-24">
+    <div className="min-h-screen bg-background pt-32 pb-24">
       <div className="container mx-auto px-6 lg:px-[8vw]">
         
         {/* Back Button */}
@@ -67,24 +86,58 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </header>
 
         {/* Feature Image */}
-        <div className="relative w-full aspect-video rounded-3xl overflow-hidden mb-24 border border-white/10 bg-white/5">
-          {/* Fallback pattern for now */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
-          <div className="absolute inset-0 flex items-center justify-center text-secondary-text font-light tracking-widest text-sm uppercase">
-            Project Image Placeholder
+        {project.image ? (
+          <div className="relative w-full aspect-video rounded-3xl overflow-hidden mb-24 border border-white/10 bg-white/5">
+             <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
           </div>
-        </div>
+        ) : (
+          <div className="relative w-full aspect-video rounded-3xl overflow-hidden mb-24 border border-white/10 bg-white/5">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
+            <div className="absolute inset-0 flex items-center justify-center text-secondary-text font-light tracking-widest text-sm uppercase">
+              {project.name} Preview
+            </div>
+          </div>
+        )}
 
         {/* Details Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           <div className="md:col-span-2 space-y-12">
-            <section>
-              <h2 className="text-2xl font-bold text-primary-text mb-6">Overview</h2>
-              <div className="space-y-4 text-secondary-text font-light leading-relaxed">
-                <p>This is a placeholder for the detailed case study content. You can write about the problem you solved, the challenges you faced, and the solutions you implemented here.</p>
-                <p>Describe your thought process, architecture decisions, and any specific achievements related to {project.name}.</p>
-              </div>
-            </section>
+            {project.problem && (
+              <section>
+                <h2 className="text-2xl font-bold text-primary-text mb-6">The Problem</h2>
+                <div className="space-y-4 text-secondary-text font-light leading-relaxed whitespace-pre-line">
+                  {project.problem}
+                </div>
+              </section>
+            )}
+            
+            {project.solution && (
+              <section>
+                <h2 className="text-2xl font-bold text-primary-text mb-6">The Solution</h2>
+                <div className="space-y-4 text-secondary-text font-light leading-relaxed whitespace-pre-line">
+                  {project.solution}
+                </div>
+              </section>
+            )}
+
+            {project.result && (
+              <section>
+                <h2 className="text-2xl font-bold text-primary-text mb-6">The Result</h2>
+                <div className="space-y-4 text-secondary-text font-light leading-relaxed whitespace-pre-line">
+                  {project.result}
+                </div>
+              </section>
+            )}
+
+            {/* Default overview if no detailed fields exist */}
+            {!project.problem && !project.solution && !project.result && (
+              <section>
+                <h2 className="text-2xl font-bold text-primary-text mb-6">Overview</h2>
+                <div className="space-y-4 text-secondary-text font-light leading-relaxed">
+                  <p>Detailed case study information for {project.name} is currently being compiled. Stay tuned for architectural details, problems solved, and technical implementations.</p>
+                </div>
+              </section>
+            )}
           </div>
 
           <div className="space-y-10">
@@ -99,20 +152,27 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
 
-            <div>
-              <h3 className="text-sm font-semibold tracking-widest text-secondary-text uppercase mb-4">Role</h3>
-              <p className="text-primary-text">Lead Developer / Designer</p>
-            </div>
+            {project.role && (
+              <div>
+                <h3 className="text-sm font-semibold tracking-widest text-secondary-text uppercase mb-4">Role</h3>
+                <p className="text-primary-text">{project.role}</p>
+              </div>
+            )}
 
             <div>
               <h3 className="text-sm font-semibold tracking-widest text-secondary-text uppercase mb-4">Timeline</h3>
               <p className="text-primary-text">{project.year}</p>
             </div>
+            
+            <div>
+               <h3 className="text-sm font-semibold tracking-widest text-secondary-text uppercase mb-4">Visibility</h3>
+               <p className="text-primary-text capitalize">{project.visibility}</p>
+            </div>
           </div>
         </div>
 
       </div>
-    </main>
+    </div>
   );
 }
 

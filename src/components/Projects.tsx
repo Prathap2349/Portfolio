@@ -5,12 +5,12 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "@/data/projects";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowRight } from "lucide-react";
 
 export default function Projects() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const featuredProjects = projects.filter(p => p.featured).slice(0, 6);
+  const featuredProjects = projects.filter(p => p.featured).slice(0, 5);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -27,7 +27,7 @@ export default function Projects() {
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,
-              start: "top 80%",
+              start: "top 85%",
               toggleActions: "play none none none",
               once: true
             },
@@ -50,75 +50,92 @@ export default function Projects() {
       <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw] relative z-10">
         <h2 className="text-accent-cyan font-semibold tracking-[0.25em] text-xs mb-12 uppercase project-section flex items-center gap-4">
           <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
-          SELECTED WORK
+          FEATURED WORK
         </h2>
 
-        <div className="flex flex-col border-t border-white/5">
+        <div className="flex flex-col gap-12 lg:gap-24">
           {featuredProjects.map((project, index) => (
-            <div key={project.slug} className="project-section group border-b border-white/5 py-8 md:py-10 hover:bg-white/[0.02] transition-colors duration-500 relative -mx-6 px-6 md:mx-0 md:px-6 rounded-lg">
-              <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 w-full">
+            <div key={project.slug} className="project-section group relative">
+              <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-10" aria-label={`View ${project.name} case study`} />
+              
+              <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center w-full bg-white/[0.01] hover:bg-white/[0.03] border border-white/5 hover:border-accent-cyan/30 rounded-3xl p-6 lg:p-12 transition-all duration-500">
                 
-                {/* Number */}
-                <div className="text-secondary-text/30 font-bold text-xl md:text-2xl w-8 shrink-0 group-hover:text-accent-cyan/50 transition-colors">
-                  {String(index + 1).padStart(2, "0")}
-                </div>
-                
-                {/* Title & Desc */}
-                <div className="flex-grow">
-                  <h3 className="text-2xl md:text-3xl font-bold text-primary-text mb-2 tracking-tight group-hover:text-accent-cyan transition-colors duration-300">
-                    {project.name}
-                  </h3>
-                  <p className="text-secondary-text text-sm md:text-base md:max-w-2xl font-light">
-                    {project.description}
-                  </p>
-                </div>
-                
-                {/* Meta & Tags */}
-                <div className="flex flex-col gap-3 shrink-0 md:w-48 lg:w-64">
-                  <div className="flex gap-4 items-center">
-                    <span className="text-[10px] tracking-widest text-secondary-text uppercase font-semibold">
-                      {project.year}
+                {/* Text Content (Left) */}
+                <div className="flex-1 w-full flex flex-col justify-center">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="text-accent-cyan/50 font-bold text-xl lg:text-2xl w-8 shrink-0">
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+                    <span className="text-[10px] tracking-widest text-secondary-text uppercase px-3 py-1 rounded-full border border-white/10 bg-white/5">
+                      {project.category}
                     </span>
-                    <span className={`text-[10px] tracking-widest uppercase px-2 py-0.5 rounded-full border ${project.status === 'Active' ? 'border-accent-cyan/30 text-accent-cyan bg-accent-cyan/10' : 'border-white/10 text-secondary-text'}`}>
+                    <span className={`text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border ${project.status === 'Active' ? 'border-accent-cyan/30 text-accent-cyan bg-accent-cyan/10' : 'border-white/10 text-secondary-text'}`}>
                       {project.status}
                     </span>
                   </div>
                   
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {project.technologies.slice(0, 3).map((tech, i) => (
-                      <span key={i} className="text-[10px] tracking-wider text-secondary-text/70 uppercase border border-white/10 px-2 py-0.5 rounded-sm">
+                  <h3 className="text-3xl lg:text-5xl font-bold text-primary-text mb-4 tracking-tight group-hover:text-accent-cyan transition-colors duration-300">
+                    {project.name}
+                  </h3>
+                  
+                  <p className="text-secondary-text text-base lg:text-lg lg:max-w-xl font-light mb-8 leading-relaxed">
+                    {project.description}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-10">
+                    {project.technologies.slice(0, 5).map((tech, i) => (
+                      <span key={i} className="text-[10px] font-medium tracking-wider text-primary-text uppercase border border-white/10 bg-white/5 px-3 py-1.5 rounded-lg">
                         {tech}
                       </span>
                     ))}
                   </div>
+
+                  <div className="flex items-center gap-4">
+                    <span className="inline-flex items-center gap-2 text-primary-text group-hover:text-accent-cyan transition-colors text-xs font-semibold tracking-widest uppercase relative z-20 pointer-events-none">
+                      View Case Study
+                      <ArrowRight size={16} className="transform transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                    
+                    {/* External Links (z-20 so they can be clicked over the main link) */}
+                    <div className="flex items-center gap-4 ml-auto relative z-20">
+                      {project.githubUrl && (
+                        <a 
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
+                        >
+                          Source
+                        </a>
+                      )}
+                      {project.liveUrl && (
+                        <a 
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-primary-text transition-colors uppercase"
+                        >
+                          Live <ExternalLink size={12} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center justify-start md:justify-end shrink-0 md:w-32 mt-2 md:mt-0 gap-4">
-                  {project.visibility === "private" ? (
-                    <span className="text-[10px] font-medium tracking-widest text-secondary-text/50 uppercase">
-                      PRIVATE
-                    </span>
-                  ) : project.githubUrl ? (
-                    <a 
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[10px] font-medium tracking-widest text-primary-text hover:text-accent-cyan transition-colors uppercase"
-                    >
-                      SOURCE
-                    </a>
-                  ) : null}
-                  
-                  {project.liveUrl && (
-                    <a 
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-[10px] font-medium tracking-widest text-primary-text hover:text-accent-cyan transition-colors uppercase"
-                    >
-                      LIVE <ExternalLink size={12} />
-                    </a>
+                {/* Image Preview (Right) */}
+                <div className="flex-1 w-full lg:w-auto relative aspect-video rounded-2xl overflow-hidden border border-white/10 group-hover:border-accent-cyan/20 transition-colors duration-500">
+                  <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none" />
+                  {project.image ? (
+                    <img 
+                      src={project.image} 
+                      alt={project.name} 
+                      className="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-105" 
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-white/5 flex items-center justify-center transform transition-transform duration-700 ease-out group-hover:scale-105">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:10px_10px]" />
+                      <span className="text-secondary-text/50 text-sm tracking-widest font-light uppercase">No Image</span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -126,13 +143,13 @@ export default function Projects() {
           ))}
         </div>
 
-        <div className="mt-16 flex justify-center project-section">
+        <div className="mt-20 flex justify-center project-section">
           <Link 
             href="/projects"
             className="flex items-center gap-4 border border-white/10 rounded-full px-8 py-4 hover:border-accent-cyan/50 hover:bg-accent-cyan/5 text-primary-text hover:text-accent-cyan transition-all duration-300"
           >
             <span className="text-xs tracking-[0.2em] font-semibold uppercase">VIEW ALL PROJECTS</span>
-            <span>→</span>
+            <ArrowRight size={16} />
           </Link>
         </div>
       </div>

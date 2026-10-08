@@ -5,6 +5,7 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { profile } from "@/data/profile";
 import InteractiveImageReveal from "./InteractiveImageReveal";
+import { scrollToSection } from "@/utils/scroll";
 import NetworkBackground from "./NetworkBackground";
 
 export default function Hero() {
@@ -116,9 +117,7 @@ export default function Hero() {
 
   const handleExploreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    if (window.lenis) {
-      (window.lenis as any).scrollTo("#projects", { offset: -50, duration: 1.2, easing: (t: any) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-    }
+    scrollToSection("#projects", -50);
   };
 
   return (
@@ -150,7 +149,7 @@ export default function Hero() {
         >
           <div className="relative w-full h-full opacity-90 transition-all duration-500">
             <Image
-              src={showRealMobile ? "/images/original.png" : "/images/anime.png"}
+              src={showRealMobile ? "/images/original.png" : "/images/hero-anime.jpg"}
               alt="Portrait of Prathap"
               fill
               priority
@@ -214,10 +213,10 @@ export default function Hero() {
                 DOWNLOAD RESUME
               </a>
               <a 
-                href="#connect"
+                href="#contact"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (window.lenis) (window.lenis as any).scrollTo("#connect");
+                  scrollToSection("#contact");
                 }}
                 className="text-secondary-text hover:text-accent-cyan px-4 py-3 text-xs font-semibold tracking-widest uppercase transition-all duration-300"
               >

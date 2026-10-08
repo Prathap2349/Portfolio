@@ -36,8 +36,15 @@ class Particle {
 export default function NetworkBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: -1000, y: -1000 });
+  const isVisible = useRef(true);
+  const isTouchDevice = useRef(false);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    isTouchDevice.current = window.matchMedia("(pointer: coarse)").matches;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -49,22 +56,48 @@ export default function NetworkBackground() {
     let resizeTimeout: NodeJS.Timeout;
 
     const init = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
       
-      const particleCount = Math.min(Math.floor(window.innerWidth / 15), 100);
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      
+      // Fewer particles on mobile
+      const particleDensity = isTouchDevice.current ? 30 : 15;
+      const particleCount = Math.min(Math.floor(rect.width / particleDensity), isTouchDevice.current ? 40 : 100);
+      
       particles = [];
-      
       for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle(canvas.width, canvas.height));
+        particles.push(new Particle(rect.width, rect.height));
       }
     };
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!isVisible.current) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      
+      // Draw mouse glow (only on non-touch devices)
+      if (!isTouchDevice.current && mouseRef.current.x !== -1000) {
+        const gradient = ctx.createRadialGradient(
+          mouseRef.current.x, mouseRef.current.y, 0,
+          mouseRef.current.x, mouseRef.current.y, 400
+        );
+        gradient.addColorStop(0, "rgba(111, 231, 255, 0.15)");
+        gradient.addColorStop(1, "rgba(111, 231, 255, 0)");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(mouseRef.current.x, mouseRef.current.y, 400, 0, Math.PI * 2);
+        ctx.fill();
+      }
       
       for (let i = 0; i < particles.length; i++) {
-        particles[i].update(canvas.width, canvas.height);
+        particles[i].update(rect.width, rect.height);
         particles[i].draw(ctx);
         
         // Connect particles to each other
@@ -73,47 +106,36 @@ export default function NetworkBackground() {
           const dy = particles[i].y - particles[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < 120) {
+          if (distance < 150) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(111, 231, 255, ${0.15 * (1 - distance / 120)})`;
+            const alpha = Math.max(0, Math.min(0.15 * (1 - distance / 150), 0.15));
+            ctx.strokeStyle = `rgba(111, 231, 255, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
         }
         
-        // Connect to mouse
-        const mouseDx = particles[i].x - mouseRef.current.x;
-        const mouseDy = particles[i].y - mouseRef.current.y;
-        const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
-        
-        
-        // Draw a soft glowing aura around the cursor inside the canvas
-        if (i === 0 && mouseRef.current.x !== -1000) {
-          const gradient = ctx.createRadialGradient(
-            mouseRef.current.x, mouseRef.current.y, 0,
-            mouseRef.current.x, mouseRef.current.y, 400
-          );
-          gradient.addColorStop(0, "rgba(111, 231, 255, 0.15)");
-          gradient.addColorStop(1, "rgba(111, 231, 255, 0)");
-          ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(mouseRef.current.x, mouseRef.current.y, 400, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        if (mouseDistance < 350) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(mouseRef.current.x, mouseRef.current.y);
-          ctx.strokeStyle = `rgba(111, 231, 255, ${0.3 * (1 - mouseDistance / 200)})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
+        // Connect to mouse (only on non-touch)
+        if (!isTouchDevice.current) {
+          const mouseDx = particles[i].x - mouseRef.current.x;
+          const mouseDy = particles[i].y - mouseRef.current.y;
+          const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
           
-          // Slight attraction
-          particles[i].x -= mouseDx * 0.04;
-          particles[i].y -= mouseDy * 0.04;
+          if (mouseDistance < 350) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(mouseRef.current.x, mouseRef.current.y);
+            const alpha = Math.max(0, Math.min(0.4 * (1 - mouseDistance / 350), 0.4));
+            ctx.strokeStyle = `rgba(111, 231, 255, ${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Slight attraction
+            particles[i].x -= mouseDx * 0.04;
+            particles[i].y -= mouseDy * 0.04;
+          }
         }
       }
       
@@ -126,12 +148,25 @@ export default function NetworkBackground() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
+      if (isTouchDevice.current) return;
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = { 
+        x: e.clientX - rect.left, 
+        y: e.clientY - rect.top 
+      };
     };
     
     const handleMouseLeave = () => {
       mouseRef.current = { x: -1000, y: -1000 };
     };
+
+    // Intersection Observer to pause animation when not visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isVisible.current = entry.isIntersecting;
+      });
+    });
+    observer.observe(canvas);
 
     init();
     animate();
@@ -144,6 +179,7 @@ export default function NetworkBackground() {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       document.body.removeEventListener("mouseleave", handleMouseLeave);
+      observer.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -151,7 +187,7 @@ export default function NetworkBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none z-0 opacity-60"
+      className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-60"
       aria-hidden="true"
     />
   );

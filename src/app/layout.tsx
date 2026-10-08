@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 import Cursor from "@/components/Cursor";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://resume-gamma-bice.vercel.app"),
   title: {
     default: "Prathap | AI & Data Science Student & Developer",
     template: "%s | Prathap"
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://prathap.dev", // UPDATE THIS LATER
+    url: "https://resume-gamma-bice.vercel.app",
     title: "Prathap | Creative Developer & AI Student",
     description: "Portfolio of Prathap, a creative front-end engineer and AI & Data Science student.",
     siteName: "Prathap Portfolio",
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Prathap | Developer Portfolio",
     description: "Portfolio of Prathap, a creative front-end engineer and AI & Data Science student.",
-    creator: "@prathap", // UPDATE THIS LATER
+    creator: "Prathap",
   },
   robots: {
     index: true,

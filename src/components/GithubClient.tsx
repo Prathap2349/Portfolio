@@ -11,7 +11,7 @@ interface GithubClientProps {
     profile: GithubProfile | null;
     repos: GithubRepo[];
     stars: number;
-    error: boolean | null;
+    error: string | null;
   };
 }
 
@@ -75,8 +75,9 @@ export default function GithubClient({ data }: GithubClientProps) {
           </div>
           
           {data.error ? (
-            <div className="text-accent-warm mt-4 md:mt-0 text-sm">
-              Currently unavailable
+            <div className="text-secondary-text/70 mt-4 md:mt-0 text-sm max-w-sm text-left md:text-right">
+              <div className="text-accent-warm font-semibold tracking-wider uppercase text-xs mb-1">Currently Unavailable</div>
+              {data.error}
             </div>
           ) : (
             <div className="flex gap-8 mt-8 md:mt-0">

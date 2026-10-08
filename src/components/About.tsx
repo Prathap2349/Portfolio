@@ -164,12 +164,6 @@ export default function About() {
           {/* Right Column: Stats & Timeline */}
           <div className="space-y-16">
             
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 about-text">
-              <StatCard title="Projects" value={profile.stats.projects} suffix="+" />
-              <StatCard title="Tech Stack" value={profile.stats.technologies} />
-              <StatCard title="Commits" value={profile.stats.commits} suffix="+" />
-            </div>
-
             <div className="timeline-container relative pl-6 border-l border-white/5">
               <div className="absolute top-0 left-[-1px] w-[2px] bg-accent-cyan timeline-line origin-top" />
               

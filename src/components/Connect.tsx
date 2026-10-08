@@ -114,7 +114,7 @@ export default function Connect() {
                 {formStatus === "loading" ? (
                   <><span className="w-4 h-4 border-2 border-accent-cyan border-t-transparent rounded-full animate-spin" /> Sending...</>
                 ) : formStatus === "success" ? (
-                  <><CheckCircle2 size={16} /> Sent Successfully</>
+                  <><CheckCircle2 size={16} /> Opening Mail Client...</>
                 ) : (
                   "Send Message"
                 )}
