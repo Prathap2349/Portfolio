@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "@/data/profile";
 import { scrollToSection } from "@/utils/scroll";
 import NetworkBackground from "./NetworkBackground";
@@ -11,10 +12,12 @@ export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const [showReal, setShowReal] = useState(false);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
     const ctx = gsap.context(() => {
+      // Intro animations
       gsap.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.inOut" });
 
       gsap.fromTo(
@@ -44,6 +47,7 @@ export default function Hero() {
         ease: "sine.inOut"
       });
 
+      // Mouse parallax
       const handleMouseMove = (e: MouseEvent) => {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         if (window.innerWidth < 1024) return;
@@ -54,6 +58,48 @@ export default function Hero() {
       };
 
       window.addEventListener("mousemove", handleMouseMove);
+
+      // --- SCROLL ANIMATION (Anime to Real) ---
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top", // Animates as you scroll past the hero
+          scrub: 1, // Smoothly links to scroll position
+        }
+      });
+
+      // Anime image fades out, scales up, and blurs
+      tl.to(".hero-anime-img", {
+        opacity: 0,
+        scale: 1.05,
+        filter: "blur(10px)",
+        x: "-2%",
+        ease: "none"
+      }, 0);
+
+      // Real image fades in, scales down to normal, and unblurs
+      tl.fromTo(".hero-real-img", {
+        opacity: 0,
+        scale: 1.05,
+        filter: "blur(10px)",
+        x: "2%",
+      }, {
+        opacity: 1,
+        scale: 1,
+        filter: "blur(0px)",
+        x: "0%",
+        ease: "none"
+      }, 0);
+
+      // Text subtle parallax
+      tl.to(textRef.current, {
+        y: -100,
+        opacity: 0,
+        ease: "none"
+      }, 0);
+
+
       return () => window.removeEventListener("mousemove", handleMouseMove);
     }, containerRef);
 
@@ -76,15 +122,9 @@ export default function Hero() {
 
       {/* Image Layer */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
+        
         {/* Anime Image */}
-        <div 
-          className="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out"
-          style={{ 
-            opacity: showReal ? 0 : 1,
-            transform: showReal ? "scale(1.05) translateX(-2%)" : "scale(1) translateX(0)",
-            filter: showReal ? "blur(10px)" : "blur(0px)"
-          }}
-        >
+        <div className="hero-anime-img absolute inset-0 w-full h-full transform-gpu">
           <Image
             src="/images/hero-anime.jpg"
             alt="Cinematic developer anime scene"
@@ -98,15 +138,7 @@ export default function Hero() {
         </div>
 
         {/* Real Image */}
-        <div 
-          className="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out"
-          style={{ 
-            opacity: showReal ? 1 : 0,
-            transform: showReal ? "scale(1) translateX(0)" : "scale(1.05) translateX(2%)",
-            filter: showReal ? "blur(0px)" : "blur(10px)",
-            pointerEvents: showReal ? "auto" : "none"
-          }}
-        >
+        <div className="hero-real-img absolute inset-0 w-full h-full transform-gpu">
           <Image
             src="/images/original.png"
             alt="Portrait of Prathap"
@@ -176,18 +208,6 @@ export default function Hero() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Floating Toggle Button */}
-      <div className="absolute bottom-6 right-6 lg:bottom-12 lg:right-12 z-20 hero-scroll-indicator">
-        <button
-          onClick={() => setShowReal(!showReal)}
-          className="flex items-center gap-2 bg-background/80 hover:bg-background border border-white/10 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-semibold tracking-widest text-primary-text uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
-          aria-label={showReal ? "Switch to anime view" : "Switch to real photo view"}
-        >
-          <span className="w-2 h-2 rounded-full bg-accent-cyan"></span>
-          {showReal ? "ANIME VIEW" : "REAL ME"}
-        </button>
       </div>
 
       <div className="hero-scroll-indicator absolute bottom-12 left-[8vw] z-20 hidden md:flex items-center gap-4 rotate-90 origin-left">
