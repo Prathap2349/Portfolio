@@ -15,6 +15,8 @@ export interface Project {
   liveUrl?: string;
   demoUrl?: string;
   images?: string[];
+  videoUrl?: string;
+  mockupUrl?: string;
   problem?: string;
   solution?: string;
   result?: string;
