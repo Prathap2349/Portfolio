@@ -3,22 +3,7 @@ import ProjectJourney from "./projects/ProjectJourney";
 import { projects as fallbackProjects } from "@/data/projects";
 
 export default function Projects() {
-  const mappedProjects = fallbackProjects
-    .filter(p => p.featured)
-    .map(p => ({
-      slug: p.slug,
-      name: p.name,
-      description: p.description,
-      technologies: p.technologies,
-      githubUrl: p.githubUrl,
-      liveUrl: p.liveUrl,
-      images: p.images || [],
-      videoUrl: p.videoUrl,
-      mockupUrl: p.mockupUrl,
-      status: p.status,
-      category: p.category,
-      problem: p.problem,
-    }));
+  const mappedProjects = fallbackProjects.filter(p => p.featured);
 
   return (
     <section id="projects" className="bg-background relative w-full">
@@ -28,7 +13,7 @@ export default function Projects() {
           Loading Projects...
         </div>
       }>
-        <ProjectJourney projects={mappedProjects} />
+        <ProjectJourney projects={mappedProjects as any} />
       </Suspense>
     </section>
   );

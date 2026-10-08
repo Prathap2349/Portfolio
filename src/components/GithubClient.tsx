@@ -34,7 +34,7 @@ function AnimatedHeatmap() {
         from: "random"
       }
     });
-  }, [lastRepo?.updated_at]);
+  }, []);
 
   // Generate 7 rows by 30 cols
   const cells = Array.from({ length: 7 * 30 });

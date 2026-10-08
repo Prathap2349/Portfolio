@@ -133,7 +133,7 @@ export default function About() {
       );
 
       // Timeline items fade up sequentially based on scroll
-      gsap.utils.toArray(".timeline-item").forEach((item: Element) => {
+      (gsap.utils.toArray(".timeline-item") as Element[]).forEach((item) => {
         gsap.fromTo(item,
           { opacity: 0, x: -20 },
           {

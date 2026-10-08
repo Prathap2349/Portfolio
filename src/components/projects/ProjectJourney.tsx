@@ -6,21 +6,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
 import { View } from "lucide-react";
+import { Project } from "@/types";
 
-export interface JourneyProject {
-  slug: string;
-  name: string;
-  description: string;
-  technologies: string[];
-  githubUrl?: string;
-  liveUrl?: string;
-  images?: string[];
-  videoUrl?: string;
-  mockupUrl?: string;
-  status: string;
-  problem?: string;
-  category: string;
-}
+export type JourneyProject = Project;
 
 const MediaContent = ({ project }: { project: JourneyProject }) => (
   <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">

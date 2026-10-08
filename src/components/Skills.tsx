@@ -31,7 +31,7 @@ export default function Skills() {
 
       // Random float animation for skill pills
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.utils.toArray(".skill-pill").forEach((pill: HTMLElement) => {
+        (gsap.utils.toArray(".skill-pill") as HTMLElement[]).forEach((pill) => {
            gsap.to(pill, {
              y: () => (Math.random() - 0.5) * 6,
              duration: () => 1.5 + Math.random() * 2,
