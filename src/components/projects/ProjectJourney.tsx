@@ -223,7 +223,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                             href={`/projects/${project.slug}`}
                             className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan backdrop-blur-md"
                           >
-                            EXPLORE <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
+                            EXPLORE <span className="inline-block transform transition-all duration-300 group-hover:translate-x-1 opacity-70 group-hover:opacity-100">→</span>
                           </Link>
                         ) : project.githubUrl ? (
                           <a 
@@ -232,7 +232,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                             rel="noopener noreferrer"
                             className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
                           >
-                            SOURCE CODE <span className="inline-block transform transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                            SOURCE CODE <span className="inline-block transform transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 opacity-70 group-hover:opacity-100">↗</span>
                           </a>
                         ) : project.liveUrl ? (
                           <a 
@@ -241,7 +241,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                             rel="noopener noreferrer"
                             className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
                           >
-                            VIEW LIVE <span className="inline-block transform transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                            VIEW LIVE <span className="inline-block transform transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 opacity-70 group-hover:opacity-100">↗</span>
                           </a>
                         ) : null}
                       </div>

@@ -5,25 +5,11 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GithubRepo, GithubProfile } from "@/lib/github";
 import { profile as profileData } from "@/data/profile";
+import { projects as allProjects } from "@/data/projects";
 import { Lock } from "lucide-react";
 
-const privateProjects = [
-  {
-    name: "Echo AI",
-    description: "A local-first AI voice assistant designed to interact with the Mac using AI, voice commands and automation.",
-    tech: "NEXT.JS · FASTAPI · OLLAMA · AI"
-  },
-  {
-    name: "Ollama Pet",
-    description: "A native macOS AI companion with local AI, voice interaction and desktop-focused features.",
-    tech: "SWIFT · SWIFTUI · OLLAMA · APPKIT"
-  },
-  {
-    name: "FocusVault",
-    description: "An Android focus and protection application designed to help users protect their attention.",
-    tech: "KOTLIN · ANDROID SDK"
-  }
-];
+// Get private projects from the single source of truth
+const privateProjects = allProjects.filter(p => p.visibility === "private" && p.featured);
 
 interface GithubClientProps {
   data: {
@@ -146,9 +132,8 @@ export default function GithubClient({ data }: GithubClientProps) {
       });
     }, containerRef);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => { ctx.revert(); if (timeoutId) clearTimeout(timeoutId); };
-  }, [data]);
+  }, [data, lastRepo]);
 
   return (
     <section 
@@ -243,7 +228,7 @@ export default function GithubClient({ data }: GithubClientProps) {
                   </p>
                 </div>
                 <div className="mt-6 flex flex-col gap-3 relative z-10 transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>
-                  <div className="text-[10px] font-semibold text-secondary-text tracking-[0.2em]">{p.tech}</div>
+                  <div className="text-[10px] font-semibold text-secondary-text tracking-[0.2em] line-clamp-1">{p.technologies.join(" · ").toUpperCase()}</div>
                   <div className="text-[9px] font-bold text-white/40 tracking-widest uppercase flex items-center gap-1.5 pt-3 border-t border-white/5">
                     PRIVATE REPOSITORY <Lock size={10} />
                   </div>
@@ -308,7 +293,7 @@ export default function GithubClient({ data }: GithubClientProps) {
             rel="noopener noreferrer"
             className="group flex items-center gap-3 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-accent-cyan uppercase transition-colors"
           >
-            VIEW ALL REPOSITORIES <span className="transform transition-transform group-hover:translate-x-1">→</span>
+            VIEW ALL REPOSITORIES <span className="inline-block transform transition-all duration-300 group-hover:translate-x-1 opacity-70 group-hover:opacity-100">→</span>
           </a>
         </div>
       </div>

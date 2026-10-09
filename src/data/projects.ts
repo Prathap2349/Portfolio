@@ -14,7 +14,7 @@ export const projects: Project[] = [
     year: 2024,
     problem: "I wanted to read manga offline on my tablet, but manually saving pages and converting them to PDFs was tedious.",
     solution: "Built a Chrome extension that scrapes the images from a chapter page and bundles them into a single PDF file automatically.",
-    result: "Saves a lot of time and works exactly as needed. TODO(prathap): add screenshot mockupUrl here.",
+    result: "Saves a lot of time and works exactly as needed.",
   },
   {
     slug: "spendwise",
@@ -29,7 +29,7 @@ export const projects: Project[] = [
     year: 2024,
     problem: "Manual expense tracking apps fail because I forget to enter data. I needed something that works silently in the background.",
     solution: "Used Android's Notification Listener and SMS reading permissions to parse transaction amounts and merchants on the fly.",
-    result: "Successfully automates 90% of my expense logging. TODO(prathap): add mockupUrl of the app screen.",
+    result: "Successfully automates 90% of my expense logging.",
   },
   {
     slug: "usbbridge",
@@ -44,7 +44,7 @@ export const projects: Project[] = [
     year: 2025,
     problem: "Transferring files between a Mac and Android over Wi-Fi/cloud is slow or needs internet. Android File Transfer for Mac is notoriously buggy.",
     solution: "Wrote a SwiftUI wrapper around ADB (Android Debug Bridge) commands to push/pull files quickly and reliably via a wired USB connection.",
-    result: "Fast, local file transfers with no network required. TODO(prathap): add screenshot mockupUrl.",
+    result: "Fast, local file transfers with no network required.",
   },
   {
     slug: "ollama-pet",
@@ -74,7 +74,7 @@ export const projects: Project[] = [
     year: 2025,
     problem: "I wanted to control my Mac and run basic tasks using my voice without sending audio to the cloud.",
     solution: "Built a local voice pipeline linking a Python/FastAPI backend to an Ollama model, with a Next.js interface.",
-    result: "Works well for simple commands. Hardware limitations make local TTS a bit slow. TODO(prathap): add screenshot.",
+    result: "Works well for simple commands. Hardware limitations make local TTS a bit slow.",
   },
   {
     slug: "smart-vision-sentry",
@@ -120,11 +120,23 @@ export const projects: Project[] = [
     name: "NEST",
     description: "Family caregiver safety app offering reassurance without surveillance.",
     category: "Mobile",
-    technologies: ["TODO(prathap): List tech stack here"],
+    technologies: ["Kotlin", "Android SDK", "Firebase"],
     status: "In progress",
     visibility: "private",
     featured: false,
     isBuilding: true,
     year: 2025,
+  },
+  {
+    slug: "focusvault",
+    name: "FocusVault",
+    description: "An Android focus and protection application designed to help users protect their attention.",
+    category: "Mobile",
+    technologies: ["Kotlin", "Android SDK"],
+    status: "Completed",
+    visibility: "private",
+    featured: true,
+    isBuilding: false,
+    year: 2024,
   }
 ];

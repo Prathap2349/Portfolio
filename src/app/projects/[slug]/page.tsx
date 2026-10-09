@@ -211,7 +211,7 @@ export default async function ProjectPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="group w-full flex items-center justify-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-4 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
               >
-                LIVE DEMO <span className="inline-block transform transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                LIVE DEMO <span className="inline-block transform transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 opacity-70 group-hover:opacity-100">↗</span>
               </a>
             )}
             
@@ -222,7 +222,7 @@ export default async function ProjectPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="group w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-4 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
               >
-                SOURCE CODE <span className="inline-block transform transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                SOURCE CODE <span className="inline-block transform transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 opacity-70 group-hover:opacity-100">↗</span>
               </a>
             )}
           </div>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Prathap Senthilkumar - AI & Data Science Resume">
+<title>Prathap Senthilkumar | Resume</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   PROFESSIONAL A4 RESUME
+   210mm × 297mm
+   Keep resume-photo.png in the same folder as this HTML file.
+   ========================================================= */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+:root {
+  --navy: #102A43;
+  --blue: #2563EB;
+  --text: #172033;
+  --muted: #64748B;
+  --line: #D9E2EC;
+  --soft: #f5f7fa;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #e7ebf0;
+  color: var(--text);
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-size: 8.3pt;
+  line-height: 1.42;
+}
+
+.resume {
+  width: 210mm;
+  height: 297mm;
+  margin: 14px auto;
+  padding: 12.5mm 15mm 9mm;
+  background: var(--white);
+  box-shadow: 0 8px 28px rgba(18, 33, 63, 0.13);
+  overflow: hidden;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30mm;
+  column-gap: 8mm;
+  align-items: center;
+  padding-bottom: 5mm;
+  border-bottom: 1.4px solid var(--navy);
+}
+
+.header-main {
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  color: var(--navy);
+  font-size: 23pt;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.55px;
+}
+
+.role {
+  margin-top: 1.7mm;
+  color: var(--blue);
+  font-size: 10.5pt;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.summary {
+  margin: 2.7mm 0 0;
+  max-width: 148mm;
+  color: #4e5b6f;
+  font-size: 8.35pt;
+  line-height: 1.43;
+}
+
+.photo {
+  width: 28mm;
+  height: 34mm;
+  display: block;
+  margin-left: auto;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 4px;
+  border: 1px solid #cfd7e2;
+  background: var(--soft);
+}
+
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2mm 2.5mm;
+  margin-top: 3mm;
+  color: var(--muted);
+  font-size: 7.65pt;
+  line-height: 1.25;
+}
+
+.contact a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.contact a:hover {
+  color: var(--blue);
+}
+
+.contact .sep {
+  color: #b7c0cc;
+}
+
+/* ================= SECTIONS ================= */
+
+.section {
+  margin-top: 4.2mm;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 2.5mm;
+  margin: 0 0 2.1mm;
+  padding-left: 2.3mm;
+  border-left: 1.2mm solid var(--blue);
+  color: var(--navy);
+  font-size: 9.2pt;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 1.35px;
+  text-transform: uppercase;
+}
+
+.section-title::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+
+/* ================= EDUCATION ================= */
+
+.education {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8mm;
+  align-items: start;
+}
+
+.education-title {
+  color: var(--text);
+  font-size: 8.8pt;
+  font-weight: 700;
+}
+
+.education-place {
+  margin-top: 0.5mm;
+  color: var(--muted);
+  font-size: 8pt;
+}
+
+.education-year {
+  color: var(--muted);
+  font-size: 7.9pt;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ================= SKILLS ================= */
+
+.skills {
+  display: grid;
+  grid-template-columns: 23mm minmax(0, 1fr);
+  column-gap: 4mm;
+  row-gap: 1.25mm;
+}
+
+.skill-name {
+  color: var(--navy);
+  font-size: 7.85pt;
+  font-weight: 700;
+}
+
+.skill-value {
+  color: var(--muted);
+  font-size: 7.85pt;
+  line-height: 1.35;
+}
+
+/* ================= PROJECTS ================= */
+
+.project {
+  margin-bottom: 3.1mm;
+  break-inside: avoid;
+}
+
+.project:last-child {
+  margin-bottom: 0;
+}
+
+.project-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 7mm;
+  align-items: baseline;
+}
+
+.project-name {
+  margin: 0;
+  color: var(--text);
+  font-size: 9pt;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.project-type {
+  color: var(--blue);
+  font-size: 7.25pt;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.project ul {
+  margin: 0.8mm 0 0;
+  padding-left: 4.2mm;
+}
+
+.project li {
+  margin: 0.45mm 0;
+  padding-left: 0.5mm;
+  color: #4e5b6f;
+  font-size: 7.65pt;
+  line-height: 1.32;
+}
+
+.tech {
+  margin-top: 0.8mm;
+  color: var(--muted);
+  font-size: 7.45pt;
+  line-height: 1.25;
+}
+
+.tech strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ================= TWO COLUMNS ================= */
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  column-gap: 9mm;
+  align-items: start;
+}
+
+/* ================= LISTS ================= */
+
+.compact-list {
+  margin: 0;
+  padding-left: 4.2mm;
+}
+
+.compact-list li {
+  margin: 0.65mm 0;
+  padding-left: 0.5mm;
+  color: #4e5b6f;
+  font-size: 7.7pt;
+  line-height: 1.33;
+}
+
+.compact-list strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ================= CAREER INTERESTS ================= */
+
+.interests {
+  color: var(--muted);
+  font-size: 7.8pt;
+  line-height: 1.4;
+}
+
+.interests span {
+  white-space: nowrap;
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+  margin-top: 3.5mm;
+  padding-top: 2mm;
+  border-top: 1px solid var(--line);
+  color: #8b95a5;
+  text-align: center;
+  font-size: 6.6pt;
+}
+
+/* ================= PDF DOWNLOAD ================= */
+.download-button {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 2;
+  border: 0;
+  border-radius: 6px;
+  padding: 10px 16px;
+  background: var(--navy);
+  color: #fff;
+  font: 600 14px "Inter", Arial, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(18, 33, 63, .18);
+}
+.download-button:hover { background: var(--blue); }
+
+/* ================= MOBILE PREVIEW ================= */
+
+@media screen and (max-width: 850px) {
+  .resume {
+    width: calc(100% - 18px);
+    height: auto;
+    min-height: 297mm;
+    margin: 9px auto;
+    padding: 25px 22px;
+    overflow: visible;
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .header {
+    grid-template-columns: 1fr;
+    row-gap: 5mm;
+  }
+
+  .photo {
+    margin-left: 0;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+    row-gap: 5mm;
+  }
+
+  .project-header {
+    display: block;
+  }
+
+  .project-type {
+    display: block;
+    margin-top: 1mm;
+  }
+
+  .education {
+    grid-template-columns: 1fr;
+  }
+
+  .education-year {
+    white-space: normal;
+  }
+
+  .skills {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-value {
+    margin-bottom: 1.5mm;
+  }
+}
+
+/* ================= PRINT ================= */
+
+@media print {
+  .download-button { display: none; }
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    background: #ffffff;
+  }
+
+  .resume {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    padding: 12.5mm 15mm 9mm;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<button class="download-button" type="button" onclick="window.print()" aria-label="Save this resume as a PDF">Download PDF</button>
+
+<main class="resume">
+
+  <!-- ================= HEADER ================= -->
+
+  <header class="header">
+
+    <div class="header-main">
+      <h1 class="name">Prathap S</h1>
+
+      <div class="role">
+        AI &amp; Data Science Student | Software Developer
+      </div>
+
+      <p class="summary">
+        AI &amp; Data Science undergraduate building practical software across computer vision, local LLMs, full-stack web development and automation. Seeking an internship to contribute to AI/ML or software engineering projects.
+      </p>
+
+      <div class="contact">
+        <a href="mailto:prathapsenthilkumar9@gmail.com">
+          prathapsenthilkumar9@gmail.com
+        </a>
+
+        <span class="sep">|</span>
+
+        <a href="https://www.linkedin.com/in/prathap-s-77a366374"
+           target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+
+        <span class="sep">|</span>
+
+        <a href="https://github.com/Prathap2349"
+           target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+
+        <span class="sep">|</span>
+
+        <a href="https://prathap2349.github.io/Prathap2349/"
+           target="_blank" rel="noopener noreferrer">
+          Portfolio
+        </a>
+
+        <span class="sep">|</span>
+
+        Coimbatore, Tamil Nadu, India
+      </div>
+    </div>
+
+    <!-- image.png must be in the same folder as this HTML file -->
+    <img
+      class="photo"
+      src="image.png"
+      alt="Prathap Senthilkumar"
+    >
+
+  </header>
+
+
+  <!-- ================= SUMMARY ================= -->
+
+  <!-- Summary is already included in the header to save space and improve hierarchy. -->
+
+
+  <!-- ================= EDUCATION ================= -->
+
+  <section class="section">
+    <h2 class="section-title">Education</h2>
+
+    <div class="education">
+      <div>
+        <div class="education-title">
+          B.Tech, Artificial Intelligence &amp; Data Science
+        </div>
+
+        <div class="education-place">
+          Rathinam Technical Campus, Coimbatore, Tamil Nadu
+        </div>
+      </div>
+
+      <div class="education-year">
+        Currently 2nd Year
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================= TECHNICAL SKILLS ================= -->
+
+  <section class="section">
+    <h2 class="section-title">Technical Skills</h2>
+
+    <div class="skills">
+
+      <div class="skill-name">Languages</div>
+      <div class="skill-value">
+        Python, JavaScript, TypeScript, Java, C, Swift
+      </div>
+
+      <div class="skill-name">AI / ML</div>
+      <div class="skill-value">
+        Computer Vision, YOLOv8, ByteTrack, Ollama, Local LLMs, Generative AI
+      </div>
+
+      <div class="skill-name">Web</div>
+      <div class="skill-value">
+        React, Next.js, Vite, Tailwind CSS, HTML, CSS
+      </div>
+
+      <div class="skill-name">Backend</div>
+      <div class="skill-value">
+        FastAPI, REST APIs, PostgreSQL, Supabase, Firebase
+      </div>
+
+      <div class="skill-name">Tools</div>
+      <div class="skill-value">
+        Git, GitHub, VS Code, Android Studio, IntelliJ IDEA, Vercel
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ================= FEATURED PROJECTS ================= -->
+
+  <section class="section">
+    <h2 class="section-title">Featured Projects</h2>
+
+
+    <article class="project">
+      <div class="project-header">
+        <h3 class="project-name">
+          PulseGate — API Gateway Simulator
+        </h3>
+        <span class="project-type">Hackathon Project</span>
+      </div>
+
+      <ul>
+        <li>
+          Built a NOC-style dashboard to visualize API traffic,
+          gateway activity and system status.
+        </li>
+        <li>
+          Designed responsive interactive monitoring views with
+          charts and real-time-style operational data.
+        </li>
+      </ul>
+
+      <div class="tech">
+        <strong>Tech:</strong>
+        React, TypeScript, Tailwind CSS, Zustand, Recharts, Framer Motion
+      </div>
+    </article>
+
+
+    <article class="project">
+      <div class="project-header">
+        <h3 class="project-name">
+          Smart Vision Sentry — CCTV False Alarm Detection
+        </h3>
+        <span class="project-type">Computer Vision</span>
+      </div>
+
+      <ul>
+        <li>
+          Built an object detection and multi-object tracking pipeline
+          to analyse CCTV events and reduce false alarms.
+        </li>
+        <li>
+          Exposed detection results through a FastAPI backend for
+          application-level processing.
+        </li>
+      </ul>
+
+      <div class="tech">
+        <strong>Tech:</strong>
+        Python, YOLOv8, ByteTrack, FastAPI
+      </div>
+    </article>
+
+
+    <article class="project">
+      <div class="project-header">
+        <h3 class="project-name">
+          Echo AI — AI Desktop Assistant
+        </h3>
+        <span class="project-type">AI / Automation</span>
+      </div>
+
+      <ul>
+        <li>
+          Integrated local LLMs for conversational interaction and
+          controlled task execution.
+        </li>
+        <li>
+          Explored voice input, text-to-speech and confirmation-based
+          computer actions.
+        </li>
+      </ul>
+
+      <div class="tech">
+        <strong>Tech:</strong>
+        Python, FastAPI, Ollama, Next.js
+      </div>
+    </article>
+
+
+    <article class="project">
+      <div class="project-header">
+        <h3 class="project-name">
+          MY HUB — Personal Web Platform
+        </h3>
+        <span class="project-type">Web Development</span>
+      </div>
+
+      <ul>
+        <li>
+          Built a mobile-first PWA that organizes AI, entertainment
+          and college resources in one place.
+        </li>
+        <li>
+          Implemented dark, light and AMOLED themes and deployed
+          the platform on Vercel.
+        </li>
+      </ul>
+
+      <div class="tech">
+        <strong>Tech:</strong>
+        HTML, CSS, JavaScript, PWA, Vercel
+      </div>
+    </article>
+
+  </section>
+
+
+  <!-- ================= TWO COLUMN INFORMATION ================= -->
+
+  <section class="section">
+    <div class="columns">
+
+      <!-- LEFT -->
+      <div>
+        <h2 class="section-title">Other Projects</h2>
+
+        <ul class="compact-list">
+          <li>
+            <strong>FocusVault:</strong>
+            Android productivity and website-blocking application.
+          </li>
+
+          <li>
+            <strong>Ollama Pet:</strong>
+            Native macOS AI companion built with Swift, SwiftUI,
+            AppKit and Ollama.
+          </li>
+
+          <li>
+            <strong>DriveLegal TN:</strong>
+            AI road-law assistant concept for Tamil Nadu.
+          </li>
+
+          <li>
+            <strong>RateScale:</strong>
+            Full-stack application with PostgreSQL backend services.
+          </li>
+        </ul>
+      </div>
+
+
+      <!-- RIGHT -->
+      <div>
+        <h2 class="section-title">Technical Activities</h2>
+
+        <ul class="compact-list">
+          <li>
+            Practical exposure to robotics and industrial automation.
+          </li>
+
+          <li>
+            3D CAD design and 3D printing using SolidWorks and
+            Bambu Studio.
+          </li>
+
+          <li>
+            Hands-on development across web, AI and automation
+            environments.
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ================= ADDITIONAL ================= -->
+
+  <section class="section">
+    <div class="columns">
+
+      <div>
+        <h2 class="section-title">Core Strengths</h2>
+
+        <ul class="compact-list">
+          <li>Practical problem solving and debugging</li>
+          <li>AI, automation and computer vision</li>
+          <li>Responsive web development and UI/UX</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="section-title">Career Interests</h2>
+
+        <div class="interests">
+          <span>AI / ML</span> •
+          <span>Generative AI</span> •
+          <span>Computer Vision</span> •
+          <span>Web Development</span> •
+          <span>Software Engineering</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    Prathap Senthilkumar · A4 Professional Resume
+  </footer>
+
+</main>
+
+</body>
+</html>

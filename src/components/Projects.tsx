@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import ProjectJourney from "./projects/ProjectJourney";
+import ProjectJourney, { JourneyProject } from "./projects/ProjectJourney";
 import { projects as fallbackProjects } from "@/data/projects";
 
 export default function Projects() {
@@ -13,7 +13,7 @@ export default function Projects() {
           Loading Projects...
         </div>
       }>
-        <ProjectJourney projects={mappedProjects as any} />
+        <ProjectJourney projects={mappedProjects as JourneyProject[]} />
       </Suspense>
     </section>
   );
