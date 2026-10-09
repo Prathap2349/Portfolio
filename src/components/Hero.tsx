@@ -16,9 +16,14 @@ export default function Hero() {
         { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: "power3.out" }
       );
       
+      gsap.fromTo(".hero-img-container",
+        { clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)" },
+        { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 1.5, ease: "power3.inOut" }
+      );
+      
       gsap.fromTo(".hero-img", 
-        { opacity: 0, scale: 1.05 }, 
-        { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out", delay: 0.3 }
+        { scale: 1.1, opacity: 0.5 }, 
+        { scale: 1, opacity: 1, duration: 3, ease: "power2.out" }
       );
     }, containerRef);
 
@@ -32,8 +37,8 @@ export default function Hero() {
       className="relative min-h-[100svh] w-full flex items-center justify-center overflow-hidden bg-background"
     >
       {/* Background & Image */}
-      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-        <div className="hero-img absolute inset-0 w-full h-full transform-gpu">
+      <div className="hero-img-container absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none" style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}>
+        <div className="hero-img absolute inset-0 w-full h-full transform-gpu origin-center">
           <Image
             src="/images/original.webp"
             alt="Portrait of Prathap"
@@ -72,7 +77,7 @@ export default function Hero() {
             <a 
               href="#projects"
               onClick={(e) => { e.preventDefault(); scrollToSection("#projects", -50); }}
-              className="bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-500 px-6 py-3 text-xs font-semibold tracking-widest uppercase transition-colors outline-none rounded"
+              className="bg-amber-500/10 hover:bg-amber-500/20 active:scale-95 border border-amber-500/30 text-amber-500 px-6 py-3 text-xs font-semibold tracking-widest uppercase transition-all outline-none rounded"
             >
               Explore my work
             </a>
@@ -80,7 +85,7 @@ export default function Hero() {
               href="https://resume-gamma-bice.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-3 text-xs font-semibold tracking-widest uppercase transition-colors outline-none rounded"
+              className="bg-white/5 hover:bg-white/10 active:scale-95 border border-white/10 text-primary-text px-6 py-3 text-xs font-semibold tracking-widest uppercase transition-all outline-none rounded"
             >
               Resume
             </a>

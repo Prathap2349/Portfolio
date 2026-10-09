@@ -44,11 +44,24 @@ export default function Cursor() {
       yToSpotlight(e.clientY);
     };
 
+    let isHovering = false;
+
+    const handleMouseDown = () => {
+      gsap.to(cursor, { scale: 0.8, duration: 0.1, ease: "power2.out" });
+    };
+
+    const handleMouseUp = () => {
+      gsap.to(cursor, { scale: isHovering ? 2.5 : 1, duration: 0.2, ease: "power2.out" });
+    };
+
     window.addEventListener("mousemove", moveCursor);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
 
     const interactables = document.querySelectorAll("a, button, .project-card, .github-card");
     
     const handleMouseEnter = (e: Event) => {
+      isHovering = true;
       const target = e.currentTarget as HTMLElement;
       
       if (target.closest(".project-card")) setHoverText("VIEW");
@@ -85,6 +98,7 @@ export default function Cursor() {
     };
 
     const handleMouseLeave = () => {
+      isHovering = false;
       setHoverText("");
       gsap.to(cursor, {
         scale: 1,
@@ -112,6 +126,8 @@ export default function Cursor() {
 
     return () => {
       window.removeEventListener("mousemove", moveCursor);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
       observer.disconnect();
       interactables.forEach((el) => {
         el.removeEventListener("mouseenter", handleMouseEnter);

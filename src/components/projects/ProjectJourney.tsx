@@ -122,22 +122,24 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
       // Hold at end
       tl.to({}, { duration: 0.05 });
 
-      // Parallax effect using containerAnimation
+      // Parallax and clip-path reveal using containerAnimation
       sections.forEach((section) => {
         const image = section.querySelector(".parallax-image");
         
         if (image) {
+          // Reveal animation
           gsap.fromTo(image, 
-            { x: -50 }, 
+            { clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)", scale: 1.1 }, 
             {
-              x: 50,
-              ease: "none",
+              clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+              scale: 1,
+              ease: "power2.out",
               scrollTrigger: {
                 trigger: section,
                 containerAnimation: tl,
-                start: "left right",
-                end: "right left",
-                scrub: true,
+                start: "left 80%",
+                end: "left 40%",
+                scrub: 1,
               }
             }
           );
@@ -219,7 +221,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                         {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
                           <Link 
                             href={`/projects/${project.slug}`}
-                            className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan backdrop-blur-md"
+                            className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan backdrop-blur-md"
                           >
                             EXPLORE <span className="inline-block transform transition-transform duration-300 group-hover:translate-x-1">→</span>
                           </Link>
@@ -228,7 +230,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                             href={project.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
+                            className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
                           >
                             SOURCE CODE <span className="inline-block transform transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
                           </a>
@@ -237,7 +239,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                             href={project.liveUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
+                            className="group inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-md"
                           >
                             VIEW LIVE <span className="inline-block transform transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
                           </a>
@@ -247,20 +249,47 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                   </div>
 
                   {/* Right: Media */}
-                  <div className="col-span-7 h-[60vh] relative parallax-image">
-                    {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
-                      <Link href={`/projects/${project.slug}`} className="block w-full h-full group">
-                        <MediaContent project={project} />
-                      </Link>
-                    ) : project.githubUrl || project.liveUrl ? (
-                      <a href={project.liveUrl || project.githubUrl} target="_blank" rel="noopener noreferrer" className="block w-full h-full group">
-                        <MediaContent project={project} />
-                      </a>
-                    ) : (
-                      <div className="block w-full h-full group">
-                        <MediaContent project={project} />
-                      </div>
-                    )}
+                  <div 
+                    className="col-span-7 h-[60vh] relative parallax-image"
+                    style={{ transformStyle: "preserve-3d" }}
+                    onMouseMove={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const x = e.clientX - rect.left;
+                      const y = e.clientY - rect.top;
+                      const centerX = rect.width / 2;
+                      const centerY = rect.height / 2;
+                      const rotateX = ((y - centerY) / centerY) * -5;
+                      const rotateY = ((x - centerX) / centerX) * 5;
+                      gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000 });
+                      
+                      const innerMedia = e.currentTarget.querySelector('.media-content-wrapper');
+                      if (innerMedia) {
+                        gsap.to(innerMedia, { z: 40, duration: 0.5, ease: "power2.out" });
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+                      const innerMedia = e.currentTarget.querySelector('.media-content-wrapper');
+                      if (innerMedia) {
+                        gsap.to(innerMedia, { z: 0, duration: 0.5, ease: "power2.out" });
+                      }
+                    }}
+                  >
+                    <div className="w-full h-full media-content-wrapper relative" style={{ transformStyle: "preserve-3d" }}>
+                      {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
+                        <Link href={`/projects/${project.slug}`} className="block w-full h-full group">
+                          <MediaContent project={project} />
+                        </Link>
+                      ) : project.githubUrl || project.liveUrl ? (
+                        <a href={project.liveUrl || project.githubUrl} target="_blank" rel="noopener noreferrer" className="block w-full h-full group">
+                          <MediaContent project={project} />
+                        </a>
+                      ) : (
+                        <div className="block w-full h-full group">
+                          <MediaContent project={project} />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

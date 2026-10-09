@@ -118,7 +118,7 @@ export default function Connect() {
             
             <button 
               onClick={handleCopyEmail}
-              className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-8 py-3 rounded text-sm font-semibold tracking-wider uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+              className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-8 py-3 rounded text-sm font-semibold tracking-wider uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             >
               {copied ? (
                 <>

@@ -229,8 +229,9 @@ export default function GithubClient({ data }: GithubClientProps) {
                   gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
                 }}
                 className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 transition-all duration-300 rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(245,158,11,0.1)] relative overflow-hidden cursor-default group hover:border-[#FFB86B]/30"
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <div className="relative z-10">
+                <div className="relative z-10 transition-transform duration-300 group-hover:translate-z-[30px]" style={{ transform: "translateZ(20px)" }}>
                   <div className="text-[9px] font-bold text-[#FFB86B] tracking-widest uppercase mb-3 flex items-center gap-1.5">
                     <Lock size={10} /> PRIVATE PROJECT
                   </div>
@@ -241,7 +242,7 @@ export default function GithubClient({ data }: GithubClientProps) {
                     {p.description}
                   </p>
                 </div>
-                <div className="mt-6 flex flex-col gap-3 relative z-10">
+                <div className="mt-6 flex flex-col gap-3 relative z-10 transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>
                   <div className="text-[10px] font-semibold text-secondary-text tracking-[0.2em]">{p.tech}</div>
                   <div className="text-[9px] font-bold text-white/40 tracking-widest uppercase flex items-center gap-1.5 pt-3 border-t border-white/5">
                     PRIVATE REPOSITORY <Lock size={10} />
@@ -271,11 +272,12 @@ export default function GithubClient({ data }: GithubClientProps) {
                   gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
                 }}
                 className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 hover:border-accent-cyan/30 hover:bg-white/[0.04] transition-all duration-300 group rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(111,231,255,0.1)] relative overflow-hidden"
+                style={{ transformStyle: "preserve-3d" }}
               >
                 {/* Hover Glow */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-accent-cyan/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 
-                <div className="relative z-10">
+                <div className="relative z-10 transition-transform duration-300 group-hover:translate-z-[30px]" style={{ transform: "translateZ(20px)" }}>
                   <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-cyan transition-colors line-clamp-1">
                     {repo.name}
                   </h4>
@@ -283,7 +285,7 @@ export default function GithubClient({ data }: GithubClientProps) {
                     {repo.description || "No description provided."}
                   </p>
                 </div>
-                <div className="flex items-center justify-between mt-6 relative z-10">
+                <div className="flex items-center justify-between mt-6 relative z-10 transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>
                   <div className="flex items-center gap-2 text-[10px] font-medium text-secondary-text uppercase tracking-widest">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan/60" />
                     {repo.language || "Unknown"}
