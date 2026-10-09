@@ -12,8 +12,8 @@ export default function Hero() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(".hero-text-elem", 
-        { y: 30, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: "power3.out" }
+        { y: 30, opacity: 0, clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)" }, 
+        { y: 0, opacity: 1, clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 1.2, stagger: 0.15, ease: "power3.out" }
       );
       
       gsap.fromTo(".hero-img-container",

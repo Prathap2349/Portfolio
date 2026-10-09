@@ -9,7 +9,7 @@ import { projects as allProjects } from "@/data/projects";
 import { Lock } from "lucide-react";
 
 // Get private projects from the single source of truth
-const privateProjects = allProjects.filter(p => p.visibility === "private" && p.featured);
+const privateProjects = allProjects.filter(p => p.visibility === "private");
 
 interface GithubClientProps {
   data: {
@@ -20,14 +20,14 @@ interface GithubClientProps {
   };
 }
 
-// A stylized contribution heatmap using CSS grid and GSAP
-function AnimatedHeatmap() {
+// A stylized data flow visualization using CSS grid and GSAP
+function ActivityVisualization() {
   const mapRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     
-    // Animate squares randomly to simulate live data flow
+    // Animate squares randomly to simulate data flow
     gsap.to(".heatmap-cell", {
       opacity: () => 0.2 + Math.random() * 0.8,
       duration: () => 1 + Math.random() * 2,
@@ -45,21 +45,26 @@ function AnimatedHeatmap() {
   const cells = Array.from({ length: 7 * 30 });
   
   return (
-    <div ref={mapRef} className="w-full overflow-hidden flex justify-end opacity-60">
-      <div className="grid grid-rows-7 gap-1" style={{ gridTemplateColumns: "repeat(30, minmax(0, 1fr))" }}>
-        {cells.map((_, i) => {
-          // Stable pseudo-random based on index
-          const rand = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
-          let color = "bg-white/5";
-          if (rand > 0.9) color = "bg-accent-cyan/80";
-          else if (rand > 0.7) color = "bg-accent-cyan/50";
-          else if (rand > 0.5) color = "bg-accent-cyan/30";
+    <div className="flex flex-col items-end gap-2">
+      <div ref={mapRef} className="w-full overflow-hidden flex justify-end opacity-60">
+        <div className="grid grid-rows-7 gap-1" style={{ gridTemplateColumns: "repeat(30, minmax(0, 1fr))" }}>
+          {cells.map((_, i) => {
+            // Stable pseudo-random based on index
+            const rand = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
+            let color = "bg-white/5";
+            if (rand > 0.9) color = "bg-accent-cyan/80";
+            else if (rand > 0.7) color = "bg-accent-cyan/50";
+            else if (rand > 0.5) color = "bg-accent-cyan/30";
 
-          return (
-            <div key={i} className={`heatmap-cell w-2 h-2 rounded-[1px] ${color}`} />
-          );
-        })}
+            return (
+              <div key={i} className={`heatmap-cell w-2 h-2 rounded-[1px] ${color}`} />
+            );
+          })}
+        </div>
       </div>
+      <span className="text-[7px] text-secondary-text tracking-[0.2em] uppercase opacity-50 text-right">
+        Simulated Data Flow Visualization
+      </span>
     </div>
   );
 }
@@ -183,7 +188,7 @@ export default function GithubClient({ data }: GithubClientProps) {
           
           {/* Animated Heatmap */}
           <div className="w-full lg:w-1/2 flex justify-end">
-             <AnimatedHeatmap />
+             <ActivityVisualization />
           </div>
         </div>
 
@@ -201,17 +206,19 @@ export default function GithubClient({ data }: GithubClientProps) {
               <div 
                 key={`private-${i}`} 
                 onMouseMove={(e) => {
+                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
                   const rect = e.currentTarget.getBoundingClientRect();
                   const x = e.clientX - rect.left;
                   const y = e.clientY - rect.top;
                   const centerX = rect.width / 2;
                   const centerY = rect.height / 2;
-                  const rotateX = ((y - centerY) / centerY) * -2;
-                  const rotateY = ((x - centerX) / centerX) * 2;
-                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000 });
+                  const rotateX = Math.max(-5, Math.min(5, ((y - centerY) / centerY) * -5));
+                  const rotateY = Math.max(-5, Math.min(5, ((x - centerX) / centerX) * 5));
+                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000, overwrite: "auto" });
                 }}
                 onMouseLeave={(e) => {
-                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
                 }}
                 className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 transition-all duration-300 rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(245,158,11,0.1)] relative overflow-hidden cursor-default group hover:border-[#FFB86B]/30"
                 style={{ transformStyle: "preserve-3d" }}
@@ -244,17 +251,19 @@ export default function GithubClient({ data }: GithubClientProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onMouseMove={(e) => {
+                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
                   const rect = e.currentTarget.getBoundingClientRect();
                   const x = e.clientX - rect.left;
                   const y = e.clientY - rect.top;
                   const centerX = rect.width / 2;
                   const centerY = rect.height / 2;
-                  const rotateX = ((y - centerY) / centerY) * -2;
-                  const rotateY = ((x - centerX) / centerX) * 2;
-                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000 });
+                  const rotateX = Math.max(-5, Math.min(5, ((y - centerY) / centerY) * -5));
+                  const rotateY = Math.max(-5, Math.min(5, ((x - centerX) / centerX) * 5));
+                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000, overwrite: "auto" });
                 }}
                 onMouseLeave={(e) => {
-                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
                 }}
                 className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 hover:border-accent-cyan/30 hover:bg-white/[0.04] transition-all duration-300 group rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(111,231,255,0.1)] relative overflow-hidden"
                 style={{ transformStyle: "preserve-3d" }}

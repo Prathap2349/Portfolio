@@ -36,7 +36,8 @@ function TiltCard({ title, desc, icon }: { title: string, desc: string, icon: Re
         rotateY,
         transformPerspective: 1000,
         ease: "power2.out",
-        duration: 0.4
+        duration: 0.4,
+        overwrite: "auto"
       });
     };
 
@@ -45,7 +46,8 @@ function TiltCard({ title, desc, icon }: { title: string, desc: string, icon: Re
         rotateX: 0,
         rotateY: 0,
         ease: "power3.out",
-        duration: 0.6
+        duration: 0.6,
+        overwrite: "auto"
       });
     };
 

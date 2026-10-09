@@ -253,25 +253,28 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                     className="col-span-7 h-[60vh] relative parallax-image"
                     style={{ transformStyle: "preserve-3d" }}
                     onMouseMove={(e) => {
+                      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
                       const rect = e.currentTarget.getBoundingClientRect();
                       const x = e.clientX - rect.left;
                       const y = e.clientY - rect.top;
                       const centerX = rect.width / 2;
                       const centerY = rect.height / 2;
-                      const rotateX = ((y - centerY) / centerY) * -5;
-                      const rotateY = ((x - centerX) / centerX) * 5;
-                      gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000 });
+                      // Bound the tilt to max 5 degrees
+                      const rotateX = Math.max(-5, Math.min(5, ((y - centerY) / centerY) * -5));
+                      const rotateY = Math.max(-5, Math.min(5, ((x - centerX) / centerX) * 5));
+                      gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000, overwrite: "auto" });
                       
                       const innerMedia = e.currentTarget.querySelector('.media-content-wrapper');
                       if (innerMedia) {
-                        gsap.to(innerMedia, { z: 40, duration: 0.5, ease: "power2.out" });
+                        gsap.to(innerMedia, { z: 40, duration: 0.5, ease: "power2.out", overwrite: "auto" });
                       }
                     }}
                     onMouseLeave={(e) => {
-                      gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+                      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                      gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
                       const innerMedia = e.currentTarget.querySelector('.media-content-wrapper');
                       if (innerMedia) {
-                        gsap.to(innerMedia, { z: 0, duration: 0.5, ease: "power2.out" });
+                        gsap.to(innerMedia, { z: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
                       }
                     }}
                   >
