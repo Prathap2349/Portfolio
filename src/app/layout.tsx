@@ -23,10 +23,23 @@ export const metadata: Metadata = {
     default: "Prathap | AI & Data Science Student",
     template: "%s | Prathap"
   },
-  description: "Portfolio of Prathap, an AI & Data Science student based in Coimbatore, Tamil Nadu, India.",
+  description: "Portfolio of Prathap, an AI & Data Science student based in Tamil Nadu, India.",
   keywords: ["Prathap", "AI Student", "Data Science", "Web Developer", "Portfolio"],
   authors: [{ name: "Prathap" }],
   creator: "Prathap",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://resume-gamma-bice.vercel.app",
+    title: "Prathap | AI & Data Science Student",
+    description: "Portfolio of Prathap, an AI & Data Science student based in Tamil Nadu, India.",
+    siteName: "Prathap Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Prathap | AI & Data Science Student",
+    description: "Portfolio of Prathap, an AI & Data Science student based in Tamil Nadu, India.",
+  },
 };
 
 export const viewport = {

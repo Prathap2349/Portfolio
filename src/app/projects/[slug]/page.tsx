@@ -93,7 +93,7 @@ export default async function ProjectPage({ params }: Props) {
       <div className="mb-12">
         <Link 
           href="/#projects" 
-          className="inline-flex items-center gap-2 text-secondary-text hover:text-accent-cyan transition-colors text-xs font-semibold tracking-widest uppercase focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none rounded-sm"
+          className="inline-flex items-center gap-2 text-secondary-text hover:text-amber-500 transition-colors text-xs font-semibold tracking-widest uppercase focus-visible:ring-2 focus-visible:ring-amber-500 outline-none rounded-sm"
         >
           <ArrowLeft size={14} /> BACK TO PROJECTS
         </Link>
@@ -105,7 +105,7 @@ export default async function ProjectPage({ params }: Props) {
           <span className="text-[10px] tracking-widest text-secondary-text uppercase px-3 py-1 rounded-full border border-white/10 bg-white/5">
             {project.category}
           </span>
-          <span className={`text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border ${project.status === 'Active' ? 'border-accent-cyan/30 text-accent-cyan bg-accent-cyan/10' : 'border-white/10 text-secondary-text'}`}>
+          <span className={`text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border ${project.status === 'Active' ? 'border-amber-500/30 text-amber-500 bg-amber-500/10' : 'border-white/10 text-secondary-text'}`}>
             {project.status}
           </span>
         </div>
@@ -137,8 +137,8 @@ export default async function ProjectPage({ params }: Props) {
         <div className="lg:col-span-2 space-y-16">
           {project.problem && (
             <section>
-              <h2 className="text-xs font-semibold tracking-[0.25em] text-accent-cyan uppercase mb-6 flex items-center gap-4">
-                <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
+              <h2 className="text-xs font-semibold tracking-[0.25em] text-amber-500 uppercase mb-6 flex items-center gap-4">
+                <span className="w-8 h-[1px] bg-amber-500/50 inline-block"></span>
                 THE PROBLEM
               </h2>
               <div className="text-secondary-text leading-relaxed font-light whitespace-pre-wrap">
@@ -149,8 +149,8 @@ export default async function ProjectPage({ params }: Props) {
 
           {project.solution && (
             <section>
-              <h2 className="text-xs font-semibold tracking-[0.25em] text-accent-cyan uppercase mb-6 flex items-center gap-4">
-                <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
+              <h2 className="text-xs font-semibold tracking-[0.25em] text-amber-500 uppercase mb-6 flex items-center gap-4">
+                <span className="w-8 h-[1px] bg-amber-500/50 inline-block"></span>
                 THE SOLUTION
               </h2>
               <div className="text-secondary-text leading-relaxed font-light whitespace-pre-wrap">
@@ -161,8 +161,8 @@ export default async function ProjectPage({ params }: Props) {
           
           {project.result && (
             <section>
-              <h2 className="text-xs font-semibold tracking-[0.25em] text-accent-cyan uppercase mb-6 flex items-center gap-4">
-                <span className="w-8 h-[1px] bg-accent-cyan/50 inline-block"></span>
+              <h2 className="text-xs font-semibold tracking-[0.25em] text-amber-500 uppercase mb-6 flex items-center gap-4">
+                <span className="w-8 h-[1px] bg-amber-500/50 inline-block"></span>
                 RESULT
               </h2>
               <div className="text-secondary-text leading-relaxed font-light whitespace-pre-wrap">
@@ -209,7 +209,7 @@ export default async function ProjectPage({ params }: Props) {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-full flex items-center justify-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-4 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
+                className="group w-full flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-500 px-6 py-4 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 outline-none"
               >
                 LIVE DEMO <span className="inline-block transform transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 opacity-70 group-hover:opacity-100">↗</span>
               </a>
@@ -220,7 +220,7 @@ export default async function ProjectPage({ params }: Props) {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-4 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none"
+                className="group w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-primary-text px-6 py-4 rounded-full text-xs font-semibold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 outline-none"
               >
                 SOURCE CODE <span className="inline-block transform transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 opacity-70 group-hover:opacity-100">↗</span>
               </a>

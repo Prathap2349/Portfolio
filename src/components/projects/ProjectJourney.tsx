@@ -58,14 +58,8 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
     return 4; // SHIP / Active / Completed
   };
 
-  // Helper to get glow color by category
-  const getGlowColor = (category: string) => {
-    const c = category.toUpperCase();
-    if (c === "AI" || c === "MACHINE LEARNING") return "bg-purple-500/20";
-    if (c === "WEB" || c === "FRONTEND" || c === "BACKEND") return "bg-blue-500/20";
-    if (c === "TOOLS" || c === "CLI") return "bg-green-500/20";
-    return "bg-accent-cyan/20";
-  };
+  // Standardized ambient glow aligned with amber accent
+  const getGlowColor = () => "bg-amber-500/10";
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -158,7 +152,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
       {/* Desktop Horizontal Scroll Layout */}
       <div className="hidden lg:block h-screen w-full relative z-20 bg-background" ref={containerRef}>
         <div className="absolute top-12 left-12 z-50 flex items-center gap-4 mix-blend-difference text-white">
-          <span className="text-[10px] font-semibold tracking-[0.4em] uppercase">03 / PROJECTS</span>
+          <span className="text-[10px] font-semibold tracking-[0.4em] uppercase">02 / PROJECTS</span>
           <span className="w-8 h-[1px] bg-white/50"></span>
         </div>
         
@@ -170,7 +164,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
           {projects.map((project) => {
             const currentStageIndex = getStageIndex(project.status);
              
-            const glow = getGlowColor(project.category);
+            const glow = getGlowColor();
 
             return (
               <div key={project.slug} className="journey-panel h-screen w-screen relative flex-shrink-0 flex items-center overflow-hidden px-[8vw]">
@@ -192,8 +186,8 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                         const isPast = sIdx < currentStageIndex;
                         return (
                           <div key={stage} className={`flex items-center gap-6 relative z-10 ${isActive ? "opacity-100" : isPast ? "opacity-40" : "opacity-20"}`}>
-                            <div className={`w-3 h-3 rounded-full border-[1px] ${isActive ? "bg-accent-cyan border-accent-cyan shadow-[0_0_10px_rgba(111,231,255,0.8)]" : isPast ? "bg-white border-white" : "bg-background border-white"}`}></div>
-                            <span className={`text-[10px] tracking-[0.2em] font-semibold uppercase ${isActive ? "text-accent-cyan" : "text-white"}`}>{stage}</span>
+                            <div className={`w-3 h-3 rounded-full border-[1px] ${isActive ? "bg-amber-500 border-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.8)]" : isPast ? "bg-white border-white" : "bg-background border-white"}`}></div>
+                            <span className={`text-[10px] tracking-[0.2em] font-semibold uppercase ${isActive ? "text-amber-500" : "text-white"}`}>{stage}</span>
                           </div>
                         );
                       })}
@@ -221,7 +215,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                         {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
                           <Link 
                             href={`/projects/${project.slug}`}
-                            className="group inline-flex items-center gap-2 bg-accent-cyan/10 hover:bg-accent-cyan/20 border border-accent-cyan/30 text-accent-cyan px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan backdrop-blur-md"
+                            className="group inline-flex items-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-500 px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500 backdrop-blur-md"
                           >
                             EXPLORE <span className="inline-block transform transition-all duration-300 group-hover:translate-x-1 opacity-70 group-hover:opacity-100">→</span>
                           </Link>
@@ -249,36 +243,8 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                   </div>
 
                   {/* Right: Media */}
-                  <div 
-                    className="col-span-7 h-[60vh] relative parallax-image"
-                    style={{ transformStyle: "preserve-3d" }}
-                    onMouseMove={(e) => {
-                      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const x = e.clientX - rect.left;
-                      const y = e.clientY - rect.top;
-                      const centerX = rect.width / 2;
-                      const centerY = rect.height / 2;
-                      // Bound the tilt to max 5 degrees
-                      const rotateX = Math.max(-5, Math.min(5, ((y - centerY) / centerY) * -5));
-                      const rotateY = Math.max(-5, Math.min(5, ((x - centerX) / centerX) * 5));
-                      gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000, overwrite: "auto" });
-                      
-                      const innerMedia = e.currentTarget.querySelector('.media-content-wrapper');
-                      if (innerMedia) {
-                        gsap.to(innerMedia, { z: 40, duration: 0.5, ease: "power2.out", overwrite: "auto" });
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                      gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
-                      const innerMedia = e.currentTarget.querySelector('.media-content-wrapper');
-                      if (innerMedia) {
-                        gsap.to(innerMedia, { z: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
-                      }
-                    }}
-                  >
-                    <div className="w-full h-full media-content-wrapper relative" style={{ transformStyle: "preserve-3d" }}>
+                  <div className="col-span-7 h-[60vh] relative parallax-image transition-transform duration-500 hover:scale-[1.01]">
+                    <div className="w-full h-full media-content-wrapper relative">
                       {project.problem && !project.problem.includes("[PLACEHOLDER") ? (
                         <Link href={`/projects/${project.slug}`} className="block w-full h-full group">
                           <MediaContent project={project} />
@@ -305,7 +271,7 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
       {/* Mobile/Reduced Motion Vertical List */}
       <div className="lg:hidden w-full bg-background py-16 px-6 relative">
         <h2 className="text-xs text-amber-500 font-semibold tracking-widest uppercase mb-12 flex items-center gap-4">
-          03 / PROJECTS
+          02 / PROJECTS
           <span className="w-8 h-[1px] bg-amber-500/50 inline-block"></span>
         </h2>
 

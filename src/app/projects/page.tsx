@@ -16,7 +16,7 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 px-6 md:px-12 lg:px-[8vw]">
       <div className="mb-16">
-        <Link href="/#projects" className="text-secondary-text hover:text-accent-cyan transition-colors text-sm font-semibold tracking-widest uppercase">
+        <Link href="/#projects" className="text-secondary-text hover:text-amber-500 transition-colors text-sm font-semibold tracking-widest uppercase">
           ← BACK TO HOME
         </Link>
       </div>
