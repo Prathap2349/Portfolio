@@ -130,7 +130,7 @@ export default function Hero() {
           <div className="flex flex-wrap items-center gap-4 hero-text-elem">
             <a 
               href="#projects"
-              onClick={(e) => { e.preventDefault(); scrollToSection("#projects", -50); }}
+              onClick={(e) => { e.preventDefault(); scrollToSection("#projects", -70); }}
               className="bg-amber-500/10 hover:bg-amber-500/20 active:scale-95 border border-amber-500/30 text-amber-500 px-6 py-3 text-xs font-semibold tracking-widest uppercase transition-all outline-none rounded"
             >
               Explore my work

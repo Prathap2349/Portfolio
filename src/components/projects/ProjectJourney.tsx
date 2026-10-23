@@ -77,6 +77,14 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
         return -(trackWidth - window.innerWidth);
       };
 
+      const getPinDistance = () => {
+        if (!trackRef.current) return 0;
+        const horizontalDistance = trackRef.current.scrollWidth - window.innerWidth;
+        // Add a dedicated settle distance (~35% viewport height) so the last project rests and is fully readable before unpinning
+        const settleDistance = Math.round(window.innerHeight * 0.35);
+        return horizontalDistance + settleDistance;
+      };
+
       // Horizontal Scroll Timeline
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -84,32 +92,38 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
           pin: true,
           scrub: true, // Direct 1:1 synchronization with Lenis smooth scroll
           refreshPriority: 1, // Pin calculated first so downstream sections measure correctly
-          end: () => `+=${trackRef.current ? trackRef.current.scrollWidth - window.innerWidth : 0}`,
+          end: getPinDistance,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            // Update counter and progress bar based on horizontal progress
+            // Progress up to 0.85 represents horizontal travel; 0.85-1.0 is the clean settle phase
+            const slideProgress = Math.min(1, self.progress / 0.85);
             const counter = containerRef.current?.querySelector(".project-counter");
             if (counter) {
               const activeIndex = Math.min(
-                Math.floor(self.progress * projects.length),
+                Math.floor(slideProgress * projects.length),
                 projects.length - 1
               );
               counter.textContent = (activeIndex + 1).toString().padStart(2, '0');
             }
             const bar = containerRef.current?.querySelector(".journey-progress-bar");
             if (bar) {
-              gsap.set(bar, { scaleX: self.progress });
+              gsap.set(bar, { scaleX: slideProgress });
             }
           }
         }
       });
 
-      // Slide all sections
+      // 1. Slide all sections horizontally to reveal projects 1 through 7
       tl.to(trackRef.current, {
         x: getScrollAmount,
         ease: "none",
-        duration: 1
+        duration: 0.85
+      });
+
+      // 2. Settle on the final project panel so the visitor can view, explore, and read it before unpinning
+      tl.to({}, {
+        duration: 0.15
       });
 
       // Parallax and clip-path reveal using containerAnimation

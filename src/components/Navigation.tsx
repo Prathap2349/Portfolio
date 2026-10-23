@@ -95,8 +95,8 @@ export default function Navigation() {
     isClickScrolling.current = true;
     setActiveSection(id);
 
-    // Scroll using centralized utility with offset for header
-    scrollToSection(`#${id}`, -20, () => {
+    // Scroll using centralized utility with proper header clearance offset
+    scrollToSection(`#${id}`, -70, () => {
       isClickScrolling.current = false;
     });
     
