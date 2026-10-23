@@ -27,9 +27,9 @@ export default function ProjectCarousel({ images, title }: { images: string[], t
   if (!images || images.length === 0) {
     return (
       <div className="w-full aspect-video bg-gradient-to-br from-background to-white/5 rounded-3xl border border-white/10 relative overflow-hidden flex flex-col items-center justify-center">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(111,231,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05)_1px,transparent_1px)] bg-[size:16px_16px]" />
         <span className="text-secondary-text/30 font-bold text-4xl md:text-6xl mb-4 uppercase tracking-widest opacity-20 text-center px-4">{title}</span>
-        <span className="text-accent-cyan/50 text-[10px] tracking-widest uppercase px-3 py-1 border border-accent-cyan/20 rounded-full backdrop-blur-sm z-10">TECHNICAL PREVIEW</span>
+        <span className="text-amber-500/50 text-[10px] tracking-widest uppercase px-3 py-1 border border-amber-500/20 rounded-full backdrop-blur-sm z-10">TECHNICAL PREVIEW</span>
       </div>
     );
   }
@@ -66,7 +66,7 @@ export default function ProjectCarousel({ images, title }: { images: string[], t
       <div className="flex items-center justify-between mt-6">
         <button 
           onClick={goToPrev}
-          className="flex items-center gap-2 text-secondary-text hover:text-primary-text transition-colors px-4 py-2 border border-transparent focus-visible:border-accent-cyan rounded-full outline-none"
+          className="flex items-center gap-2 text-secondary-text hover:text-primary-text transition-colors px-4 py-2 border border-transparent focus-visible:border-amber-500 rounded-full outline-none"
           aria-label="Previous screenshot"
         >
           <ArrowLeft size={16} /> <span className="text-xs font-semibold tracking-widest uppercase hidden md:inline">PREV</span>
@@ -77,7 +77,7 @@ export default function ProjectCarousel({ images, title }: { images: string[], t
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}
-              className={`w-2 h-2 rounded-full transition-all focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none ${i === currentIndex ? "bg-accent-cyan scale-125" : "bg-white/20 hover:bg-white/40"}`}
+              className={`w-2 h-2 rounded-full transition-all focus-visible:ring-2 focus-visible:ring-amber-500 outline-none ${i === currentIndex ? "bg-amber-500 scale-125" : "bg-white/20 hover:bg-white/40"}`}
               aria-label={`Go to screenshot ${i + 1}`}
               aria-current={i === currentIndex}
             />
@@ -86,7 +86,7 @@ export default function ProjectCarousel({ images, title }: { images: string[], t
 
         <button 
           onClick={goToNext}
-          className="flex items-center gap-2 text-secondary-text hover:text-primary-text transition-colors px-4 py-2 border border-transparent focus-visible:border-accent-cyan rounded-full outline-none"
+          className="flex items-center gap-2 text-secondary-text hover:text-primary-text transition-colors px-4 py-2 border border-transparent focus-visible:border-amber-500 rounded-full outline-none"
           aria-label="Next screenshot"
         >
           <span className="text-xs font-semibold tracking-widest uppercase hidden md:inline">NEXT</span> <ArrowRight size={16} />

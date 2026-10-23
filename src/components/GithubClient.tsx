@@ -20,51 +20,35 @@ interface GithubClientProps {
   };
 }
 
-// A stylized data flow visualization using CSS grid and GSAP
-function ActivityVisualization() {
-  const mapRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    
-    // Animate squares randomly to simulate data flow
-    gsap.to(".heatmap-cell", {
-      opacity: () => 0.2 + Math.random() * 0.8,
-      duration: () => 1 + Math.random() * 2,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      stagger: {
-        each: 0.05,
-        from: "random"
-      }
-    });
-  }, []);
+// Authentic breakdown of primary languages across verified repositories
+function RepositoryLanguages({ repos }: { repos: GithubRepo[] }) {
+  const languageCounts: Record<string, number> = {};
+  repos.forEach((r) => {
+    if (r.language) {
+      languageCounts[r.language] = (languageCounts[r.language] || 0) + 1;
+    }
+  });
 
-  // Generate 7 rows by 30 cols
-  const cells = Array.from({ length: 7 * 30 });
-  
+  const sortedLanguages = Object.entries(languageCounts).sort((a, b) => b[1] - a[1]);
+
+  if (sortedLanguages.length === 0) return null;
+
   return (
-    <div className="flex flex-col items-end gap-2">
-      <div ref={mapRef} className="w-full overflow-hidden flex justify-end opacity-60">
-        <div className="grid grid-rows-7 gap-1" style={{ gridTemplateColumns: "repeat(30, minmax(0, 1fr))" }}>
-          {cells.map((_, i) => {
-            // Stable pseudo-random based on index
-            const rand = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
-            let color = "bg-white/5";
-            if (rand > 0.9) color = "bg-accent-cyan/80";
-            else if (rand > 0.7) color = "bg-accent-cyan/50";
-            else if (rand > 0.5) color = "bg-accent-cyan/30";
-
-            return (
-              <div key={i} className={`heatmap-cell w-2 h-2 rounded-[1px] ${color}`} />
-            );
-          })}
-        </div>
-      </div>
-      <span className="text-[7px] text-secondary-text tracking-[0.2em] uppercase opacity-50 text-right">
-        Simulated Data Flow Visualization
+    <div className="flex flex-col items-start lg:items-end gap-3">
+      <span className="text-[10px] font-semibold tracking-widest text-secondary-text uppercase">
+        Verified Repository Stacks
       </span>
+      <div className="flex flex-wrap justify-start lg:justify-end gap-2 max-w-sm">
+        {sortedLanguages.map(([lang, count]) => (
+          <span 
+            key={lang} 
+            className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[10px] font-medium text-white/90 uppercase tracking-wider flex items-center gap-2"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            {lang} <span className="text-secondary-text/60 font-mono">({count})</span>
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -146,19 +130,19 @@ export default function GithubClient({ data }: GithubClientProps) {
       ref={containerRef}
       className="py-32 bg-background relative border-t border-white/5 overflow-hidden"
     >
-      <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-accent-cyan/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
       
       <div className="container mx-auto max-w-5xl px-6 md:px-12 lg:px-[8vw] relative z-10">
         
         <div className="mb-16 github-item flex items-center gap-4">
-          <h2 className="text-[10px] font-semibold tracking-[0.4em] text-accent-cyan uppercase">05 / Projects I built</h2>
-          <div className="h-[1px] bg-gradient-to-r from-accent-cyan/50 to-transparent flex-grow max-w-[200px]" />
+          <h2 className="text-[10px] font-semibold tracking-[0.4em] text-amber-500 uppercase">04 / GITHUB & OPEN SOURCE</h2>
+          <div className="h-[1px] bg-gradient-to-r from-amber-500/50 to-transparent flex-grow max-w-[200px]" />
         </div>
 
         <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-16 github-item">
           
           <div className="flex-1">
-            <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white hover:text-accent-cyan transition-colors mb-4 leading-none">
+            <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white hover:text-amber-500 transition-colors mb-4 leading-none">
               <a href={profileData.github.primary.url} target="_blank" rel="noopener noreferrer">
                 @{profileData.github.primary.username}
               </a>
@@ -168,7 +152,7 @@ export default function GithubClient({ data }: GithubClientProps) {
             {/* Stats Row */}
             <div className="flex flex-wrap gap-8 md:gap-16">
                <div className="flex flex-col">
-                  <span className="text-3xl md:text-4xl font-bold text-accent-cyan">{repoCount}</span>
+                  <span className="text-3xl md:text-4xl font-bold text-amber-500">{repoCount}</span>
                   <span className="text-[10px] font-semibold tracking-widest text-secondary-text uppercase">Repositories</span>
                </div>
                <div className="flex flex-col">
@@ -186,9 +170,9 @@ export default function GithubClient({ data }: GithubClientProps) {
             </div>
           </div>
           
-          {/* Animated Heatmap */}
-          <div className="w-full lg:w-1/2 flex justify-end">
-             <ActivityVisualization />
+          {/* Verified Language Breakdown */}
+          <div className="w-full lg:w-1/2 flex justify-start lg:justify-end">
+             <RepositoryLanguages repos={data.repos} />
           </div>
         </div>
 
@@ -199,31 +183,15 @@ export default function GithubClient({ data }: GithubClientProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 perspective-1000">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Private Projects */}
             {privateProjects.map((p, i) => (
               <div 
                 key={`private-${i}`} 
-                onMouseMove={(e) => {
-                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = e.clientX - rect.left;
-                  const y = e.clientY - rect.top;
-                  const centerX = rect.width / 2;
-                  const centerY = rect.height / 2;
-                  const rotateX = Math.max(-5, Math.min(5, ((y - centerY) / centerY) * -5));
-                  const rotateY = Math.max(-5, Math.min(5, ((x - centerX) / centerX) * 5));
-                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000, overwrite: "auto" });
-                }}
-                onMouseLeave={(e) => {
-                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
-                }}
-                className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 transition-all duration-300 rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(245,158,11,0.1)] relative overflow-hidden cursor-default group hover:border-[#FFB86B]/30"
-                style={{ transformStyle: "preserve-3d" }}
+                className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 transition-all duration-300 hover:-translate-y-1 rounded-xl shadow-xl hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] relative overflow-hidden cursor-default group hover:border-[#FFB86B]/30"
               >
-                <div className="relative z-10 transition-transform duration-300 group-hover:translate-z-[30px]" style={{ transform: "translateZ(20px)" }}>
+                <div className="relative z-10">
                   <div className="text-[9px] font-bold text-[#FFB86B] tracking-widest uppercase mb-3 flex items-center gap-1.5">
                     <Lock size={10} /> PRIVATE PROJECT
                   </div>
@@ -234,7 +202,7 @@ export default function GithubClient({ data }: GithubClientProps) {
                     {p.description}
                   </p>
                 </div>
-                <div className="mt-6 flex flex-col gap-3 relative z-10 transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>
+                <div className="mt-6 flex flex-col gap-3 relative z-10">
                   <div className="text-[10px] font-semibold text-secondary-text tracking-[0.2em] line-clamp-1">{p.technologies.join(" · ").toUpperCase()}</div>
                   <div className="text-[9px] font-bold text-white/40 tracking-widest uppercase flex items-center gap-1.5 pt-3 border-t border-white/5">
                     PRIVATE REPOSITORY <Lock size={10} />
@@ -250,38 +218,22 @@ export default function GithubClient({ data }: GithubClientProps) {
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                onMouseMove={(e) => {
-                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = e.clientX - rect.left;
-                  const y = e.clientY - rect.top;
-                  const centerX = rect.width / 2;
-                  const centerY = rect.height / 2;
-                  const rotateX = Math.max(-5, Math.min(5, ((y - centerY) / centerY) * -5));
-                  const rotateY = Math.max(-5, Math.min(5, ((x - centerX) / centerX) * 5));
-                  gsap.to(e.currentTarget, { rotateX, rotateY, duration: 0.5, ease: "power2.out", transformPerspective: 1000, overwrite: "auto" });
-                }}
-                onMouseLeave={(e) => {
-                  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
-                }}
-                className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 hover:border-accent-cyan/30 hover:bg-white/[0.04] transition-all duration-300 group rounded-xl shadow-xl hover:shadow-[0_0_20px_rgba(111,231,255,0.1)] relative overflow-hidden"
-                style={{ transformStyle: "preserve-3d" }}
+                className="github-item github-card flex flex-col justify-between p-6 bg-white/[0.02] border border-white/5 hover:border-amber-500/30 hover:bg-white/[0.04] transition-all duration-300 hover:-translate-y-1 group rounded-xl shadow-xl hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] relative overflow-hidden"
               >
                 {/* Hover Glow */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-accent-cyan/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 
-                <div className="relative z-10 transition-transform duration-300 group-hover:translate-z-[30px]" style={{ transform: "translateZ(20px)" }}>
-                  <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-cyan transition-colors line-clamp-1">
+                <div className="relative z-10">
+                  <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-amber-500 transition-colors line-clamp-1">
                     {repo.name}
                   </h4>
                   <p className="text-secondary-text text-xs font-light line-clamp-2 h-8 leading-relaxed">
                     {repo.description || "No description provided."}
                   </p>
                 </div>
-                <div className="flex items-center justify-between mt-6 relative z-10 transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>
+                <div className="flex items-center justify-between mt-6 relative z-10">
                   <div className="flex items-center gap-2 text-[10px] font-medium text-secondary-text uppercase tracking-widest">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan/60" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
                     {repo.language || "Unknown"}
                   </div>
                   {repo.stargazers_count > 0 && (
@@ -300,7 +252,7 @@ export default function GithubClient({ data }: GithubClientProps) {
             href="https://github.com/Prathap2349?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-accent-cyan uppercase transition-colors"
+            className="group flex items-center gap-3 text-[10px] font-semibold tracking-widest text-secondary-text hover:text-amber-500 uppercase transition-colors"
           >
             VIEW ALL REPOSITORIES <span className="inline-block transform transition-all duration-300 group-hover:translate-x-1 opacity-70 group-hover:opacity-100">→</span>
           </a>
