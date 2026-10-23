@@ -31,7 +31,7 @@ export default function ScrollProvider({ children }: { children: React.ReactNode
       autoRaf: false, // We will manually handle raf via GSAP ticker
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
+      touchMultiplier: 1.0,
     });
 
     lenis.on('scroll', ScrollTrigger.update);

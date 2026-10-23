@@ -15,7 +15,7 @@ export const profile = {
     { year: "2023", title: "Exploring Machine Learning", description: "Dived deeper into Python, data engineering, and machine learning models." },
     { year: "2024", title: "Full-Stack & Automations", description: "Built projects like SpendWise and MangaUltra to solve practical daily problems." },
     { year: "2025", title: "Building Native & AI Systems", description: "Focusing on offline-first desktop apps like USBBridge and Ollama Pet while exploring local LLMs." },
-    { year: "2026", title: "Graduation (Expected)", description: "Completing my B.Tech degree and ready to build scalable, reliable software systems." }
+    { year: "2026", title: "Graduation — B.Tech AI & Data Science", description: "Completing my B.Tech degree and ready to build scalable, reliable software systems." }
   ],
   github: {
     primary: {

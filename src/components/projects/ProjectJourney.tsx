@@ -64,18 +64,13 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isMobile = window.innerWidth < 1024;
-    
-    if (prefersReducedMotion || isMobile) {
-      // For mobile snap carousel, we don't need GSAP scroll pinning
-      return;
-    }
+    const mm = gsap.matchMedia();
 
-    const sections = gsap.utils.toArray<HTMLElement>(".journey-panel");
-    if (sections.length === 0) return;
+    // Desktop: Pinned horizontal scroll journey with 1:1 scrub synchronization
+    mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+      const sections = gsap.utils.toArray<HTMLElement>(".journey-panel");
+      if (sections.length === 0 || !trackRef.current || !containerRef.current) return;
 
-    const ctx = gsap.context(() => {
       const getScrollAmount = () => {
         if (!trackRef.current) return 0;
         const trackWidth = trackRef.current.scrollWidth;
@@ -87,9 +82,10 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
         scrollTrigger: {
           trigger: containerRef.current,
           pin: true,
-          scrub: 1, 
+          scrub: true, // Direct 1:1 synchronization with Lenis smooth scroll
+          refreshPriority: 1, // Pin calculated first so downstream sections measure correctly
           end: () => `+=${trackRef.current ? trackRef.current.scrollWidth - window.innerWidth : 0}`,
-          invalidateOnRefresh: true, // Fix for layout shifts
+          invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
             // Update counter and progress bar based on horizontal progress
@@ -109,16 +105,12 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
         }
       });
 
-      // Hold at start
-      tl.to({}, { duration: 0.05 });
       // Slide all sections
       tl.to(trackRef.current, {
         x: getScrollAmount,
         ease: "none",
         duration: 1
       });
-      // Hold at end
-      tl.to({}, { duration: 0.05 });
 
       // Parallax and clip-path reveal using containerAnimation
       sections.forEach((section, index) => {
@@ -141,17 +133,16 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
                   containerAnimation: tl,
                   start: "left 90%",
                   end: "left 40%",
-                  scrub: 1,
+                  scrub: true,
                 }
               }
             );
           }
         }
       });
+    });
 
-    }, containerRef);
-
-    return () => ctx.revert();
+    return () => mm.revert();
   }, [projects]);
 
   const totalStr = projects.length.toString().padStart(2, '0');

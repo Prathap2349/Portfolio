@@ -55,25 +55,23 @@ export default function Navigation() {
         if (el) {
           const st = ScrollTrigger.create({
             trigger: el,
-            start: "top 50%",
-            end: "bottom 50%",
-            onToggle: (self) => {
-              if (self.isActive && !isClickScrolling.current) {
-                if (id !== currentSectionRef.current) {
-                  setActiveSection(id);
-                  if (id === "hero") {
-                    window.history.replaceState(null, "", window.location.pathname);
-                  } else {
-                    window.history.replaceState(null, "", `#${id}`);
-                  }
-                }
+            start: "top 55%",
+            end: "bottom 45%",
+            onEnter: () => {
+              if (!isClickScrolling.current) {
+                setActiveSection(id);
+              }
+            },
+            onEnterBack: () => {
+              if (!isClickScrolling.current) {
+                setActiveSection(id);
               }
             },
           });
           createdTriggers.push(st);
         }
       });
-    }, 50);
+    }, 100);
 
     return () => {
       clearTimeout(timer);
@@ -96,12 +94,6 @@ export default function Navigation() {
     
     isClickScrolling.current = true;
     setActiveSection(id);
-    
-    if (id === "hero") {
-      window.history.pushState(null, '', window.location.pathname);
-    } else {
-      window.history.pushState(null, '', `#${id}`);
-    }
 
     // Scroll using centralized utility with offset for header
     scrollToSection(`#${id}`, -20, () => {
@@ -110,7 +102,7 @@ export default function Navigation() {
     
     setTimeout(() => {
       isClickScrolling.current = false;
-    }, 1200);
+    }, 1400);
   };
 
   useEffect(() => {

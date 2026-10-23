@@ -156,32 +156,14 @@ export default function About() {
               <div ref={timelineLineRef} className="absolute top-0 left-[-1px] w-[2px] h-full bg-gradient-to-b from-amber-500 via-[#FFB86B] to-transparent origin-top" />
               
               <div className="space-y-12">
-                {profile.timeline.map((item, i) => {
-                  const isCurrentMilestone = item.year === "2026" || i === profile.timeline.length - 1;
-                  return (
-                    <div key={i} className="timeline-item relative group">
-                      <div 
-                        className={`absolute top-1.5 rounded-full transition-all duration-300 ${
-                          isCurrentMilestone 
-                            ? "-left-[38px] w-3 h-3 bg-amber-500 border-2 border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.8)]" 
-                            : "-left-[37px] w-2.5 h-2.5 bg-background border-2 border-white/50 group-hover:border-[#FFB86B] group-hover:scale-125"
-                        }`} 
-                      />
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className={`text-[10px] font-bold tracking-widest uppercase ${isCurrentMilestone ? "text-amber-500" : "text-[#FFB86B]"}`}>
-                          {item.year}
-                        </span>
-                        {isCurrentMilestone && (
-                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 font-semibold tracking-wider uppercase">
-                            CURRENT MILESTONE
-                          </span>
-                        )}
-                      </div>
-                      <div className={`text-xl font-bold mb-2 ${isCurrentMilestone ? "text-amber-400" : "text-white"}`}>{item.title}</div>
-                      <div className="text-sm text-secondary-text font-light leading-relaxed max-w-sm">{item.description}</div>
-                    </div>
-                  );
-                })}
+                {profile.timeline.map((item, i) => (
+                  <div key={i} className="timeline-item relative group">
+                    <div className="absolute -left-[37px] top-1.5 w-2.5 h-2.5 rounded-full bg-background border-2 border-white/50 group-hover:border-amber-500 group-hover:scale-125 transition-all duration-300" />
+                    <div className="text-[10px] font-bold text-[#FFB86B] tracking-widest mb-2 uppercase">{item.year}</div>
+                    <div className="text-xl font-bold text-white mb-2">{item.title}</div>
+                    <div className="text-sm text-secondary-text font-light leading-relaxed max-w-sm">{item.description}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
