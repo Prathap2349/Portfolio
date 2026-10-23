@@ -12,21 +12,48 @@ export default function Skills() {
     gsap.registerPlugin(ScrollTrigger);
     
     const ctx = gsap.context(() => {
-      gsap.fromTo(
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) return;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 75%",
+          once: true
+        }
+      });
+
+      tl.fromTo(
+        ".skills-heading",
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+      );
+
+      tl.fromTo(
         ".skill-group",
         { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
           stagger: 0.1,
-          duration: 0.8,
+          duration: 0.7,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 75%",
-            once: true
-          },
-        }
+        },
+        "-=0.3"
+      );
+
+      tl.fromTo(
+        ".skill-pill",
+        { opacity: 0, y: 8, scale: 0.98 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          stagger: 0.02,
+          duration: 0.4,
+          ease: "power2.out",
+        },
+        "-=0.5"
       );
     }, containerRef);
 
@@ -53,7 +80,7 @@ export default function Skills() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-amber-500/5 rounded-full blur-[150px] mix-blend-screen opacity-30 pointer-events-none" />
 
       <div className="container mx-auto w-full px-6 md:px-12 lg:px-[8vw] relative z-10">
-        <h2 data-scroll-anchor className="text-amber-500 font-semibold tracking-[0.4em] text-[10px] mb-24 uppercase skill-group flex items-center gap-4">
+        <h2 data-scroll-anchor className="text-amber-500 font-semibold tracking-[0.4em] text-[10px] mb-24 uppercase skills-heading flex items-center gap-4">
           <span className="w-8 h-[1px] bg-amber-500/50 inline-block"></span>
           03 / SKILLS & ARCHITECTURE
         </h2>

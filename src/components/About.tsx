@@ -34,24 +34,24 @@ export default function About() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      
-      // Story text fade up
+      // Story text fade up with controlled stagger
       gsap.fromTo(".about-text",
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 24 },
         {
-          opacity: 1, y: 0,
+          opacity: 1, 
+          y: 0,
           duration: 0.8,
-          stagger: 0.1,
-          ease: "power2.out",
+          stagger: 0.12,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 70%",
+            start: "top 75%",
             once: true,
           }
         }
       );
 
-      // Scrub timeline line
+      // Progressive timeline-line scrubbed drawing
       gsap.fromTo(timelineLineRef.current,
         { scaleY: 0 },
         {
@@ -59,38 +59,39 @@ export default function About() {
           ease: "none",
           scrollTrigger: {
             trigger: ".timeline-container",
-            start: "top 60%",
-            end: "bottom 60%",
-            scrub: true,
+            start: "top 70%",
+            end: "bottom 70%",
+            scrub: 0.5,
           }
         }
       );
 
-      // Timeline items fade up sequentially based on scroll
-      (gsap.utils.toArray(".timeline-item") as Element[]).forEach((item) => {
-        gsap.fromTo(item,
-          { opacity: 0, x: -20 },
-          {
-            opacity: 1, x: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: item,
-              start: "top 80%",
-              once: true,
-            }
-          }
-        );
-      });
-
-      // What I Do Cards
-      gsap.fromTo(".what-i-do-card",
-        { opacity: 0, y: 30 },
+      // Scoped milestone entrance stagger
+      gsap.fromTo(".timeline-item",
+        { opacity: 0, x: -16 },
         {
-          opacity: 1, y: 0,
+          opacity: 1, 
+          x: 0,
           duration: 0.6,
           stagger: 0.15,
-          ease: "back.out(1.2)",
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".timeline-container",
+            start: "top 75%",
+            once: true,
+          }
+        }
+      );
+
+      // What I Do Cards entrance
+      gsap.fromTo(".what-i-do-card",
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1, 
+          y: 0,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: "power2.out",
           scrollTrigger: {
             trigger: ".what-i-do-container",
             start: "top 80%",
@@ -155,14 +156,32 @@ export default function About() {
               <div ref={timelineLineRef} className="absolute top-0 left-[-1px] w-[2px] h-full bg-gradient-to-b from-amber-500 via-[#FFB86B] to-transparent origin-top" />
               
               <div className="space-y-12">
-                {profile.timeline.map((item, i) => (
-                  <div key={i} className="timeline-item relative group">
-                    <div className="absolute -left-[37px] top-1.5 w-2.5 h-2.5 rounded-full bg-background border-2 border-white/50 group-hover:border-[#FFB86B] group-hover:scale-150 transition-all duration-300" />
-                    <div className="text-[10px] font-bold text-[#FFB86B] tracking-widest mb-2 uppercase">{item.year}</div>
-                    <div className="text-xl font-bold text-white mb-2">{item.title}</div>
-                    <div className="text-sm text-secondary-text font-light leading-relaxed max-w-sm">{item.description}</div>
-                  </div>
-                ))}
+                {profile.timeline.map((item, i) => {
+                  const isCurrentMilestone = item.year === "2026" || i === profile.timeline.length - 1;
+                  return (
+                    <div key={i} className="timeline-item relative group">
+                      <div 
+                        className={`absolute top-1.5 rounded-full transition-all duration-300 ${
+                          isCurrentMilestone 
+                            ? "-left-[38px] w-3 h-3 bg-amber-500 border-2 border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.8)]" 
+                            : "-left-[37px] w-2.5 h-2.5 bg-background border-2 border-white/50 group-hover:border-[#FFB86B] group-hover:scale-125"
+                        }`} 
+                      />
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className={`text-[10px] font-bold tracking-widest uppercase ${isCurrentMilestone ? "text-amber-500" : "text-[#FFB86B]"}`}>
+                          {item.year}
+                        </span>
+                        {isCurrentMilestone && (
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 font-semibold tracking-wider uppercase">
+                            CURRENT MILESTONE
+                          </span>
+                        )}
+                      </div>
+                      <div className={`text-xl font-bold mb-2 ${isCurrentMilestone ? "text-amber-400" : "text-white"}`}>{item.title}</div>
+                      <div className="text-sm text-secondary-text font-light leading-relaxed max-w-sm">{item.description}</div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

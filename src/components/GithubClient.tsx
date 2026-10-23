@@ -74,14 +74,23 @@ export default function GithubClient({ data }: GithubClientProps) {
     gsap.registerPlugin(ScrollTrigger);
     
     const ctx = gsap.context(() => {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (prefersReducedMotion) {
+        setRepoCount(data.profile?.public_repos || 0);
+        setStarCount(data.stars || 0);
+        gsap.set(".github-item", { opacity: 1, y: 0 });
+        return;
+      }
+
       gsap.fromTo(
         ".github-item",
         { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          stagger: 0.1,
-          duration: 0.8,
+          stagger: 0.08,
+          duration: 0.7,
           ease: "power2.out",
           scrollTrigger: {
             trigger: containerRef.current,
@@ -91,7 +100,7 @@ export default function GithubClient({ data }: GithubClientProps) {
         }
       );
 
-      // Count up numbers
+      // Smooth count up for verified statistics
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: "top 75%",
@@ -102,7 +111,7 @@ export default function GithubClient({ data }: GithubClientProps) {
           
           gsap.to({ val: 0 }, {
             val: targetRepos,
-            duration: 2,
+            duration: 1.6,
             ease: "power3.out",
             onUpdate: function() {
               setRepoCount(Math.ceil(this.targets()[0].val));
@@ -111,7 +120,7 @@ export default function GithubClient({ data }: GithubClientProps) {
 
           gsap.to({ val: 0 }, {
             val: targetStars,
-            duration: 2.5,
+            duration: 1.8,
             ease: "power3.out",
             onUpdate: function() {
               setStarCount(Math.ceil(this.targets()[0].val));

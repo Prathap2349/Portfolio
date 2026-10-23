@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { profile } from "@/data/profile";
 import { scrollToSection } from "@/utils/scroll";
@@ -10,21 +11,71 @@ export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(".hero-text-elem", 
-        { y: 30, opacity: 0, clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)" }, 
-        { y: 0, opacity: 1, clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 1.2, stagger: 0.15, ease: "power3.out" }
-      );
-      
-      gsap.fromTo(".hero-img-container",
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (prefersReducedMotion) {
+        gsap.set([".hero-text-elem", ".hero-img-container", ".hero-img"], { 
+          opacity: 1, 
+          y: 0, 
+          scale: 1, 
+          clipPath: "none" 
+        });
+        return;
+      }
+
+      // Master opening timeline
+      const masterTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      // Image mask reveal and gentle settling scale
+      masterTl.fromTo(
+        ".hero-img-container",
         { clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)" },
-        { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 1.5, ease: "power3.inOut" }
+        { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 1.2, ease: "power2.inOut" },
+        0
       );
-      
-      gsap.fromTo(".hero-img", 
-        { scale: 1.1, opacity: 0.5 }, 
-        { scale: 1, opacity: 1, duration: 3, ease: "power2.out" }
+
+      masterTl.fromTo(
+        ".hero-img",
+        { scale: 1.08, opacity: 0.3 },
+        { scale: 1, opacity: 1, duration: 1.8, ease: "power2.out" },
+        0
       );
+
+      // Coordinated text stagger starting as the image reveals
+      masterTl.fromTo(
+        ".hero-text-elem",
+        { y: 24, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, stagger: 0.12, ease: "power3.out" },
+        0.3
+      );
+
+      // Subtle scroll-linked parallax drift on portrait
+      gsap.to(".hero-img", {
+        yPercent: 12,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Scroll indicator naturally responds and fades out as user scrolls toward About
+      gsap.to(".hero-scroll-indicator", {
+        opacity: 0,
+        y: 12,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "25% top",
+          scrub: true,
+        }
+      });
     }, containerRef);
 
     return () => ctx.revert();
@@ -97,7 +148,7 @@ export default function Hero() {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 hero-text-elem opacity-60">
+      <div className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 hero-text-elem opacity-60">
         <span className="text-[9px] tracking-[0.3em] font-medium uppercase text-white/50">SCROLL</span>
         <div className="w-[1px] h-12 bg-white/10 relative overflow-hidden">
           <div className="w-full h-1/2 bg-amber-500 animate-[scroll-down_2s_ease-in-out_infinite] motion-reduce:animate-none motion-reduce:translate-y-1/2" />

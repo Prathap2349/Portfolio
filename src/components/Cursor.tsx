@@ -133,7 +133,8 @@ export default function Cursor() {
 
         if (magneticTarget && magMoveFn) {
           magneticTarget.removeEventListener("mousemove", magMoveFn);
-          gsap.to(magneticTarget, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)", overwrite: "auto" });
+          gsap.killTweensOf(magneticTarget);
+          gsap.to(magneticTarget, { x: 0, y: 0, duration: 0.3, ease: "power2.out", overwrite: "auto" });
           magneticTarget = null;
           magMoveFn = null;
           magX = null;
@@ -176,7 +177,7 @@ export default function Cursor() {
         ref={cursorRef}
         className="fixed top-0 left-0 w-12 h-12 bg-amber-500 rounded-full pointer-events-none z-[9999] flex items-center justify-center transition-colors shadow-[0_0_10px_rgba(245,158,11,0.5)]"
       >
-        <span ref={textRef} className="text-[10px] font-bold tracking-widest text-amber-500 whitespace-nowrap opacity-100 mix-blend-screen" />
+        <span ref={textRef} className="text-[10px] font-bold tracking-widest text-amber-400 whitespace-nowrap opacity-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" />
       </div>
     </>
   );

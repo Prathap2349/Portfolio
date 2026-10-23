@@ -33,19 +33,24 @@ export default function Connect() {
     gsap.registerPlugin(ScrollTrigger);
     
     const ctx = gsap.context(() => {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) {
+        gsap.set(".connect-item", { opacity: 1, y: 0 });
+        return;
+      }
+
       gsap.fromTo(
         ".connect-item",
-        { opacity: 0, y: 20 },
+        { opacity: 0, y: 16 },
         {
           opacity: 1,
           y: 0,
-          stagger: 0.1,
-          duration: 0.8,
+          stagger: 0.08,
+          duration: 0.65,
           ease: "power2.out",
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 80%",
-            toggleActions: "play none none none",
             once: true
           },
         }

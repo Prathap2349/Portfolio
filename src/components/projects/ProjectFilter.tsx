@@ -38,8 +38,8 @@ export default function ProjectFilter({ projects }: { projects: Project[] }) {
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project) => (
-          <div key={project.slug} className="group relative flex flex-col p-8 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.04] transition-colors overflow-hidden">
-            <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-10" aria-label={`View ${project.name} case study`} />
+          <div key={project.slug} className="group relative flex flex-col p-8 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-amber-500/30 hover:bg-white/[0.04] hover:-translate-y-1 transition-all duration-300 shadow-lg overflow-hidden">
+            <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-10 focus-visible:ring-2 focus-visible:ring-amber-500 rounded-2xl outline-none" aria-label={`View ${project.name} case study`} />
             
             <h3 className="text-xl font-bold text-primary-text mb-3 tracking-tight group-hover:text-amber-500 transition-colors duration-300">
               {project.name}

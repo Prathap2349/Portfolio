@@ -92,15 +92,19 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
           invalidateOnRefresh: true, // Fix for layout shifts
           anticipatePin: 1,
           onUpdate: (self) => {
-             // Update counter manually based on progress
-             const counter = containerRef.current?.querySelector(".project-counter");
-             if (counter) {
-                const activeIndex = Math.min(
-                   Math.floor(self.progress * projects.length),
-                   projects.length - 1
-                );
-                counter.textContent = (activeIndex + 1).toString().padStart(2, '0');
-             }
+            // Update counter and progress bar based on horizontal progress
+            const counter = containerRef.current?.querySelector(".project-counter");
+            if (counter) {
+              const activeIndex = Math.min(
+                Math.floor(self.progress * projects.length),
+                projects.length - 1
+              );
+              counter.textContent = (activeIndex + 1).toString().padStart(2, '0');
+            }
+            const bar = containerRef.current?.querySelector(".journey-progress-bar");
+            if (bar) {
+              gsap.set(bar, { scaleX: self.progress });
+            }
           }
         }
       });
@@ -117,26 +121,31 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
       tl.to({}, { duration: 0.05 });
 
       // Parallax and clip-path reveal using containerAnimation
-      sections.forEach((section) => {
+      sections.forEach((section, index) => {
         const image = section.querySelector(".parallax-image");
         
         if (image) {
-          // Reveal animation
-          gsap.fromTo(image, 
-            { clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)", scale: 1.1 }, 
-            {
-              clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-              scale: 1,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: section,
-                containerAnimation: tl,
-                start: "left 80%",
-                end: "left 40%",
-                scrub: 1,
+          if (index === 0) {
+            // First panel enters immediately without clip-path jump
+            gsap.set(image, { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", scale: 1 });
+          } else {
+            // Successive panels reveal cleanly as they slide into the viewport
+            gsap.fromTo(image, 
+              { clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)", scale: 1.08 }, 
+              {
+                clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+                scale: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: section,
+                  containerAnimation: tl,
+                  start: "left 90%",
+                  end: "left 40%",
+                  scrub: 1,
+                }
               }
-            }
-          );
+            );
+          }
         }
       });
 
@@ -151,6 +160,11 @@ export default function ProjectJourney({ projects }: { projects: JourneyProject[
     <>
       {/* Desktop Horizontal Scroll Layout */}
       <div className="hidden lg:block h-screen w-full relative z-20 bg-background" ref={containerRef}>
+        {/* Subtle Horizontal Journey Track Indicator */}
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-white/5 z-50 pointer-events-none">
+          <div className="journey-progress-bar h-full bg-amber-500 origin-left scale-x-0" />
+        </div>
+
         <div className="absolute top-12 left-12 z-50 flex items-center gap-4 mix-blend-difference text-white">
           <span className="text-[10px] font-semibold tracking-[0.4em] uppercase">02 / PROJECTS</span>
           <span className="w-8 h-[1px] bg-white/50"></span>

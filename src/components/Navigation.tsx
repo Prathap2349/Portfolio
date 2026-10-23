@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import MobileMenu from "./MobileMenu";
 import { useState, useEffect, useRef } from "react";
 import { scrollToSection } from "@/utils/scroll";
@@ -17,6 +18,7 @@ const navLinks = [
 ];
 
 export default function Navigation() {
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
@@ -29,6 +31,7 @@ export default function Navigation() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
@@ -36,48 +39,54 @@ export default function Navigation() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
-    navLinks.forEach(link => {
-      const id = link.href.split("#")[1];
-      const el = document.getElementById(id);
-      if (el) {
-        // Use ScrollTrigger instead of IntersectionObserver to handle pinned sections correctly
-        ScrollTrigger.create({
-          trigger: el,
-          start: "top 50%",
-          end: "bottom 50%",
-          onToggle: (self) => {
-             if (self.isActive && !isClickScrolling.current) {
+    if (pathname !== "/") {
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+
+    const createdTriggers: ScrollTrigger[] = [];
+
+    // Allow DOM to settle, especially after route changes
+    const timer = setTimeout(() => {
+      navLinks.forEach((link) => {
+        const id = link.href.split("#")[1];
+        const el = document.getElementById(id);
+        if (el) {
+          const st = ScrollTrigger.create({
+            trigger: el,
+            start: "top 50%",
+            end: "bottom 50%",
+            onToggle: (self) => {
+              if (self.isActive && !isClickScrolling.current) {
                 if (id !== currentSectionRef.current) {
-                   setActiveSection(id);
-                   if (id === "hero") {
-                     window.history.replaceState(null, '', window.location.pathname);
-                   } else {
-                     window.history.replaceState(null, '', `#${id}`);
-                   }
+                  setActiveSection(id);
+                  if (id === "hero") {
+                    window.history.replaceState(null, "", window.location.pathname);
+                  } else {
+                    window.history.replaceState(null, "", `#${id}`);
+                  }
                 }
-             }
-          }
-        });
-      }
-    });
+              }
+            },
+          });
+          createdTriggers.push(st);
+        }
+      });
+    }, 50);
 
     return () => {
+      clearTimeout(timer);
       window.removeEventListener("scroll", handleScroll);
-      // ScrollTriggers are automatically cleaned up if we killed them, but we let them persist or we could kill them all
-      ScrollTrigger.getAll().forEach(st => {
-         const trigger = st.vars.trigger;
-         if (trigger && typeof trigger !== 'string' && 'id' in trigger && navLinks.some(l => l.href.includes(trigger.id as string))) {
-            st.kill();
-         }
-      });
+      createdTriggers.forEach((st) => st.kill());
     };
-  }, []);
+  }, [pathname]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, rawHref: string) => {
-    const isHomePage = window.location.pathname === "/";
+    const isHomePage = pathname === "/";
     
     if (!isHomePage) {
-      // Let standard Next.js Link handle the navigation to the home page route
+      // Let standard Next.js Link handle navigation back to home page route
       return;
     }
 
@@ -94,8 +103,10 @@ export default function Navigation() {
       window.history.pushState(null, '', `#${id}`);
     }
 
-    // Scroll using the centralized utility with an offset for the header
-    scrollToSection(`#${id}`, -20);
+    // Scroll using centralized utility with offset for header
+    scrollToSection(`#${id}`, -20, () => {
+      isClickScrolling.current = false;
+    });
     
     setTimeout(() => {
       isClickScrolling.current = false;
@@ -129,18 +140,22 @@ export default function Navigation() {
   useEffect(() => {
     // Magic line transition for desktop navigation
     if (!isMobileMenuOpen && navContainerRef.current && activeIndicatorRef.current) {
-      const activeLink = navContainerRef.current.querySelector(`[data-id="${activeSection}"]`) as HTMLElement;
-      if (activeLink) {
-        gsap.to(activeIndicatorRef.current, {
-          x: activeLink.offsetLeft,
-          width: activeLink.offsetWidth,
-          duration: 0.4,
-          ease: "power3.out"
-        });
-        gsap.set(activeIndicatorRef.current, { opacity: 1 });
+      if (pathname === "/") {
+        const activeLink = navContainerRef.current.querySelector(`[data-id="${activeSection}"]`) as HTMLElement;
+        if (activeLink) {
+          gsap.to(activeIndicatorRef.current, {
+            x: activeLink.offsetLeft,
+            width: activeLink.offsetWidth,
+            opacity: 1,
+            duration: 0.35,
+            ease: "power3.out"
+          });
+        }
+      } else {
+        gsap.to(activeIndicatorRef.current, { opacity: 0, duration: 0.2 });
       }
     }
-  }, [activeSection, isMobileMenuOpen]);
+  }, [activeSection, isMobileMenuOpen, pathname]);
 
   return (
     <>

@@ -3,7 +3,7 @@ import { projects } from "@/data/projects";
 import { fetchGithubData } from "@/lib/github";
 import { profile } from "@/data/profile";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Lock } from "lucide-react";
 import ProjectCarousel from "@/components/projects/ProjectCarousel";
 import type { Metadata } from "next";
 
@@ -19,6 +19,7 @@ interface DetailProject {
   category: string;
   technologies: string[];
   status: string;
+  visibility?: "public" | "private";
   githubUrl?: string;
   liveUrl?: string;
   images?: string[];
@@ -204,6 +205,12 @@ export default async function ProjectPage({ params }: Props) {
           )}
 
           <div className="pt-8 border-t border-white/10 flex flex-col gap-4">
+            {project.visibility === "private" && (
+              <div className="flex items-center justify-center gap-2 text-secondary-text/60 text-xs tracking-wider uppercase bg-white/[0.02] border border-white/5 py-3.5 px-4 rounded-full">
+                <Lock size={12} className="text-amber-500/70" /> Private Repository
+              </div>
+            )}
+
             {project.liveUrl && (
               <a 
                 href={project.liveUrl}
