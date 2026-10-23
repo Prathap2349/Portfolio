@@ -40,6 +40,7 @@ export interface SkillGroups {
   languages: string[];
   frontend: string[];
   backend: string[];
+  native_desktop?: string[];
   ai_ml: string[];
   data: string[];
   tools: string[];

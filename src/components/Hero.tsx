@@ -60,9 +60,12 @@ export default function Hero() {
             <span className="text-amber-500 font-semibold tracking-widest text-xs">
               {profile.role}
             </span>
-            <span className="px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[10px] tracking-widest uppercase flex items-center gap-2 font-medium">
-              AVAILABLE FOR INTERNSHIPS
-            </span>
+            {profile.internshipStatus && (
+              <span className="px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[10px] tracking-widest uppercase flex items-center gap-2 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                {profile.internshipStatus}
+              </span>
+            )}
           </div>
           
           <h1 className="text-5xl md:text-7xl lg:text-[7vw] leading-[0.9] font-bold tracking-tight text-primary-text mb-8 hero-text-elem text-left">
@@ -97,7 +100,7 @@ export default function Hero() {
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 hero-text-elem opacity-60">
         <span className="text-[9px] tracking-[0.3em] font-medium uppercase text-white/50">SCROLL</span>
         <div className="w-[1px] h-12 bg-white/10 relative overflow-hidden">
-          <div className="w-full h-1/2 bg-amber-500 animate-[scroll-down_2s_ease-in-out_infinite]" />
+          <div className="w-full h-1/2 bg-amber-500 animate-[scroll-down_2s_ease-in-out_infinite] motion-reduce:animate-none motion-reduce:translate-y-1/2" />
         </div>
       </div>
     </section>

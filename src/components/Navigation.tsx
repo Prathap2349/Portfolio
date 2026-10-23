@@ -151,7 +151,7 @@ export default function Navigation() {
       >
         <Link 
           href="/" 
-          className="text-xl font-bold tracking-[0.2em] text-primary-text drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] z-10 hover:text-accent-cyan transition-colors"
+          className="text-xl font-bold tracking-[0.2em] text-primary-text drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] z-10 hover:text-amber-500 transition-colors"
         >
           PRATHAP
         </Link>
@@ -159,7 +159,7 @@ export default function Navigation() {
         <div ref={navContainerRef} className="hidden md:flex gap-10 items-center z-10 text-[10px] tracking-[0.2em] font-semibold relative">
           <span 
             ref={activeIndicatorRef} 
-            className="absolute top-0 left-0 h-[2px] bg-accent-cyan pointer-events-none opacity-0" 
+            className="absolute top-0 left-0 h-[2px] bg-amber-500 pointer-events-none opacity-0" 
           />
           {navLinks.map((link) => {
             const id = link.href.split("#")[1];
@@ -171,7 +171,7 @@ export default function Navigation() {
                 data-id={id}
                 className={`transition-colors relative group py-2
                   ${link.disabled ? 'text-secondary-text/40 cursor-not-allowed' : 
-                    isActive ? 'text-accent-cyan' : 'text-primary-text/70 hover:text-primary-text'}
+                    isActive ? 'text-amber-500' : 'text-primary-text/70 hover:text-primary-text'}
                 `}
                 aria-disabled={link.disabled}
                 aria-current={isActive ? "page" : undefined}
@@ -190,7 +190,7 @@ export default function Navigation() {
         </div>
 
         <button 
-          className="md:hidden z-[60] relative focus-visible:ring-2 focus-visible:ring-accent-cyan outline-none text-xs tracking-widest font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+          className="md:hidden z-[60] relative focus-visible:ring-2 focus-visible:ring-amber-500 outline-none text-xs tracking-widest font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-expanded={isMobileMenuOpen}
           aria-label="Toggle menu"

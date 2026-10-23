@@ -9,7 +9,8 @@
   --color-primary-text: #F3F4F6;
   --color-secondary-text: #9CA3AF;
   --color-accent-blue: #3B82F6;
-  --color-accent-cyan: #F59E0B; /* Mapped cyan to amber to easily replace existing usages */
+  --color-accent-amber: #F59E0B;
+  --color-accent-cyan: #F59E0B; /* Kept as alias to preserve backward compatibility */
   --color-accent-warm: #F59E0B;
   
   --color-border-glass: rgba(255,255,255,0.10);

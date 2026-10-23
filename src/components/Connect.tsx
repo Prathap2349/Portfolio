@@ -87,17 +87,26 @@ export default function Connect() {
       className="py-16 md:py-24 bg-background relative"
     >
       <div className="container mx-auto max-w-4xl px-6 md:px-12 relative z-10 text-center flex flex-col items-center">
-        
+        <div className="mb-12 connect-item flex items-center justify-center gap-4 w-full">
+          <div className="h-[1px] bg-gradient-to-r from-transparent to-amber-500/50 flex-grow max-w-[100px]" />
+          <h2 className="text-[10px] font-semibold tracking-[0.4em] text-amber-500 uppercase">05 / Contact</h2>
+          <div className="h-[1px] bg-gradient-to-l from-transparent to-amber-500/50 flex-grow max-w-[100px]" />
+        </div>
+
         <div className="mb-8 connect-item inline-flex items-center gap-2 px-4 py-2 rounded border border-amber-500/20 bg-amber-500/10 text-amber-500 text-xs font-medium tracking-wider">
            <Clock size={14} />
            <span>LOCAL TIME: {time}</span>
-           <span className="mx-2 w-1 h-1 bg-amber-500/50 rounded-full" />
-           <span>REPLIES WITHIN 24H</span>
+           {profile.internshipStatus && (
+             <>
+               <span className="mx-2 w-1 h-1 bg-amber-500/50 rounded-full" />
+               <span>{profile.internshipStatus}</span>
+             </>
+           )}
         </div>
 
-        <h2 data-scroll-anchor className="text-4xl md:text-5xl font-bold text-primary-text mb-6 connect-item">
+        <h3 data-scroll-anchor className="text-4xl md:text-5xl font-bold text-primary-text mb-6 connect-item">
           Get in touch
-        </h2>
+        </h3>
         
         <p className="text-secondary-text text-lg mb-12 max-w-xl mx-auto connect-item">
           Have an idea, opportunity, or just want to say hi? My inbox is always open.

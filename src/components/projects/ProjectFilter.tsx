@@ -26,7 +26,7 @@ export default function ProjectFilter({ projects }: { projects: Project[] }) {
             onClick={() => setFilter(cat)}
             className={`px-4 py-2 rounded-full text-xs font-semibold tracking-widest transition-colors border uppercase ${
               filter === cat 
-                ? "bg-accent-cyan/10 border-accent-cyan text-accent-cyan" 
+                ? "bg-amber-500/10 border-amber-500 text-amber-500" 
                 : "border-white/10 text-secondary-text hover:border-white/30"
             }`}
           >
@@ -41,7 +41,7 @@ export default function ProjectFilter({ projects }: { projects: Project[] }) {
           <div key={project.slug} className="group relative flex flex-col p-8 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.04] transition-colors overflow-hidden">
             <Link href={`/projects/${project.slug}`} className="absolute inset-0 z-10" aria-label={`View ${project.name} case study`} />
             
-            <h3 className="text-xl font-bold text-primary-text mb-3 tracking-tight group-hover:text-accent-cyan transition-colors duration-300">
+            <h3 className="text-xl font-bold text-primary-text mb-3 tracking-tight group-hover:text-amber-500 transition-colors duration-300">
               {project.name}
             </h3>
             <p className="text-secondary-text text-sm mb-6 flex-grow leading-relaxed">
@@ -57,7 +57,7 @@ export default function ProjectFilter({ projects }: { projects: Project[] }) {
             </div>
 
             <div className="flex items-center justify-between mt-auto">
-              <span className="inline-flex items-center gap-2 text-primary-text group-hover:text-accent-cyan transition-colors text-[10px] font-semibold tracking-widest uppercase relative z-20 pointer-events-none">
+              <span className="inline-flex items-center gap-2 text-primary-text group-hover:text-amber-500 transition-colors text-[10px] font-semibold tracking-widest uppercase relative z-20 pointer-events-none">
                 View Case Study
                 <ArrowRight size={14} className="transform transition-transform duration-300 group-hover:translate-x-1" />
               </span>

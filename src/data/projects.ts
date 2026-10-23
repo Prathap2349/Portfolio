@@ -12,6 +12,7 @@ export const projects: Project[] = [
     featured: true,
     isBuilding: false,
     year: 2024,
+    // TODO(prathap): Supply verified public GitHub repository URL for MangaUltra
     problem: "I wanted to read manga offline on my tablet, but manually saving pages and converting them to PDFs was tedious.",
     solution: "Built a Chrome extension that scrapes the images from a chapter page and bundles them into a single PDF file automatically.",
     result: "Saves a lot of time and works exactly as needed.",
@@ -42,6 +43,7 @@ export const projects: Project[] = [
     featured: true,
     isBuilding: false,
     year: 2025,
+    // TODO(prathap): Supply verified public GitHub repository URL for USBBridge
     problem: "Transferring files between a Mac and Android over Wi-Fi/cloud is slow or needs internet. Android File Transfer for Mac is notoriously buggy.",
     solution: "Wrote a SwiftUI wrapper around ADB (Android Debug Bridge) commands to push/pull files quickly and reliably via a wired USB connection.",
     result: "Fast, local file transfers with no network required.",
@@ -102,6 +104,7 @@ export const projects: Project[] = [
     featured: false,
     isBuilding: false,
     year: 2024,
+    // TODO(prathap): Supply verified public GitHub repository URL for MediaTool
   },
   {
     slug: "merge-desk",
@@ -114,6 +117,7 @@ export const projects: Project[] = [
     featured: false,
     isBuilding: false,
     year: 2026,
+    // TODO(prathap): Supply verified public GitHub repository URL for Merge Desk
   },
   {
     slug: "nest",

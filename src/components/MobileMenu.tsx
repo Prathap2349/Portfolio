@@ -65,7 +65,7 @@ export default function MobileMenu({ isOpen, onClose, links, activeSection, onNa
             <Link 
               key={link.label}
               href={link.href}
-              className={`transition-colors ${link.disabled ? 'text-secondary-text/40' : isActive ? 'text-accent-cyan' : 'text-primary-text'}`}
+              className={`transition-colors ${link.disabled ? 'text-secondary-text/40' : isActive ? 'text-amber-500' : 'text-primary-text'}`}
               onClick={(e) => {
                 if (link.disabled) {
                   e.preventDefault();
@@ -94,9 +94,9 @@ export default function MobileMenu({ isOpen, onClose, links, activeSection, onNa
           Download Resume
         </a>
         <div className="flex justify-between items-center px-4 text-xs tracking-widest text-secondary-text">
-          <a href={profile.social.github} target="_blank" rel="noreferrer" className="hover:text-accent-cyan transition-colors uppercase">GitHub</a>
-          <a href={profile.social.linkedin} target="_blank" rel="noreferrer" className="hover:text-accent-cyan transition-colors uppercase">LinkedIn</a>
-          <a href={`mailto:${profile.social.email}`} className="hover:text-accent-cyan transition-colors uppercase">Email</a>
+          <a href={profile.social.github} target="_blank" rel="noreferrer" className="hover:text-amber-500 transition-colors uppercase">GitHub</a>
+          <a href={profile.social.linkedin} target="_blank" rel="noreferrer" className="hover:text-amber-500 transition-colors uppercase">LinkedIn</a>
+          <a href={`mailto:${profile.social.email}`} className="hover:text-amber-500 transition-colors uppercase">Email</a>
         </div>
       </div>
     </div>
